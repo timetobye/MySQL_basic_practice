@@ -25,4 +25,6 @@ Quiz도 위와 동일한 페이지에서 구하였습니다.
 
 ## Result
 
-- [MySQL Basic SELECT statement 19 Exercises](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Basic%20SELECT%20statement%2019%20Exercises)
+MySQL Basic SELECT statement 19 Exercises
+- [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Basic%20SELECT%20statement%2019%20Exercises)
+- [gist](https://gist.github.com/timetobye/e7e8fe3b0b298cc82a8ec456c8b84dec)
