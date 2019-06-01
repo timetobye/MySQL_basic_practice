@@ -1,0 +1,869 @@
+<html><head><title>MySQL Restricting and Sorting data [11 exercises]</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	opacity: 0.5;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif; }
+.mono { font-family: Nitti, 'Microsoft YaHei', '微软雅黑', monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, Nitti, 'Microsoft YaHei', '微软雅黑', monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="bb1e68bd-070c-425d-a169-a0a3ec4c1a4b" class="page sans"><header><h1 class="page-title">MySQL Restricting and Sorting data [11 exercises]</h1></header><div class="page-body"><hr id="bb4a508c-eded-45ac-9936-a7ebc1903d34"/><div id="3dbaf606-4cce-4515-9d18-ad9903ea61fc" class="column-list"><div id="bc533283-d480-44a5-9992-fc84340a67c2" style="width:62.5%" class="column"><h2 id="06b37970-be05-4ced-832b-0616ef94e2c2">Wonny&#x27;s Solution</h2><hr id="52f9b021-1dbb-466e-8097-f85f98420274"/><ul id="47a727b4-6c01-4470-a178-9df274a31b39" class="bulleted-list"><li>1. Write a query to display the name (first_name, last_name) and salary for all employees whose salary is not in the range $10,000 through $15,000.</li></ul><ul id="cec0eee7-9a99-4126-985e-86fc8044fd34" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="7884e6f3-ce27-4c7c-b95f-d9fdf88640e7" class="code"><code>## Idea
+
+- 이름 쿼리 할 것
+- salary가 10000 미만, 15000 초과인 사람 구할 것
+  - between 써도 될 듯, between은 inclusive한 개념임, 단 날짜 쓸 때는 조심 할 것
+  - [between 참고](http://kwonnam.pe.kr/wiki/database/mysql/between)
+  - between 앞에 not을 쓰면 범위 밖임</code></pre><pre id="8eebbb2a-3ee2-479c-bb90-d11189131377" class="code"><code>## solution
+
+select concat(FIRST_NAME, &#x27; &#x27;, LAST_NAME) as employee_name,
+       SALARY
+from employees
+where SALARY &gt; 15000 or SALARY &lt; 10000;
+
+select concat(FIRST_NAME, &#x27; &#x27;, LAST_NAME) as employee_name,
+       SALARY
+from employees
+where SALARY NOT between 10000 and 15000;</code></pre><pre id="b921189c-6d57-429f-895b-d1580e5c1086" class="code"><code>## query result
+
+#	employee_name	SALARY
+1	Steven King	24000.00
+2	Neena Kochhar	17000.00
+3	Lex De Haan	17000.00
+4	Alexander Hunold	9000.00
+5	Bruce Ernst	6000.00
+6	David Austin	4800.00
+7	Valli Pataballa	4800.00
+8	Diana Lorentz	4200.00
+9	Daniel Faviet	9000.00
+10	John Chen	8200.00
+11	Ismael Sciarra	7700.00
+
+#	employee_name	SALARY
+1	Steven King	24000.00
+2	Neena Kochhar	17000.00
+3	Lex De Haan	17000.00
+4	Alexander Hunold	9000.00
+5	Bruce Ernst	6000.00
+6	David Austin	4800.00
+7	Valli Pataballa	4800.00
+8	Diana Lorentz	4200.00
+9	Daniel Faviet	9000.00
+10	John Chen	8200.00
+11	Ismael Sciarra	7700.00</code></pre></details></li></ul><hr id="b65c04c6-78ae-4d3c-b5c3-2f1f02b79cec"/><ul id="659342f0-428d-4edd-81d7-81304b8e137a" class="bulleted-list"><li>2. Write a query to display the name (first_name, last_name) and department ID of all employees in departments 30 or 100 in ascending order.</li></ul><ul id="ab27bebd-fc4a-4aa6-bdf2-73ec1d77c453" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="a0fcc736-6420-4926-8f0a-0b33e4575ef7" class="code"><code>## Idea
+
+- 이름은 쿼리 하면 됨
+- department_id도 쿼리 하면 됨
+- where 조건에 department_id in (30, 100) 하면 포함 되는 구조
+- order by department_id ASC</code></pre><pre id="1543ff2b-1708-4284-ac05-2e81af4d4808" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       DEPARTMENT_ID
+from employees
+where DEPARTMENT_ID in (30, 100)
+order by DEPARTMENT_ID ASC;</code></pre><pre id="dbfec290-c1e6-49b7-b73c-3510b04e3738" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	DEPARTMENT_ID
+1	Den	Raphaely	30
+2	Alexander	Khoo	30
+3	Shelli	Baida	30
+4	Sigal	Tobias	30
+5	Guy	Himuro	30
+6	Karen	Colmenares	30
+7	Nancy	Greenberg	100
+8	Daniel	Faviet	100
+9	John	Chen	100
+10	Ismael	Sciarra	100
+11	Jose Manuel	Urman	100
+12	Luis	Popp	100</code></pre></details></li></ul><hr id="ea9fe438-abf0-4fd7-8b80-8a2ca0d36fb5"/><ul id="d066405a-d6e8-4ac7-ac6a-ba01b82afa5d" class="bulleted-list"><li>3. Write a query to display the name (first_name, last_name) and salary for all employees whose salary is not in the range $10,000 through $15,000 and are in department 30 or 100.</li></ul><ul id="e484b420-72fd-44bc-b680-c53a93c93cc9" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ba790886-89ca-4f23-a5b7-41354b6ac085" class="code"><code>## Idea
+
+- 1, 2번 문제의 조건들이 동시에 적용 되는 구조이다.
+- where에 문제에서 요구하는 조건을 적용하면 될 듯</code></pre><pre id="30735996-c072-4086-a035-157202f20b6d" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       DEPARTMENT_ID,
+       SALARY
+from employees
+where
+      DEPARTMENT_ID in (30, 100) and
+      SALARY NOT between 10000 and 15000;</code></pre><pre id="ddf39837-ed2e-4607-bcd4-3eae61787f15" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	DEPARTMENT_ID	SALARY
+1	Alexander	Khoo	30	3100.00
+2	Shelli	Baida	30	2900.00
+3	Sigal	Tobias	30	2800.00
+4	Guy	Himuro	30	2600.00
+5	Karen	Colmenares	30	2500.00
+6	Daniel	Faviet	100	9000.00
+7	John	Chen	100	8200.00
+8	Ismael	Sciarra	100	7700.00
+9	Jose Manuel	Urman	100	7800.00
+10	Luis	Popp	100	6900.00</code></pre></details></li></ul><hr id="ebbd8492-3760-4c80-b0b7-589303ce719b"/><ul id="2e2036d4-7b56-4d77-bb17-998d47fb047a" class="bulleted-list"><li>4. Write a query to display the name (first_name, last_name) and hire date for all employees who were hired in 1987.</li></ul><ul id="158b881d-5543-4a5c-b141-d3c2085a6b45" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="3f5f0be5-9ebb-45b0-8a06-3c8cc7597897" class="code"><code>## Idea
+
+- 고용일을 기준으로 년도만 추출하면 될 듯
+- date에 대해서는 공부...보다는 반복 학습이 필요할 듯
+  - [mysql 날짜 관련 함수](http://faq.hostway.co.kr/Linux_DB/7421)
+  - The YEAR() function returns the year part for a given date (a number from 1000 to 9999).
+  - https://www.w3schools.com/sql/func_mysql_year.asp</code></pre><pre id="8096061c-71ea-4426-bef0-1cbf9430f29a" class="code"><code>## solution
+select FIRST_NAME,
+       LAST_NAME,
+       HIRE_DATE
+from employees
+where YEAR(HIRE_DATE) = 1987
+
+## 이렇게도 답에 써있음
+SELECT first_name, last_name, hire_date
+FROM employees
+WHERE YEAR(hire_date)  LIKE &#x27;1987%&#x27;;</code></pre><pre id="d5f756dc-5daf-4afb-b3b8-641c971d1d71" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	HIRE_DATE
+1	Steven	King	1987-06-17
+2	Neena	Kochhar	1987-06-18
+3	Lex	De Haan	1987-06-19
+4	Alexander	Hunold	1987-06-20
+5	Bruce	Ernst	1987-06-21
+6	David	Austin	1987-06-22
+7	Valli	Pataballa	1987-06-23
+8	Diana	Lorentz	1987-06-24
+9	Nancy	Greenberg	1987-06-25
+10	Daniel	Faviet	1987-06-26
+11	John	Chen	1987-06-27
+
+#	FIRST_NAME	LAST_NAME	HIRE_DATE
+1	Steven	King	1987-06-17
+2	Neena	Kochhar	1987-06-18
+3	Lex	De Haan	1987-06-19
+4	Alexander	Hunold	1987-06-20
+5	Bruce	Ernst	1987-06-21
+6	David	Austin	1987-06-22
+7	Valli	Pataballa	1987-06-23
+8	Diana	Lorentz	1987-06-24
+9	Nancy	Greenberg	1987-06-25</code></pre></details></li></ul><hr id="1016f8c1-e44b-4029-8179-dc63465cedda"/><ul id="2cd86212-5b80-4b83-a5f5-5f09f26e888c" class="bulleted-list"><li>5. Write a query to display the first_name of all employees who have both &quot;b&quot; and &quot;c&quot; in their first name.</li></ul><ul id="28144241-0313-4808-8a93-ff11d76e731c" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="94047317-6d28-4b8c-bc6b-58fe04d455e6" class="code"><code>## Idea
+
+- first_name에 &#x27;b&#x27;, &#x27;c&#x27;를 가진 사람을 찾으면 됩니다.
+- like로 패턴 매칭을 하면 될 듯
+  - 양방향 매칭을 해야함
+- regexp로 패턴 매칭도 가능 할 듯
+  - regexp에서 여러개를 찾으려면 and를 쓰면 된다.
+  - [regexp and](https://stackoverflow.com/questions/15687136/logical-and-operator-in-mysql-regexp)</code></pre><pre id="a7face3a-8a96-49a6-86cc-e7dc9485840d" class="code"><code>## solution
+
+select FIRST_NAME
+from employees
+where FIRST_NAME like &#x27;%b%&#x27; 
+  and FIRST_NAME like &#x27;%c%&#x27;;
+
+select FIRST_NAME
+from employees
+where FIRST_NAME regexp &#x27;[b]&#x27;
+  and FIRST_NAME regexp &#x27;[c]&#x27;;</code></pre><pre id="24b269a4-2711-40b3-86fe-53ec96b8949b" class="code"><code>## query result
+
+Bruce
+
+Bruce</code></pre></details></li></ul><hr id="6196d11c-b783-46e3-81af-ccac6a4b6426"/><ul id="6acadb8d-413e-4813-8199-ff05d723b09a" class="bulleted-list"><li>6. Write a query to display the last name, job, and salary for all employees whose job is that of a Programmer or a Shipping Clerk, and whose salary is not equal to $4,500, $10,000, or $15,000.</li></ul><ul id="7ba8c6c5-adb1-426f-b329-a68c3a7b00e3" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="9529e30e-30c4-42bb-9db1-a2ec67f607d5" class="code"><code>## Idea
+
+- last name, job, and salary
+  - 일반 쿼리
+- job is that of a Programmer or a Shipping Clerk
+  - where로 필터링
+- salary is not equal to $4,500, $10,000, or $15,000.
+  - not in 사용</code></pre><pre id="ec48aa2d-696c-4f40-b4a9-16fa9aefb8a1" class="code"><code>## solution
+
+select LAST_NAME,
+       JOB_ID,
+       SALARY
+from employees
+where JOB_ID in (&#x27;IT_PROG&#x27;, &#x27;SH_CLERK&#x27;)
+  and SALARY not in (4500, 10000, 15000);</code></pre><pre id="ec9a8c58-fb84-4093-bc25-fb89cdf84f05" class="code"><code>## query result
+
+#	LAST_NAME	JOB_ID	SALARY
+1	Hunold	IT_PROG	9000.00
+2	Ernst	IT_PROG	6000.00
+3	Austin	IT_PROG	4800.00
+4	Pataballa	IT_PROG	4800.00
+5	Lorentz	IT_PROG	4200.00
+6	Taylor	SH_CLERK	3200.00
+7	Fleaur	SH_CLERK	3100.00
+8	Sullivan	SH_CLERK	2500.00
+9	Geoni	SH_CLERK	2800.00
+10	Sarchand	SH_CLERK	4200.00
+11	Bull	SH_CLERK	4100.00</code></pre></details></li></ul><hr id="979f5dd3-9bd8-4bb4-8abf-a42f2ece7267"/><ul id="16d10ec0-fa99-4dbf-aa18-4f4983243e87" class="bulleted-list"><li>7. Write a query to display the last name of employees whose names have exactly 6 characters.</li></ul><ul id="7103c9f0-5ac2-43b0-bbb3-14d76ddcf242" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="edda4ee9-07d0-4e54-9fc5-aa4338cf19c5" class="code"><code>## Idea
+
+- last_name이 문자열 6개로 이루어진 사람 찾기
+- 여러가지 방법이 있을텐데 가장 쉬운건 문자열 길이가 6인 경우를 찾으면 될 듯
+
+## 추가
+
+- 해답을 보니까 like로 했는데 처음 보는 방법이었다.
+- like &#x27;______&#x27; : 언더바 6개로 매칭을 하더라.</code></pre><pre id="665bafc3-ce67-41e3-83a6-5c7e28662e96" class="code"><code>## solution
+
+select LAST_NAME
+from employees
+where length(LAST_NAME) = 6;
+
+select LAST_NAME
+from employees
+where LAST_NAME like &#x27;______&#x27;;</code></pre><pre id="27eeef9b-0a90-4795-8b2a-94a0e6fb9b4d" class="code"><code>## query result
+
+#	LAST_NAME
+1	Austin
+2	Bissot
+3	Cabrio
+4	Davies
+5	Faviet
+6	Feeney
+7	Fleaur
+8	Greene
+9	Himuro
+
+#	LAST_NAME
+1	Austin
+2	Bissot
+3	Cabrio
+4	Davies
+5	Faviet
+6	Feeney
+7	Fleaur
+8	Greene
+9	Himuro</code></pre></details></li></ul><hr id="7dd7cd58-36f1-43c0-951a-7d9ce8fd5abd"/><ul id="1aec1491-40fa-4efc-9f63-3fb621e8a593" class="bulleted-list"><li>8. Write a query to display the last name of employees having &#x27;e&#x27; as the third character.</li></ul><ul id="3d23c8ee-5c63-4124-b577-aec6c482627a" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="74982bcc-bc12-47f9-87ca-a79ee377011e" class="code"><code>## Idea
+
+- last_name에서 &#x27;e&#x27;라는 문자가 3번째에 위치할 경우를 찾아라
+- substring으로 문자열 위치 잡고 &#x27;e&#x27; 해도 될 듯
+  - substring(원본 문자열, 시작 위치값, 가져올 길이값)
+
+## 추가
+
+- solution에서는 like로 패턴 매칭을 했다.
+  - liek &#x27;__e%&#x27;</code></pre><pre id="639b4f5a-f23b-4ce8-b9a9-4469c2dc1346" class="code"><code>## solution
+
+select LAST_NAME
+from employees
+where substring(LAST_NAME, 3, 1) = &#x27;e&#x27;;
+
+select LAST_NAME
+from employees
+where LAST_NAME like &#x27;__e%&#x27;;</code></pre><pre id="62d6feb5-c919-4afb-9c5e-b0305e4750ad" class="code"><code>## query result
+
+#	LAST_NAME
+1	Abel
+2	Baer
+3	Chen
+4	Everett
+5	Feeney
+6	Fleaur
+7	Gee
+8	Gietz
+9	Greenberg
+10	Greene
+11	Lee
+12	McEwen
+13	Ozer
+
+#	LAST_NAME
+1	Abel
+2	Baer
+3	Chen
+4	Everett
+5	Feeney
+6	Fleaur
+7	Gee
+8	Gietz
+9	Greenberg
+10	Greene
+11	Lee
+12	McEwen
+13	Ozer</code></pre></details></li></ul><hr id="4bfd0d55-cd1f-491f-9c18-0e886c992d54"/><ul id="5d45b524-16c8-44b2-8b15-a74bac47175b" class="bulleted-list"><li>9. Write a query to display the jobs/designations available in the employees table.</li></ul><ul id="e0b9e91a-7582-4386-baec-b2f564f67c1a" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="a3b145b2-6fa2-4f9c-a974-0a4db8b4c800" class="code"><code>## Idea
+
+- 뭔 뜻이여...?
+  - https://dictionary.cambridge.org/ko/%EC%82%AC%EC%A0%84/%EC%98%81%EC%96%B4/designation
+  - thing has a particular character or purpose:
+
+- distinct쳐서 고유값 찾는 거?
+- 쿼리는 정말 간단한데....영어 뜻을 몰라서 애먹었다.</code></pre><pre id="2147ed20-5136-407e-9cd7-ab80fa1dd2f5" class="code"><code>## solution
+
+select distinct JOB_ID
+from employees;</code></pre><pre id="93f41a2a-590e-4530-9e7f-c8e71762f246" class="code"><code>## query result
+
+#	JOB_ID
+1	AC_ACCOUNT
+2	AC_MGR
+3	AD_ASST
+4	AD_PRES
+5	AD_VP
+6	FI_ACCOUNT
+7	FI_MGR
+8	HR_REP
+9	IT_PROG
+10	MK_MAN
+11	MK_REP
+12	PR_REP
+13	PU_CLERK
+14	PU_MAN
+15	SA_MAN
+16	SA_REP
+17	SH_CLERK
+18	ST_CLERK
+19	ST_MAN</code></pre></details></li></ul><hr id="7bf8e43a-0f3a-4640-86a1-0b947575af4b"/><ul id="91d15315-1478-4f96-9933-3121da962a39" class="bulleted-list"><li>10. Write a query to display the name (first_name, last_name), salary and PF (15% of salary) of all employees.</li></ul><ul id="60b930c9-4041-4f74-b285-e8306795e16a" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="523e3973-e13d-4a79-9d10-9f190453482d" class="code"><code>## Idea
+
+- 했던 문제 같은데...
+- first_name, last_name, salary, salary * 0.15 구하면 될 듯
+  - salary는 round를 써보았다.</code></pre><pre id="c327e9d5-4f94-4713-982d-f01c36633f57" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       round(SALARY, 0) as Salary,
+       cast(SALARY * 0.15 as decimal(10, 0)) as PF
+from employees</code></pre><pre id="a446bc79-1e42-4896-bfee-ec0db4f82374" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	Salary	PF
+1	Steven	King	24000	3600
+2	Neena	Kochhar	17000	2550
+3	Lex	De Haan	17000	2550
+4	Alexander	Hunold	9000	1350
+5	Bruce	Ernst	6000	900
+6	David	Austin	4800	720
+7	Valli	Pataballa	4800	720
+8	Diana	Lorentz	4200	630
+9	Nancy	Greenberg	12000	1800
+10	Daniel	Faviet	9000	1350
+11	John	Chen	8200	1230
+12	Ismael	Sciarra	7700	1155
+13	Jose Manuel	Urman	7800	1170</code></pre></details></li></ul><hr id="05c235e2-db9a-4542-9192-3abf9137e9f9"/><ul id="a8857742-fd9f-44f7-9f20-de6f9d819bd8" class="bulleted-list"><li>11. Write a query to select all record from employees where last name in &#x27;BLAKE&#x27;, &#x27;SCOTT&#x27;, &#x27;KING&#x27; and &#x27;FORD&#x27;.</li></ul><ul id="2b79bf63-e0c3-4593-8ed5-b272b2468066" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="e9bad4eb-990a-4e8c-a78f-3417b14cd19c" class="code"><code>## Idea
+
+- last_name in (&#x27;BLAKE&#x27;, &#x27;SCOTT&#x27;, &#x27;KING&#x27;, &#x27;FORD&#x27;) 을 구하면 될 듯</code></pre><pre id="b5a74a4f-8e72-4179-80af-c1b71f5fa0d8" class="code"><code>## solution
+
+select *
+from employees
+where last_name in (&#x27;BLAKE&#x27;, &#x27;SCOTT&#x27;, &#x27;KING&#x27;, &#x27;FORD&#x27;)</code></pre><pre id="f6caa8e0-b9e3-4bd2-90ce-626467bb61f1" class="code"><code>## query result
+
+#	EMPLOYEE_ID	FIRST_NAME	LAST_NAME	EMAIL	PHONE_NUMBER
+1	156	Janette	King	JKING	011.44.1345.429268
+2	100	Steven	King	SKING	515.123.4567</code></pre></details></li></ul></div><div id="25fba768-2b04-4212-8d1a-65a2499b650b" style="width:37.5%" class="column"><h2 id="9483ba06-0090-4cc7-9ff8-a67c031f919d">Structure of &#x27;hr&#x27; database &amp; answer sample</h2><hr id="f06c1eff-e4d0-4801-935e-b8df633edfce"/><figure id="c36fc34f-a104-4b29-93e5-6302fcf2d1be" class="image"><a href="MySQL Restricting and Sorting data 11 exercises/Untitled.png"><img style="width:960px" src="MySQL Restricting and Sorting data 11 exercises/Untitled.png"/></a></figure><hr id="0ee9bc11-553a-47ef-a05a-9a0870eeac45"/><ul id="5afa101e-ef20-4cb7-bc72-a00d0bd55f2e" class="bulleted-list"><li>문제를 복사 해오면 될 듯</li></ul><ul id="054e261b-51d7-466a-855d-f24603a10cf9" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="0acb73dc-a8d5-4bfa-a9ad-e5e7f139510a" class="code"><code>## Idea
+
+- </code></pre><pre id="e909c264-decb-4d34-aba0-d55b41ecd1b4" class="code"><code>## solution
+
+select *
+from DB</code></pre><pre id="d6ab520e-e677-4dca-9504-e20c21ae5319" class="code"><code>## query result
+
+</code></pre></details></li></ul><p id="2de10b58-454f-4759-a579-a4603daa981d"></p></div></div></div></article></body></html>
