@@ -1,0 +1,948 @@
+<html><head><title>MySQL Basic SELECT statement [19 Exercises]</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	opacity: 0.5;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif; }
+.mono { font-family: Nitti, 'Microsoft YaHei', '微软雅黑', monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, Nitti, 'Microsoft YaHei', '微软雅黑', monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2e1ea122-5af1-4e0d-a81a-bb76453904d6" class="page sans"><header><h1 class="page-title">MySQL Basic SELECT statement [19 Exercises]</h1></header><div class="page-body"><hr id="6607b849-1e8f-44f4-8011-1b896632915a"/><div id="0dc521cd-5502-406d-80ca-b77b2d0c508e" class="column-list"><div id="d9b673f7-c88c-400f-b845-e9851278eb17" style="width:62.5%" class="column"><h2 id="029e55fc-0b74-45a8-a578-b0cafd7d8080">Wonny&#x27;s Solution</h2><hr id="e26dde44-277a-4da5-8dea-bb7378932df6"/><ul id="41fee5d6-74cc-4807-8041-941c6d616447" class="bulleted-list"><li>1. Write a query to display the names (first_name, last_name) using alias name “First Name&quot;, &quot;Last Name&quot;</li></ul><ul id="f67404b1-605b-4dc3-81e9-104b19b0e486" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="aade6a67-0ae0-4135-83e3-b84c5ce36235" class="code"><code>## Idea
+
+- Alias 는 별칭이다. 우리가 사용하는 AS 라고 쓰면 됩니다.
+- https://victorydntmd.tistory.com/137
+
+- 문제에서 first_name, last_name을 각각 First Name, Last Name으로 표현해달라고 하였다.
+- as 붙여서 쿼리하며 될 듯</code></pre><pre id="941c0818-cd5c-4b35-b171-29fc10d33c7b" class="code"><code>## solution
+
+select
+       first_name as &quot;First Name&quot;,
+       last_name as &quot;Last Name&quot;
+from employees;
+</code></pre><pre id="e4c68cca-52e8-4930-91ad-a117eb2fad26" class="code"><code>## query result
+
+#	First Name	Last Name
+1	Ellen	Abel
+2	Sundar	Ande
+3	Mozhe	Atkinson
+4	David	Austin
+5	Hermann	Baer
+6	Shelli	Baida
+7	Amit	Banda
+8	Elizabeth	Bates
+9	Sarah	Bell
+10	David	Bernstein
+11	Laura	Bissot</code></pre></details></li></ul><hr id="b0554a95-1214-4826-96c2-a5f0c593c89f"/><ul id="94847e05-e46a-419e-aed0-07bb3b912f24" class="bulleted-list"><li>2. Write a query to get unique department ID from employee table.</li></ul><ul id="17122993-a30b-4324-a333-f1b847def7dd" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="279a54bb-a41e-4395-a2fb-518020632006" class="code"><code>## Idea
+
+- unique한 department ID를 얻어내는 문제
+- distinct로 처리하면 무난 할 듯
+- groupby로도 가능 할 듯</code></pre><pre id="be433f5c-c1ff-427e-95f5-4c789846111c" class="code"><code>## solution
+
+select distinct DEPARTMENT_ID from employees
+
+select DEPARTMENT_ID
+from employees
+group by 1;</code></pre><pre id="c98b9a6f-0c04-4cbb-8a09-edb1a0f519b5" class="code"><code>## query result
+
+#	DEPARTMENT_ID
+1	0
+2	10
+3	20
+4	30
+5	40
+6	50
+7	60
+8	70
+9	80
+10	90
+11	100
+12	110
+
+#	DEPARTMENT_ID
+1	0
+2	10
+3	20
+4	30
+5	40
+6	50
+7	60
+8	70
+9	80
+10	90
+11	100
+12	11</code></pre></details></li></ul><hr id="67f0b28b-24eb-4330-9f71-4a01cce335d4"/><ul id="d3dedf06-7e65-4edb-a630-fb53a65059bd" class="bulleted-list"><li>3. Write a query to get all employee details from the employee table order by first name, descending.</li></ul><ul id="db3d9e2f-3428-4aac-8fc2-1dcc1ea1d6f1" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="a59b8aad-d0b5-464f-b923-55db79bbb889" class="code"><code>## Idea
+
+- get all employee details from the employee table order by first name, descending.
+- first name으로 내림차순 정렬 하면 될 듯
+- order by 사용</code></pre><pre id="f0549d2f-a17a-41a4-a0c7-6c1bda8f6349" class="code"><code>## solution
+
+select * 
+from employees
+order by first_name DESC;</code></pre><pre id="0fffa9d6-8157-453a-8746-991762b67677" class="code"><code>## query result
+
+#	EMPLOYEE_ID	FIRST_NAME	LAST_NAME	EMAIL	PHONE_NUMBER ....
+1	180	Winston	Taylor	WTAYLOR	650.507.9876
+2	171	William	Smith	WSMITH	011.44.1343.629268
+3	206	William	Gietz	WGIETZ	515.123.8181
+4	195	Vance	Jones	VJONES	650.501.4876
+5	106	Valli	Pataballa	VPATABAL	590.423.4560
+6	141	Trenna	Rajs	TRAJS	650.121.8009
+7	132	TJ	Olson	TJOLSON	650.124.8234
+8	190	Timothy	Gates	TGATES	650.505.3876
+9	170	Tayler	Fox	TFOX	011.44.1343.729268</code></pre></details></li></ul><hr id="bba94389-054e-405a-a13b-fa3784a8da8a"/><ul id="cc70b94b-da10-4d7d-9d14-73d129f6ec7d" class="bulleted-list"><li>4. Write a query to get the names (first_name, last_name), salary, PF of all the employees (PF is calculated as 15% of salary).</li></ul><ul id="4a348ca1-0662-4966-a6f7-782eec4f8fd6" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="c87e1526-80c0-40fc-b223-a4970df0a075" class="code"><code>## Idea
+
+- 각 column query
+- PF 는 alias로 명명
+- PF의 값은 salary에 0.15를 곱하면 될 듯
+
+## 추가 서치
+- 쿼리 결과가 소수점 네자리의 불필요한 값까지 나와서 찾아봄
+- [형 변환 방법](https://stackoverflow.com/questions/22472771/convert-from-float-to-int)
+- https://codeday.me/ko/qa/20190307/15007.html
+- 다양한 방법이 있었는데...위 링크 중 가장 무난한 듯
+```
+SELECT CAST(field AS DECIMAL(10,0)) FROM table;
+```
+</code></pre><pre id="27e52cc8-01d0-47cb-893a-89d32c782fa5" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY,
+       (SALARY * 0.15) as PF
+from employees;
+
+
+select FIRST_NAME,
+       LAST_NAME,
+       cast(SALARY as DECIMAL(10, 0)) as SALARY,
+       cast(SALARY * 0.15 as DECIMAL(10, 0)) as PF
+from employees;</code></pre><pre id="f0d85188-37d6-41df-89b3-cca3b7a9299b" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	SALARY	PF
+1	Steven	King	24000.00	3600.0000
+2	Neena	Kochhar	17000.00	2550.0000
+3	Lex	De Haan	17000.00	2550.0000
+4	Alexander	Hunold	9000.00	1350.0000
+5	Bruce	Ernst	6000.00	900.0000
+6	David	Austin	4800.00	720.0000
+7	Valli	Pataballa	4800.00	720.0000
+8	Diana	Lorentz	4200.00	630.0000
+9	Nancy	Greenberg	12000.00	1800.0000
+
+#	FIRST_NAME	LAST_NAME	SALARY	PF
+1	Steven	King	24000	3600
+2	Neena	Kochhar	17000	2550
+3	Lex	De Haan	17000	2550
+4	Alexander	Hunold	9000	1350
+5	Bruce	Ernst	6000	900
+6	David	Austin	4800	720
+7	Valli	Pataballa	4800	720
+8	Diana	Lorentz	4200	630</code></pre></details></li></ul><hr id="fa11b038-3dd7-4a48-afc2-3940ada808d6"/><ul id="bc950b20-1163-4215-abeb-beea6cd3e058" class="bulleted-list"><li>5. Write a query to get the employee ID, names (first_name, last_name), salary in ascending order of salary.</li></ul><ul id="a97bbe66-37be-449a-a639-3720314bc416" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="46324587-30e6-44b6-8d9f-05b1aaac14da" class="code"><code>## Idea
+
+- employee ID, names (first_name, last_name), salary in ascending order of salary.
+- 각 column query하고 salary로 order by 오름차순(ASC) 하면 될 듯</code></pre><pre id="fd267582-a812-45b0-a10e-a99fd21f8867" class="code"><code>## solution
+
+select EMPLOYEE_ID,
+       FIRST_NAME,
+       LAST_NAME,
+       cast(SALARY as DECIMAL(10, 0)) as SALARY
+from employees
+order by SALARY ASC;</code></pre><pre id="7995058c-4afb-4863-b97c-fbacbe95eec8" class="code"><code>## query result
+
+#	EMPLOYEE_ID	FIRST_NAME	LAST_NAME	SALARY
+1	132	TJ	Olson	2100
+2	128	Steven	Markle	2200
+3	136	Hazel	Philtanker	2200
+4	127	James	Landry	2400
+5	135	Ki	Gee	2400
+6	119	Karen	Colmenares	2500
+7	131	James	Marlow	2500
+8	140	Joshua	Patel	2500
+9	144	Peter	Vargas	2500
+10	182	Martha	Sullivan	2500
+11	191	Randall	Perkins	2500
+12	118	Guy	Himuro	2600
+13	143	Randall	Matos	2600</code></pre></details></li></ul><hr id="2e101518-235e-4ce5-8cf0-5712ec50aea2"/><ul id="422520b2-2106-4724-a5d1-47b49dd6bf1a" class="bulleted-list"><li>6. Write a query to get the total salaries payable to employees.</li></ul><ul id="2157de99-84bf-4e74-ad80-78450263f3cb" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="3160862a-a4a4-4f07-b44c-b866fabc54ef" class="code"><code>## Idea
+
+- total salaries payable to employees.
+- salary 항목의 sum</code></pre><pre id="88a48370-5204-4abf-bf39-a5943b20f4e2" class="code"><code>## solution
+
+select sum(SALARY) as total_salaries
+from employees;</code></pre><pre id="5946d9a3-65ed-45f3-af5c-6450812671a5" class="code"><code>## query result
+
+691400.00</code></pre><p id="0bf585b5-03e0-4d78-a464-bd3b6d4a85f0"></p></details></li></ul><hr id="e353507d-1463-4ce0-b98c-27dc2b77b8c6"/><ul id="b214aec2-f3d3-4912-8d8c-68c4ce131ebf" class="bulleted-list"><li>7. Write a query to get the maximum and minimum salary from employees table.</li></ul><ul id="0d3aef0a-3e94-4cc4-88ee-217b9ed957c5" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="7e7b4dc3-2c35-44dc-8779-5da1fb65e88f" class="code"><code>## Idea
+
+- salay max, salary min을 구하면 될 듯</code></pre><pre id="3b7cc465-c31a-409e-b71b-fe038146bcf6" class="code"><code>## solution
+
+select max(SALARY) as max_salary,
+       min(SALARY) as min_salary
+from employees;</code></pre><pre id="6df40dfb-9688-48a5-a3e1-0aa3cfdbfc05" class="code"><code>## query result
+
+#	max_salary	min_salary
+1	24000.00	2100.00</code></pre></details></li></ul><hr id="01a2aa8a-26ec-4eb3-aa35-d43d1bcd26c4"/><ul id="8b7b26bf-d2ef-4396-a2bd-ce7b3755dc40" class="bulleted-list"><li>8. Write a query to get the average salary and number of employees in the employees table.</li></ul><ul id="b257ec62-8561-4115-b031-af1246b431a8" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="cbe4c144-58f1-4146-8ba0-583cc511b808" class="code"><code>## Idea
+
+- salary의 평균을 구하는 것 하나
+- employees의 숫자를 구하는 것 하나
+  - 이건 고유한 값을 구해야 하는 것 같다.
+  - 사람이 중복 되는 건 없어야 하니까.
+
+## count(*)?
+
+- 며칠 전에 DD님이 SH님께 설명하는 걸 얼핏 들었는데 정리를 해야 할 듯
+- [count에 대한 설명](https://extbrain.tistory.com/54)
+
+```
+▶설명
+테이블에 존재하는 데이터 갯수를 가져오고 싶을 때가 있습니다.
+이 때 사용하는 함수가 COUNT 함수입니다.
+COUNT 함수는 테이블에 컬럼의 데이터 갯수를 가져옵니다.
+이 때 NULL인 데이터는 제외하고 계산합니다.
+전체 행 갯수를 가져올 때는 컬럼 대신에 *를 지정합니다.
+
+▶사용법
+전체 행 갯수 가져오기
+SELECT COUNT(*) FROM 테이블;
+
+컬럼 데이터 갯수 가져오기
+SELECT COUNT(컬럼) FROM 테이블;
+```</code></pre><pre id="01e8695c-cfb0-42bc-b2fb-47bb68c4050e" class="code"><code>## solution
+
+select avg(SALARY) as avg_salary,
+       count(distinct EMPLOYEE_ID) as count_employees
+from employees
+
+
+select avg(SALARY) as avg_salary,
+       count(*) as count_employees
+from employees</code></pre><pre id="28ad5930-8230-4856-826e-547f89b92257" class="code"><code>## query result
+
+#	avg_salary	count_employees
+1	6461.682243	107
+
+#	avg_salary	count_employees
+1	6461.682243	107</code></pre></details></li></ul><hr id="828a9fdf-a00b-4d6d-a8fc-ffdb337ed82f"/><ul id="668bdb56-8f26-4811-a614-0cc1ce3a7bc8" class="bulleted-list"><li>9. Write a query to get the number of employees working with the company.</li></ul><ul id="956f1786-7fd1-4298-ba8e-27027150713b" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="b78cbe37-c482-49f5-8a08-531aaa502dde" class="code"><code>## Idea
+
+- get the number of employees working with the company.
+- employees의 수를 세면 될 듯</code></pre><pre id="b58b2427-cd17-4296-8e4c-c813b351c78c" class="code"><code>## solution
+
+select count(*) as number_of_employees
+from employees</code></pre><pre id="5eb5e8b3-1627-4fbf-87bc-385dd99a51cf" class="code"><code>## query result
+
+107</code></pre></details></li></ul><hr id="65b51986-70a1-4946-86c6-e1148f39a20c"/><ul id="35ba72e1-fee9-4e14-a2a8-1b028ede9bc2" class="bulleted-list"><li>10. Write a query to get the number of jobs available in the employees table.</li></ul><ul id="c8e905fb-b48a-41a1-a0ba-91c9d3a2a8e9" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="58d51ff0-f5c9-4d13-b3bf-6ab91d3599c1" class="code"><code>## Idea
+
+- get the number of jobs available in the employees table.
+- job id의 고유 값을 구하는건가?</code></pre><pre id="dc8ac0b0-cad5-4bac-b508-2d6e5d698159" class="code"><code>## solution
+
+select count(distinct JOB_ID) as available_jobs
+from employees</code></pre><pre id="b8edd6b2-dc16-4af8-ba28-09a09c40255b" class="code"><code>## query result
+
+19</code></pre></details></li></ul><hr id="be78bb58-2e02-4d3e-9156-fcf4aa56b382"/><ul id="0382e774-7b64-40c9-b467-672ccd9454ba" class="bulleted-list"><li>11. Write a query get all first name from employees table in upper case.</li></ul><ul id="2f9f41c5-2916-4d4f-b438-83bdd6e1c2d2" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="dd571be9-7381-403d-b74f-5bb50529796f" class="code"><code>## Idea
+
+- get all first name from employees table in upper case.
+- first name을 대문자로 바꾸면 된다
+- upper</code></pre><pre id="6942bee6-0f84-40c5-ba9b-d87661ced3e0" class="code"><code>## solution
+
+select upper(FIRST_NAME) as upper_first_name
+from employees;</code></pre><pre id="2c7fde6c-b269-4252-bcc2-d1f9f5d4b6e4" class="code"><code>## query result
+
+#	upper_first_name
+1	ELLEN
+2	SUNDAR
+3	MOZHE
+4	DAVID
+5	HERMANN
+6	SHELLI
+7	AMIT
+8	ELIZABETH
+9	SARAH
+10	DAVID
+11	LAURA
+12	HARRISON</code></pre></details></li></ul><hr id="ede153e7-e736-4b1c-af30-4a29e2bf4e2c"/><ul id="5af742f9-a6a1-40b9-b7de-715402a934cb" class="bulleted-list"><li>12. Write a query to get the first 3 characters of first name from employees table.</li></ul><ul id="4ac8af23-be44-46ce-a3c9-950d285a8bf2" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="8f1146bc-d98c-4131-b64a-44ec2d9a5277" class="code"><code>## Idea
+
+- get the first 3 characters of first name from employees table.
+- substring을 사용하면 될 듯
+  - substring(str, pos, len)
+  - [substring ref](https://needjarvis.tistory.com/64)</code></pre><pre id="70ef1da1-a936-4970-92be-b9231caf1d37" class="code"><code>## solution
+
+select substring(FIRST_NAME, 1, 3) as first_name_3_chr
+from employees;</code></pre><pre id="f3a9bae5-dbd5-4d92-a46e-7093f056833d" class="code"><code>## query result
+
+#	first_name_3_chr
+1	Ell
+2	Sun
+3	Moz
+4	Dav
+5	Her
+6	She
+7	Ami</code></pre></details></li></ul><hr id="de92c2aa-ff7f-42fc-814e-d29e7e3ccead"/><ul id="f47623b7-bbd4-4f5d-9878-47528f03208f" class="bulleted-list"><li>13. Write a query to calculate 171*214+625.</li></ul><ul id="a5f2dd6b-dfcc-40bf-8ef3-658f38ff745c" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ced80d56-9004-4112-88e4-d9200ea3c300" class="code"><code>## Idea
+
+- 뜬금 없긴 하지만 수식 세워서 계산하면 된다.</code></pre><pre id="f73c63d3-25fb-4d78-afe1-a56bbb7998de" class="code"><code>## solution
+
+select 171*214+625 as cal_res;
+
+select 171*214+625 Result;</code></pre><pre id="e165fad5-803d-48af-ac5f-4277a49bffb8" class="code"><code>## query result
+
+37219
+
+37219</code></pre></details></li></ul><hr id="3806e639-4d23-4693-a8db-9d961cceb7fb"/><ul id="31935c21-f2fb-443e-af52-bd9ff22fd45a" class="bulleted-list"><li>14. Write a query to get the names (for example Ellen Abel, Sundar Ande etc.) of all the employees from employees table.</li></ul><ul id="4c86f5d7-7b99-4ec9-8914-963531761392" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="2bbd9d98-410c-446c-9f7f-d929ca92b842" class="code"><code>## Idea
+
+- first_name + last_name
+- concat을 쓰면 될 듯</code></pre><pre id="c067495c-18d8-4422-ac8c-60972f8438f6" class="code"><code>## solution
+
+select concat(FIRST_NAME, &quot; &quot;, LAST_NAME) as names
+from employees;</code></pre><pre id="233a9ef3-9adf-4042-956c-e23eeba25227" class="code"><code>## query result
+
+#	names
+1	Ellen Abel
+2	Sundar Ande
+3	Mozhe Atkinson
+4	David Austin
+5	Hermann Baer
+6	Shelli Baida
+7	Amit Banda
+8	Elizabeth Bates
+9	Sarah Bell
+10	David Bernstein</code></pre></details></li></ul><hr id="4fd3f38d-6fac-4609-b282-c4c941ffc4d0"/><ul id="432c1dea-a277-4ebf-b784-7f0f0ab6d4fd" class="bulleted-list"><li>15. Write a query to get first name from employees table after removing white spaces from both side.</li></ul><ul id="c090ecba-d326-40cd-930f-7a91dbaff49f" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="df649c57-ecdc-4121-bc53-8968546713e2" class="code"><code>## Idea
+
+- get first name from employees table after removing white spaces from both side.
+- 해석해보면...first name을 쿼리하고, 양쪽의 공백을 없애라.
+- python에서 strip 값은 걸 썼는데 기억이 안 난다...
+  - 검색해보니 Trim()이라는 함수가 있다.
+  - [공백 제거](https://www.w3resource.com/mysql/string-functions/mysql-trim-function.php)
+  - [좌, 우측 공백 제거](https://blog.naver.com/koromoon/220607571102)</code></pre><pre id="5148574f-d301-49a0-b79e-794deba5e275" class="code"><code>## solution
+
+select Trim(FIRST_NAME) as removing_white_space_first_name
+from employees;</code></pre><pre id="f2d3749a-89b3-4484-8d63-577f4d6079f4" class="code"><code>## query result
+
+#	removing_white_space_first_name
+1	Ellen
+2	Sundar
+3	Mozhe
+4	David
+5	Hermann
+6	Shelli
+7	Amit
+8	Elizabeth</code></pre></details></li></ul><hr id="dfa63e28-3425-4a2b-a6e2-d8d2d6a8ea35"/><ul id="e787a6c5-15c1-4607-968b-60aa43f963e8" class="bulleted-list"><li>16. Write a query to get the length of the employee names (first_name, last_name) from employees table.</li></ul><ul id="c0c835e7-a7da-446f-9437-4f307c4ac827" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="0c909a29-8979-4a06-b74d-fb325afe4115" class="code"><code>## Idea
+
+- first_name, last_name 문자열 길이 구하기
+- length()을 쓰면 될 듯</code></pre><pre id="3e74310f-6c7b-4f87-add9-1a20259c9bce" class="code"><code>## solution
+
+select first_name,
+       length(FIRST_NAME) as length_first_name,
+       LAST_NAME,
+       length(LAST_NAME) as length_last_name,
+       (length(FIRST_NAME) + length(LAST_NAME)) as names_length
+from employees;</code></pre><pre id="3b5e6c12-b601-4f3c-a9a4-fd7450721119" class="code"><code>## query result
+
+#	first_name	length_first_name	LAST_NAME	length_last_name	names_length
+1	Ellen	5	Abel	4	9
+2	Sundar	6	Ande	4	10
+3	Mozhe	5	Atkinson	8	13
+4	David	5	Austin	6	11
+5	Hermann	7	Baer	4	11
+6	Shelli	6	Baida	5	11
+7	Amit	4	Banda	5	9
+8	Elizabeth	9	Bates	5	14
+9	Sarah	5	Bell	4	9
+10	David	5	Bernstein	9	14</code></pre></details></li></ul><hr id="82ccb341-c320-48a5-9b75-6265ac0d0923"/><ul id="63d8e560-f825-487d-8464-43effb529d4e" class="bulleted-list"><li>17. Write a query to check if the first_name fields of the employees table contains numbers.</li></ul><ul id="555c8ae9-95e7-496f-ab41-f3a2c64424dc" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="b31d74d4-0767-43d1-91ed-34ce2c55f17b" class="code"><code>## Idea
+
+- if the first_name fields of the employees table contains numbers.
+- python에서 하듯이 mysql에서도 정규식을 쓰면 될 듯
+  - 근데 mysql에서 정규식을 언제 써봤더라...
+  - [mysql with regex](https://stackoverflow.com/questions/5064977/detect-if-value-is-number-in-mysql)
+  - mysql에서는 REGEXP를 사용한다.
+  - where column REGEXP &#x27;[0-9]&#x27;</code></pre><pre id="f3b660ed-6933-4c5e-a47b-a619ce8dbe18" class="code"><code>## solution
+
+select FIRST_NAME
+from employees
+where FIRST_NAME REGEXP &#x27;[0-9]&#x27;</code></pre><pre id="89737a8a-beda-46a9-9d9d-0131247db04f" class="code"><code>## query result
+
+None</code></pre></details></li></ul><hr id="ef370d26-cbaf-4ca9-ab8c-1efa4826cb7b"/><ul id="bd8ab70b-c383-4d27-911f-0b41b8d8a580" class="bulleted-list"><li>18. Write a query to select first 10 records from a table.</li></ul><ul id="38b62cb0-20e8-4c09-ac2c-93e67f9f09c4" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="76c014d9-770d-47dc-938a-2158e55d5467" class="code"><code>## Idea
+
+- 상위 10개
+- limit를 쓰면 된다.
+
+## 추가
+
+- 10번부터 20번까지 하려면?
+- offset을 이용하면 된다.</code></pre><pre id="4747633c-6ac5-447e-8bd3-07d8109c8d96" class="code"><code>## solution
+
+select *
+from employees
+limit 10
+
+select *
+from employees
+limit 10 offset 10</code></pre><pre id="27e8faa8-092e-46e0-a15b-fe60d8daf02c" class="code"><code>## query result
+
+#	EMPLOYEE_ID	FIRST_NAME	LAST_NAME	EMAIL	PHONE_NUMBER ....
+1	100	Steven	King	SKING	515.123.4567
+2	101	Neena	Kochhar	NKOCHHAR	515.123.4568
+3	102	Lex	De Haan	LDEHAAN	515.123.4569
+4	103	Alexander	Hunold	AHUNOLD	590.423.4567
+5	104	Bruce	Ernst	BERNST	590.423.4568
+6	105	David	Austin	DAUSTIN	590.423.4569
+7	106	Valli	Pataballa	VPATABAL	590.423.4560
+8	107	Diana	Lorentz	DLORENTZ	590.423.5567
+9	108	Nancy	Greenberg	NGREENBE	515.124.4569
+10	109	Daniel	Faviet	DFAVIET	515.124.4169
+
+
+#	EMPLOYEE_ID	FIRST_NAME	LAST_NAME	EMAIL	PHONE_NUMBER
+1	110	John	Chen	JCHEN	515.124.4269
+2	111	Ismael	Sciarra	ISCIARRA	515.124.4369
+3	112	Jose Manuel	Urman	JMURMAN	515.124.4469
+4	113	Luis	Popp	LPOPP	515.124.4567
+5	114	Den	Raphaely	DRAPHEAL	515.127.4561
+6	115	Alexander	Khoo	AKHOO	515.127.4562
+7	116	Shelli	Baida	SBAIDA	515.127.4563</code></pre></details></li></ul><hr id="88a48251-3724-4e8a-893f-4f79741fa084"/><ul id="15783e67-5126-4bc8-84d8-57e5cec6a93d" class="bulleted-list"><li>19. Write a query to get monthly salary (round 2 decimal places) of each and every employee, Note : Assume the salary field provides the &#x27;annual salary&#x27; information.</li></ul><ul id="5d2779e6-da04-408f-b929-d6f6c2a79580" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="88d61cce-874b-4461-a6bf-2edb721925a9" class="code"><code>## Idea
+
+- 일년 연봉이라고 가정했으니 나누기 12로 월급을 구한다.
+- round를 이용하여 소수점 2자리까지만 출력하게 한다.
+- 그 외 추가할 컬럼은 취향.</code></pre><pre id="4b0e099d-d35f-4945-b672-2ef516236167" class="code"><code>## solution
+
+select EMPLOYEE_ID,
+       concat(FIRST_NAME, &quot; &quot;, LAST_NAME) as employees_name,
+       round(SALARY/12, 2) as monthly_salary
+from employees</code></pre><pre id="b9a8380f-9a3a-4580-bb35-d03d11794485" class="code"><code>## query result
+
+#	EMPLOYEE_ID	employees_name	monthly_salary
+1	100	Steven King	2000.00
+2	101	Neena Kochhar	1416.67
+3	102	Lex De Haan	1416.67
+4	103	Alexander Hunold	750.00
+5	104	Bruce Ernst	500.00
+6	105	David Austin	400.00
+7	106	Valli Pataballa	400.00
+8	107	Diana Lorentz	350.00
+9	108	Nancy Greenberg	1000.00
+10	109	Daniel Faviet	750.00
+11	110	John Chen	683.33</code></pre></details></li></ul></div><div id="603448e0-fa0c-4263-9efb-60b0ae05cc72" style="width:37.5%" class="column"><h2 id="bd1b125d-f946-4c4a-9d6b-5633d307b44c">Structure of &#x27;hr&#x27; database &amp; answer sample</h2><hr id="c5c1c6be-f600-4110-a203-13f982c757e0"/><figure id="b44a5d38-8714-42bc-84a9-590f20062a15" class="image"><a href="MySQL Basic SELECT statement 19 Exercises/Untitled.png"><img style="width:960px" src="MySQL Basic SELECT statement 19 Exercises/Untitled.png"/></a></figure><hr id="8cf6af8d-b14e-4fdf-bcad-c84dd98f2ceb"/><ul id="8913a6cd-ffee-4be5-9459-c4bd1309231c" class="bulleted-list"><li>문제를 복사 해오면 될 듯</li></ul><ul id="dc4f2728-32e6-44e4-8387-2dc443b99fed" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="cac05294-ebe2-49c1-8cb9-f3417aec8241" class="code"><code>## Idea
+
+- </code></pre><pre id="285b89f7-d2d8-4702-bbbb-353a7700fe9e" class="code"><code>## solution
+
+select *
+from DB</code></pre><pre id="cf547b87-a56d-435c-b715-49b2bf037127" class="code"><code>## query result
+
+</code></pre></details></li></ul><p id="e91fb057-985d-4769-a741-97b39293aabd"></p></div></div></div></article></body></html>
