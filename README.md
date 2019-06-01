@@ -3,7 +3,7 @@
 ![alt text](https://img.shields.io/badge/result-idea%26query__solution-blue.svg)
 [![alt text](https://img.shields.io/badge/data-web-red.svg)](https://www.w3resource.com/mysql-exercises/)
 
-> 기초적인 Mysql Quiz에 대해 idea, solution, result를 정리해두었습니다.
+> 기초적인 Mysql Quiz에 대해 idea, solution, result를 정리해두었습니다. mysql을 remind 하기 위해 만들었습니다.
 
 
 ### :information_source: DB
