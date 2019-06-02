@@ -1,0 +1,907 @@
+<html><head><title>Aggregate Functions and Group by [14 exercises]</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	opacity: 0.5;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif; }
+.mono { font-family: Nitti, 'Microsoft YaHei', '微软雅黑', monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, Nitti, 'Microsoft YaHei', '微软雅黑', monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="c4ae5120-8e51-40d5-96cf-86ec4f53e4f4" class="page sans"><header><h1 class="page-title">Aggregate Functions and Group by [14 exercises]</h1></header><div class="page-body"><hr id="9e1d9c01-4956-4329-98fa-c4680654f29d"/><div id="53771680-e5cf-4536-9d24-3d1bf6c65a3a" class="column-list"><div id="04c771c6-51cf-43cb-838b-a8fa27437379" style="width:62.5%" class="column"><h2 id="571e895c-1575-42b7-9460-f7cac8649d8f">Wonny&#x27;s Solution</h2><hr id="d7ddfd2a-404b-4311-89e2-41b98e0740f8"/><ul id="6937fa3c-2285-473f-8698-68931b09230c" class="bulleted-list"><li>1. Write a query to list the number of jobs available in the employees table.</li></ul><ul id="4ef5e256-6ad3-4d56-89ab-9bd7157b91fb" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="a5264cc5-1fae-46c0-a17f-0e31e6c31a0d" class="code"><code>## Idea
+
+- job 몇 개 인지 count하면 될 듯
+~영어 해석이 안 된다~</code></pre><pre id="c3985b91-b4c4-4726-9a95-13895320a104" class="code"><code>## solution
+
+select count(distinct job_id) as distinct_job_id
+from employees</code></pre><pre id="be73b670-484f-4b1f-91eb-37640fc6be5a" class="code"><code>## query result
+
+19</code></pre></details></li></ul><hr id="767c1ffc-c512-4482-a30b-42874ecefafa"/><ul id="ab216014-913b-4c7c-9428-dd70b59d9f3b" class="bulleted-list"><li>2. Write a query to get the total salaries payable to employees.</li></ul><ul id="a2f67411-5439-4a02-9766-7cc02bb57232" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="c69335e2-007a-4c7c-9b70-f80053f2730f" class="code"><code>## Idea
+
+- sum(salary)으로 전체 연봉 합을 구하자.</code></pre><pre id="6cd3248d-0796-4a3e-962b-b00699ca63fc" class="code"><code>## solution
+
+select sum(SALARY) as total_salary
+from employees;</code></pre><pre id="2972ee25-6da3-45bc-b491-77c371366623" class="code"><code>## query result
+
+691400.00</code></pre></details></li></ul><hr id="41595df2-abbe-4308-9ace-f34bebb2f1a0"/><ul id="d52938f9-3ab0-41dc-812e-b87197391792" class="bulleted-list"><li>3. Write a query to get the minimum salary from employees table.</li></ul><ul id="4341d440-0c4c-43fc-a949-a43aa96de112" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="c1f67b5c-8338-46a8-a6ce-04a08c3da48e" class="code"><code>## Idea
+
+- 최소 연봉 값을 구하면 된다.</code></pre><pre id="464328f2-7c62-46eb-8455-57c6e6c2e14f" class="code"><code>## solution
+
+select min(SALARY)
+from employees;</code></pre><pre id="9840624f-9f70-4f53-960f-e36e57b72e42" class="code"><code>## query result
+
+2100.00</code></pre></details></li></ul><hr id="1f0b0ec2-0b56-4b53-bb19-85f4b0ded083"/><ul id="459b5d30-74c6-4656-abe9-7787b10b613e" class="bulleted-list"><li>4. Write a query to get the maximum salary of an employee working as a Programmer.</li></ul><ul id="ecf52c17-92a0-4c1f-8737-34acbf251d65" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="3b042cae-ef16-4d4e-bf45-a4f425b747dd" class="code"><code>## Idea
+
+- 최대값 구하면 된다.
+- 프로그래머에 한정하는 조건을 달아 준다.</code></pre><pre id="5e1a74a7-bc53-4fa7-97e9-6d85dc07fe8f" class="code"><code>## solution
+
+select max(SALARY)
+from employees
+where JOB_ID = &#x27;IT_PROG&#x27;;</code></pre><pre id="c2a3ba43-f66b-4314-89a1-2d2a4b8c5702" class="code"><code>## query result
+
+9000.00</code></pre></details></li></ul><hr id="4bd2c374-8413-464d-a28b-6f613ba93dd3"/><ul id="211ab7b0-9dda-4e84-ae9b-f109b1cdba79" class="bulleted-list"><li>5. Write a query to get the average salary and number of employees working the department 90.</li></ul><ul id="9932d64f-7062-4c61-99fa-26ec8683b6c1" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="f2348ed3-bfde-4da6-8a2c-8193a6c4e216" class="code"><code>## Idea
+
+- 평균 연봉, 근무하는 사람 수
+- department 90에서 일하는 사람들</code></pre><pre id="f2ae80d2-86c1-44bd-8c7f-36d161864924" class="code"><code>## solution
+
+select avg(SALARY) as avg_salary,
+       count(*) as number_of_employees
+from employees
+where DEPARTMENT_ID = 90;</code></pre><pre id="d2923c5b-541a-42d3-813a-2703221bd421" class="code"><code>## query result
+
+#	avg_salary	number_of_employees
+1	19333.333333	3</code></pre></details></li></ul><hr id="c7a48362-931d-4cac-a1d8-e2998db40366"/><ul id="df16014f-73b6-4cf9-9982-57291b93b99b" class="bulleted-list"><li>6. Write a query to get the highest, lowest, sum, and average salary of all employees.</li></ul><ul id="738fdabe-6552-47f5-867f-85cab5fe25a0" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="9b353ca3-9f9e-4378-aedf-adf301df6c4e" class="code"><code>## Idea
+
+- 모든 근무자들의 가장 높은, 낮은, 합계, 평균 연봉
+- 각 집계 함수를 이용하면 될 듯
+
+답을 살펴보니 각각에 round(value, 0) 처리를 해주었음</code></pre><pre id="53ef2650-666a-44aa-a9da-5f961ec87c05" class="code"><code>## solution
+
+select max(SALARY) as highest_salary,
+       min(SALARY) as lowest_salary,
+       sum(SALARY) as total_salary,
+       avg(SALARY) as average_salary
+from employees;</code></pre><pre id="4e66d41e-859f-4ea0-971f-4311bacb9253" class="code"><code>## query result
+
+#	highest_salary	lowest_salary	total_salary	average_salary
+1	24000.00	2100.00	691400.00	6461.682243</code></pre></details></li></ul><hr id="b1521f1d-425b-46f2-abc9-49e29dba0df1"/><ul id="c5275b72-faf1-4944-8687-afa7dca59034" class="bulleted-list"><li>7. Write a query to get the number of employees with the same job.</li></ul><ul id="325bbd8c-7a5d-4c53-b374-3970edd9a19f" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="8b161dc7-5a8d-4410-9ec3-ee7fc44012f7" class="code"><code>## Idea
+
+- 같은 직업을 가진 사람들의 수를 세는 것
+- groupby를 한 후 count(job_id)를 하면 될 듯
+- groupby를 한 후 count(*)을 하는 건 어떤 차이지?</code></pre><pre id="e2412a3d-38ac-48cf-b518-8e68a7c1b61a" class="code"><code>## solution
+
+select JOB_ID, count(JOB_ID)
+from employees
+group by JOB_ID;
+
+select JOB_ID, count(*)
+from employees
+group by JOB_ID;</code></pre><pre id="a84abd3b-7139-423e-bf23-bb8d555e9dc5" class="code"><code>## query result
+
+#	JOB_ID	count(JOB_ID)
+1	AC_ACCOUNT	1
+2	AC_MGR	1
+3	AD_ASST	1
+4	AD_PRES	1
+5	AD_VP	2
+6	FI_ACCOUNT	5
+7	FI_MGR	1
+8	HR_REP	1
+9	IT_PROG	5
+10	MK_MAN	1
+11	MK_REP	1
+12	PR_REP	1
+13	PU_CLERK	5
+14	PU_MAN	1
+15	SA_MAN	5
+16	SA_REP	30
+17	SH_CLERK	20
+18	ST_CLERK	20
+19	ST_MAN	5
+
+#	JOB_ID	count(*)
+1	AC_ACCOUNT	1
+2	AC_MGR	1
+3	AD_ASST	1
+4	AD_PRES	1
+5	AD_VP	2
+6	FI_ACCOUNT	5
+7	FI_MGR	1
+8	HR_REP	1
+9	IT_PROG	5
+10	MK_MAN	1
+11	MK_REP	1
+12	PR_REP	1
+13	PU_CLERK	5
+14	PU_MAN	1
+15	SA_MAN	5
+16	SA_REP	30
+17	SH_CLERK	20
+18	ST_CLERK	20
+19	ST_MAN	5</code></pre></details></li></ul><hr id="6ee22bb1-277e-4b2d-94b0-364ac80c838c"/><ul id="759764ae-5184-4f2d-8e1c-110ee87fa69f" class="bulleted-list"><li>8. Write a query to get the difference between the highest and lowest salaries.</li></ul><ul id="cc9c79ab-b9f5-4f5f-b90c-9d434fb839e8" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="fb19e293-7919-44f2-bcb0-ff9770415eb4" class="code"><code>## Idea
+
+- 최대 연봉과 최소 연봉의 차를 구하는 것</code></pre><pre id="0755b4db-45bb-45e6-9d48-484a3eb2bab6" class="code"><code>## solution
+
+select max(SALARY) - min(SALARY) as difference_salary
+from employees;</code></pre><pre id="65f2c713-87ba-4546-8911-b9947bd37095" class="code"><code>## query result
+
+21900.00</code></pre></details></li></ul><hr id="22fd6db2-7711-47e3-96b5-62c052892e4c"/><ul id="419e1981-20a9-4c77-a4a9-33e25d08b01c" class="bulleted-list"><li>9. Write a query to find the manager ID and the salary of the lowest-paid employee for that manager.</li></ul><ul id="4b44931c-864d-4f8b-8f28-bdf37fd106ef" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="7a3c2077-01b6-48b9-8ee9-83a862784662" class="code"><code>## Idea
+
+- find the manager ID를 우선 확인
+  - manager id는 중복 되는 값들이 있다.
+  - 우선 groupby를 해서 정리를 하자.
+  - 해답에서는 null 체크도 하였다. 이것도 습관해두면 좋을 것 같다.
+- the salary of the lowest-paid employee for that manager.
+  - 각각의 매니저들 중에서 가장 낮은 연봉을 가진 사람을 찾으면 될 듯(해석?)</code></pre><pre id="8a99c1d1-ac18-4b7e-8e2d-5d16a52857e3" class="code"><code>## solution
+
+select MANAGER_ID, min(SALARY) as min_salary
+from employees
+group by MANAGER_ID
+order by min_salary DESC;
+
+SELECT manager_id, MIN(salary)
+FROM employees
+WHERE manager_id IS NOT NULL
+GROUP BY manager_id
+ORDER BY MIN(salary) DESC;</code></pre><pre id="135b23c4-da29-4b6a-8370-ade1fa5b8958" class="code"><code>## query result
+
+#	MANAGER_ID	min_salary
+1	0	24000.00
+2	102	9000.00
+3	205	8300.00
+4	145	7000.00
+5	146	7000.00
+6	108	6900.00
+7	147	6200.00
+8	149	6200.00
+9	148	6100.00
+10	201	6000.00
+11	100	5800.00
+12	101	4400.00
+13	103	4200.00
+14	114	2500.00
+15	123	2500.00
+16	124	2500.00
+17	120	2200.00
+18	122	2200.00
+19	121	2100.00
+
+#	manager_id	MIN(salary)
+1	0	24000.00
+2	102	9000.00
+3	205	8300.00
+4	145	7000.00
+5	146	7000.00
+6	108	6900.00
+7	147	6200.00
+8	149	6200.00
+9	148	6100.00
+10	201	6000.00
+11	100	5800.00
+12	101	4400.00
+13	103	4200.00
+14	114	2500.00
+15	123	2500.00
+16	124	2500.00
+17	120	2200.00
+18	122	2200.00
+19	121	2100.00</code></pre></details></li></ul><hr id="a3b5541b-29c0-44c4-bce3-bea53b12c23b"/><ul id="659f6f76-e26f-48a2-b926-bcb308505fbf" class="bulleted-list"><li>10. Write a query to get the department ID and the total salary payable in each department.</li></ul><ul id="7c700bb6-ecf5-4440-b05b-d8cc8cf6c425" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="c5060599-15b2-4046-9cf5-7acb099d5887" class="code"><code>## Idea
+
+- get the department ID
+  - groupby, null 체크 해서 구하면 될 듯
+- total salary payable in each department.
+  - 각 부서별 지불 가능한 연봉
+  - 나중에 응용하면 부서별 비용 계산에 써도 될 듯</code></pre><pre id="28563a30-20b8-48cf-a663-1f6024d63414" class="code"><code>## solution
+
+select DEPARTMENT_ID,
+       sum(SALARY) as total_salary_department
+from employees
+where DEPARTMENT_ID is not null
+group by DEPARTMENT_ID;</code></pre><pre id="38b20e02-b1ce-47b8-93c9-e48a25b2091d" class="code"><code>## query result
+
+#	DEPARTMENT_ID	total_salary_department
+1	0	7000.00
+2	10	4400.00
+3	20	19000.00
+4	30	24900.00
+5	40	6500.00
+6	50	156400.00
+7	60	28800.00
+8	70	10000.00
+9	80	304500.00
+10	90	58000.00
+11	100	51600.00
+12	110	20300.00</code></pre></details></li></ul><hr id="30f59f59-5083-4d52-9f61-4bdf94a5ee67"/><ul id="fe7638d0-5e85-49da-9cd9-6abf37d37f1a" class="bulleted-list"><li>11. Write a query to get the average salary for each job ID excluding programmer.</li></ul><ul id="b600e43e-2cfe-4697-ad47-fe3bf2977331" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ca3783d4-a7f9-4aca-b872-6f88369b0b87" class="code"><code>## Idea
+
+- get the average salary
+  - 평균 연봉 구하기
+- for each job ID excluding programmer.
+  - 각 직업 id 별로
+  - 프로그래머 직군만 제외하고 구하면 된다.
+
+## 추가
+- &lt;&gt; 와 !=의 차이가 궁금해졌다.
+  - [&lt;&gt;, !=](https://stackoverflow.com/questions/14159569/what-is-the-difference-between-and-operators-in-mysql)
+  - 부등호를 이용하는 것이 표준이고 등호와 느낌표는 표준은 아니다.
+  - 그러나 결과는 같다.</code></pre><pre id="f211db7d-ddc4-4f11-8866-f3816066e823" class="code"><code>## solution
+
+select JOB_ID,
+       avg(SALARY) as avg_salary
+from employees
+where JOB_ID is not null 
+  and JOB_ID != &#x27;IT_PROG&#x27;
+group by JOB_ID;
+
+## ref solution
+
+SELECT job_id, AVG(salary) 
+FROM employees 
+WHERE job_id &lt;&gt; &#x27;IT_PROG&#x27; 
+GROUP BY job_id;</code></pre><pre id="de11dd87-09de-479a-8e15-5ff5e8a76d85" class="code"><code>## query result
+
+#	JOB_ID	avg_salary
+1	AC_ACCOUNT	8300.000000
+2	AC_MGR	12000.000000
+3	AD_ASST	4400.000000
+4	AD_PRES	24000.000000
+5	AD_VP	17000.000000
+6	FI_ACCOUNT	7920.000000
+7	FI_MGR	12000.000000
+8	HR_REP	6500.000000
+9	MK_MAN	13000.000000
+10	MK_REP	6000.000000
+11	PR_REP	10000.000000
+12	PU_CLERK	2780.000000
+13	PU_MAN	11000.000000
+14	SA_MAN	12200.000000
+15	SA_REP	8350.000000
+16	SH_CLERK	3215.000000
+17	ST_CLERK	2785.000000
+18	ST_MAN	7280.000000
+
+
+#	job_id	AVG(salary)
+1	AC_ACCOUNT	8300.000000
+2	AC_MGR	12000.000000
+3	AD_ASST	4400.000000
+4	AD_PRES	24000.000000
+5	AD_VP	17000.000000
+6	FI_ACCOUNT	7920.000000
+7	FI_MGR	12000.000000
+8	HR_REP	6500.000000
+9	MK_MAN	13000.000000
+10	MK_REP	6000.000000
+11	PR_REP	10000.000000
+12	PU_CLERK	2780.000000
+13	PU_MAN	11000.000000
+14	SA_MAN	12200.000000
+15	SA_REP	8350.000000
+16	SH_CLERK	3215.000000
+17	ST_CLERK	2785.000000
+18	ST_MAN	7280.000000</code></pre></details></li></ul><hr id="3850abb4-2c5f-4f13-b645-2875ce00fa16"/><ul id="b6bcacdf-deec-4360-94bd-538b864bf2c8" class="bulleted-list"><li>12. Write a query to get the total salary, maximum, minimum, average salary of employees (job ID wise), for department ID 90 only.</li></ul><ul id="9ea1adfc-0ed8-4071-84ad-438fb6f92976" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="a6895ddc-e84d-4c04-bde2-b56388fe8016" class="code"><code>## Idea
+
+- get the total salary, maximum, minimum, average salary of employees
+  - job id 별로 연봉 조건 구하면 될 듯
+- for department ID 90 only
+  - where 조건 이용</code></pre><pre id="3b7c9a14-e8f6-4d19-8206-c65df9e4d183" class="code"><code>## solution
+
+select JOB_ID,
+       sum(SALARY),
+       max(SALARY),
+       min(SALARY),
+       avg(SALARY)
+from employees
+where JOB_ID is not null
+  and DEPARTMENT_ID = 90
+group by JOB_ID;</code></pre><pre id="cde9f2d4-0fdc-4221-895d-7b5bc5fc6a39" class="code"><code>## query result
+
+#	JOB_ID	sum(SALARY)	max(SALARY)	min(SALARY)	avg(SALARY)
+1	AD_PRES	24000.00	24000.00	24000.00	24000.000000
+2	AD_VP	34000.00	17000.00	17000.00	17000.000000</code></pre></details></li></ul><hr id="47eabf63-c7a1-40e6-a24e-577d39857d22"/><ul id="f3cd94d2-4630-438d-84b0-1604503005cf" class="bulleted-list"><li>13. Write a query to get the job ID and maximum salary of the employees where maximum salary is greater than or equal to $4000.</li></ul><ul id="f10ff23a-b2f2-4805-bced-88559b0ce526" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="84294581-d582-44ed-93b5-9255a46ebf44" class="code"><code>## Idea
+
+- get the job ID and maximum salary of the employees
+  - job id, max(salary)
+- where maximum salary is greater than or equal to $4000.
+  - max(salary) &gt;= 4000인 경우에 한해서 쿼리 할 것
+  - having을 쓰면 될 듯</code></pre><pre id="98910147-dc14-459a-9e8a-02f458167952" class="code"><code>## solution
+
+select JOB_ID,
+       max(SALARY)
+from employees
+group by JOB_ID
+having max(SALARY) &gt;= 4000;</code></pre><pre id="44fb50da-c700-41a9-9c5f-0253115e5810" class="code"><code>## query result
+
+#	JOB_ID	max(SALARY)
+1	AC_ACCOUNT	8300.00
+2	AC_MGR	12000.00
+3	AD_ASST	4400.00
+4	AD_PRES	24000.00
+5	AD_VP	17000.00
+6	FI_ACCOUNT	9000.00
+7	FI_MGR	12000.00
+8	HR_REP	6500.00
+9	IT_PROG	9000.00
+10	MK_MAN	13000.00
+11	MK_REP	6000.00
+12	PR_REP	10000.00
+13	PU_MAN	11000.00
+14	SA_MAN	14000.00
+15	SA_REP	11500.00
+16	SH_CLERK	4200.00
+17	ST_MAN	8200.00</code></pre></details></li></ul><hr id="555c88c7-8a08-4d06-bb8e-8e7db5cc7c79"/><ul id="3f1e3f00-502a-4f70-a438-fa26e187422a" class="bulleted-list"><li>14. Write a query to get the average salary for all departments employing more than 10 employees.</li></ul><ul id="adeb1871-1f23-412e-8819-faf936c9b97d" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="0ddb759d-b576-4e5b-8b8a-6e6352c81305" class="code"><code>## Idea
+
+- get the average salary for all departments employing
+  - 각 부서별로 avg(salary) 구하면 될 듯
+- more than 10 employees.
+  - 단 부서에 10명이 넘어야 함
+  - having count(*) &gt; 10으로 접근
+
+정리하면 각 부서 사람이 10명이 넘는 부서에 한해서 평균 연봉을 구해야 한다.</code></pre><pre id="73c47a05-7cf7-48f1-b7b9-ec83716eac62" class="code"><code>## solution
+
+## step 1 - Check!! how many employees in each department.
+
+select DEPARTMENT_ID,
+       count(DEPARTMENT_ID),
+       count(*)
+from employees
+group by DEPARTMENT_ID;
+
+## step 2 - applying having
+
+select DEPARTMENT_ID,
+       avg(SALARY),
+       count(*)
+from employees
+where DEPARTMENT_ID is not null
+group by DEPARTMENT_ID
+having count(*) &gt; 10;</code></pre><pre id="efd0b000-e4c0-4e69-b7a7-78305b4a63de" class="code"><code>## query result
+
+## step 1
+
+#	DEPARTMENT_ID	count(DEPARTMENT_ID)	count(*)
+1	0	1	1
+2	10	1	1
+3	20	2	2
+4	30	6	6
+5	40	1	1
+6	50	45	45
+7	60	5	5
+8	70	1	1
+9	80	34	34
+10	90	3	3
+11	100	6	6
+12	110	2	2
+
+## step 2
+
+#	DEPARTMENT_ID	avg(SALARY)	count(*)
+1	50	3475.555556	45
+2	80	8955.882353	34
+</code></pre></details></li></ul></div><div id="2ed73d8c-ac2c-493d-98e7-15c309859f13" style="width:37.5%" class="column"><h2 id="c804a9eb-f4f4-4b1b-a7b3-eaf6aeba4fde">Structure of &#x27;hr&#x27; database &amp; answer sample</h2><hr id="a184f62c-ec26-49d3-9f51-bdb07a412061"/><figure id="ec6bda63-d3b9-47e6-81bb-129e3cc19d21" class="image"><a href="Aggregate Functions and Group by 14 exercises/Untitled.png"><img style="width:960px" src="Aggregate Functions and Group by 14 exercises/Untitled.png"/></a></figure><hr id="00135eed-e479-4146-985e-d5944d44f9cf"/><ul id="630ff6c3-ebde-4648-9f9a-1f2c5a20ddec" class="bulleted-list"><li>문제를 복사 해오면 될 듯</li></ul><ul id="79140ee2-ef3b-4870-803b-e9df16c78590" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="25aeeb75-caba-4d0a-ae11-a03d1929a43a" class="code"><code>## Idea
+
+- </code></pre><pre id="962a4465-be88-47fd-975c-51a28db86943" class="code"><code>## solution
+
+select *
+from DB</code></pre><pre id="f43b5984-c417-42fc-9d9b-b5d081f465e7" class="code"><code>## query result
+
+</code></pre></details></li></ul></div></div></div></article></body></html>
