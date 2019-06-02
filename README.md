@@ -5,6 +5,8 @@
 
 > 기초적인 Mysql Quiz에 대해 idea, solution, result를 정리해두었습니다. mysql을 remind 하기 위해 만들었습니다.
 
+> 어떤 면에서는 무척 쉽습니다. 쿼리를 사용 할 때 idea, solution, result 3 단계를 차근차근 해보기 위해 작성하였습니다.
+
 
 ### :information_source: DB
 
@@ -30,5 +32,9 @@ MySQL Basic SELECT statement 19 Exercises
 - [gist](https://gist.github.com/timetobye/e7e8fe3b0b298cc82a8ec456c8b84dec)
 
 
-MySQL Restricting and Sorting data [11 exercises]
+MySQL Restricting and Sorting data 11 exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Restricting%20and%20Sorting%20data%20%5B11%20exercises%5D)
+
+Aggregate Functions and Group by 14 exercises
+-[html](https://github.com/timetobye/MySQL_basic_practice/tree/master/Aggregate%20Functions%20and%20Group%20by%20%5B14%20exercises%5D)
+
