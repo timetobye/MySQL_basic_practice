@@ -36,5 +36,5 @@ MySQL Restricting and Sorting data 11 exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Restricting%20and%20Sorting%20data%20%5B11%20exercises%5D)
 
 Aggregate Functions and Group by 14 exercises
--[html](https://github.com/timetobye/MySQL_basic_practice/tree/master/Aggregate%20Functions%20and%20Group%20by%20%5B14%20exercises%5D)
+- [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/Aggregate%20Functions%20and%20Group%20by%20%5B14%20exercises%5D)
 
