@@ -38,3 +38,5 @@ MySQL Restricting and Sorting data 11 exercises
 Aggregate Functions and Group by 14 exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/Aggregate%20Functions%20and%20Group%20by%20%5B14%20exercises%5D)
 
+MySQL Subquery 22 exercises
+- [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Subquery%20%5B22%20exercises%20with%20solution%5D)
