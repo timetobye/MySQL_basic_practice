@@ -1,0 +1,1323 @@
+<html><head><title>MySQL Subquery [22 exercises with solution]</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	opacity: 0.5;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif; }
+.mono { font-family: Nitti, 'Microsoft YaHei', '微软雅黑', monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, Nitti, 'Microsoft YaHei', '微软雅黑', monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="051f1928-39d8-4216-96fc-73904a7a7838" class="page sans"><header><h1 class="page-title">MySQL Subquery [22 exercises with solution]</h1></header><div class="page-body"><hr id="1762e872-86f0-4819-a376-8363dd2c7959"/><div id="807346b9-7351-4f1f-b873-7964856847c4" class="column-list"><div id="8ad0be9d-04ea-4644-8fd5-1edacc34e512" style="width:62.5%" class="column"><h2 id="75e0f041-e0b2-4406-97e6-2db48a610b9e">Wonny&#x27;s Solution</h2><hr id="49a5cfb9-2537-4753-8485-5b1637fd6ad5"/><ul id="17124b5c-a66a-4761-ae70-5e17fc4e9fb9" class="bulleted-list"><li>1. Write a query to find the name (first_name, last_name) and the salary of the employees who have a higher salary than the employee whose last_name=&#x27;Bull&#x27;.</li></ul><ul id="cd26861d-e144-433f-b9b5-bab7362dc65d" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="f2d39674-9cb6-4690-8f60-3cdf0bd2f2bc" class="code"><code>## Idea
+
+- find the name (first_name, last_name)
+  - 기본적인 쿼리
+- salary of the employees who have a higher salary than the employee whose last_name=&#x27;Bull&#x27;.
+  - 연봉을 찾아야 하는데 last_name이 Bull이라는 사람보다 더 높은 경우만 찾아야 한다.
+
+접근 방법
+- Bull이라는 사람의 연봉을 찾아서 비교를 하는 것으로 시작
+- last_name = &#x27;Bull&#x27;은 한 명 뿐이다.</code></pre><pre id="ff98bcca-50cf-4963-acfb-b560314f0545" class="code"><code>## solution
+
+# step 1 find last_name = &#x27;Bull&#x27;
+
+select *
+from employees
+where LAST_NAME = &#x27;Bull&#x27;;
+
+# step 2 using subquery and find list
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY &gt; (
+  select SALARY
+  from employees
+  where LAST_NAME = &#x27;Bull&#x27;
+  );</code></pre><pre id="571eae23-7721-4a0d-8ea8-b6457e5f24a6" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	SALARY
+1	Steven	King	24000.00
+2	Neena	Kochhar	17000.00
+3	Lex	De Haan	17000.00
+4	Alexander	Hunold	9000.00
+5	Bruce	Ernst	6000.00
+6	David	Austin	4800.00
+7	Valli	Pataballa	4800.00
+8	Diana	Lorentz	4200.00
+9	Nancy	Greenberg	12000.00
+....</code></pre></details></li></ul><hr id="20c0f807-8a2d-4f2c-936f-97b50187f2a1"/><ul id="8bd6ca0c-da35-476c-be45-1f86340e0ceb" class="bulleted-list"><li>2. Write a query to find the name (first_name, last_name) of all employees who works in the IT department.</li></ul><ul id="43f2d0a7-c9b7-4833-b012-d18272eb7bb7" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="745f6acc-c457-4258-8ca7-a7d0226f4c81" class="code"><code>## Idea
+
+- IT department에서 일하는 사람들의 이름을 찾으면 된다.
+  - 전체 데이터에서 IT라는 항목을 바로 나타내는 cell은 없다.
+  - IT_PROG에서 패턴매칭을 해서 찾아야 할 듯
+  - regexp로 찾았다.
+
+- 해답을 보니 department table에서 가져와서 서브 쿼리를 만들기도 하였다. 이 방법도 가능함
+- join을 해도 가능함. 방법은 여러가지인데 가장 효율적인 방법을 찾으면 될 듯.
+  - [참고](https://www.w3resource.com/mysql-exercises/subquery-exercises/find-the-names-of-all-employees-who-works-in-the-it-department.php)</code></pre><pre id="76ccd11b-06b3-48a6-897b-77bdf8f1b7ec" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       JOB_ID,
+       DEPARTMENT_ID
+from employees
+where JOB_ID regexp &#x27;IT&#x27;
+
+
+SELECT first_name, last_name
+FROM employees
+WHERE department_id
+IN (SELECT department_id FROM departments WHERE department_name=&#x27;IT&#x27;);</code></pre><pre id="bf3e9f02-d2b7-4118-a694-3094f98a415c" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	JOB_ID	DEPARTMENT_ID
+1	Alexander	Hunold	IT_PROG	60
+2	Bruce	Ernst	IT_PROG	60
+3	David	Austin	IT_PROG	60
+4	Valli	Pataballa	IT_PROG	60
+5	Diana	Lorentz	IT_PROG	60</code></pre></details></li></ul><hr id="e3ca7777-6c17-4f6f-a13d-b8c5c99debc7"/><ul id="5f9b42aa-5f64-4d6c-8b5d-c94e2db9ccba" class="bulleted-list"><li>3. Write a query to find the name (first_name, last_name) of the employees who have a manager and worked in a USA based department. Hint : Write single-row and multiple-row subqueries(해석을 제대로 못 했음...)</li></ul><ul id="99284066-7673-40d9-b15a-f442d8dbe8f9" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="99b7eacd-b563-4bc0-8848-7d2cbcb6ebfe" class="code"><code>## Idea
+
+- 이름을 기본으로 출력
+- have a manager and worked in a USA based department.
+  - 근로자 들 중 매니저가 있고 미국 기반 부서에서 일하고 있는 사람들
+  - locations, departments table을 이용하여 us에 근무하는 department_id를 쿼리함
+- 최종적으로 where에 서브쿼리를 조건으로 걸고 결과 출력
+
+## 첨언
+- 결과적으로 썩 좋지 않은 쿼리 같다. 영어적 의미도 잘 와닿지 않은 문제
+  - manager id로 쿼리를 해야 하는게 아닌가 싶다.
+- 참고한 사이트에서도 의견이 좀 있는 듯
+  - [참고](https://www.w3resource.com/mysql-exercises/subquery-exercises/find-the-names-of-the-employees-who-have-a-manager-who-works-for-a-department-based-in-united-states.php)</code></pre><pre id="0407002c-5c59-4182-85e5-4d4b60fef030" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME
+from employees
+where MANAGER_ID in (
+  select EMPLOYEE_ID
+  from employees
+  where DEPARTMENT_ID in (
+    select DEPARTMENT_ID
+    from departments
+    where LOCATION_ID in
+    (
+    select LOCATION_ID
+    from locations
+    where COUNTRY_ID in (&#x27;US&#x27;)
+    )));
+
+
+select FIRST_NAME,
+       LAST_NAME
+from employees
+where MANAGER_ID in (
+  select MANAGER_ID
+  from employees
+  where DEPARTMENT_ID in (
+    select DEPARTMENT_ID
+    from departments
+    where LOCATION_ID in
+    (
+    select LOCATION_ID
+    from locations
+    where COUNTRY_ID in (&#x27;US&#x27;)
+    )));</code></pre><pre id="3954d871-7163-4a26-80fc-400a27786c9c" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME
+1	Neena	Kochhar
+2	Lex	De Haan
+3	Alexander	Hunold
+4	Bruce	Ernst
+5	David	Austin
+6	Valli	Pataballa
+7	Diana	Lorentz
+8	Nancy	Greenberg
+9	Daniel	Faviet
+10	John	Chen
+
+#	FIRST_NAME	LAST_NAME
+1	Alexander	Hunold
+2	Bruce	Ernst
+3	David	Austin
+4	Valli	Pataballa
+5	Diana	Lorentz
+6	Neena	Kochhar
+7	Lex	De Haan
+8	Den	Raphaely
+9	Matthew	Weiss
+10	Adam	Fripp</code></pre></details></li></ul><hr id="146b0bdc-a946-417e-b7d4-3a58f981dd64"/><ul id="6a3a3d65-7289-4e7d-86d9-90bc74288a3a" class="bulleted-list"><li>4. Write a query to find the name (first_name, last_name) of the employees who are managers.</li></ul><ul id="f553b246-2c97-4255-ad61-3d9d9acb1cf1" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ba4b1358-e886-43b0-998e-62e53ad68365" class="code"><code>## Idea
+
+- 매니저인 근로자들의 이름을 쿼리하면 될 듯
+  - 매니저인 것은 manager_id를 distinct한 하여 구한 뒤 조건 매칭하면 될 듯</code></pre><pre id="2005bd57-298d-4a07-933e-7bfa3c37a328" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME
+from employees
+where EMPLOYEE_ID in (
+  select distinct MANAGER_ID
+  from employees
+  );</code></pre><pre id="6269d2bc-1ad5-427b-a1a8-dc47c747834d" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME
+1	Steven	King
+2	Neena	Kochhar
+3	Lex	De Haan
+4	Alexander	Hunold
+5	Nancy	Greenberg
+6	Den	Raphaely
+7	Matthew	Weiss
+8	Adam	Fripp
+9	Payam	Kaufling
+10	Shanta	Vollman
+11	Kevin	Mourgos
+12	John	Russell
+13	Karen	Partners
+14	Alberto	Errazuriz
+15	Gerald	Cambrault
+16	Eleni	Zlotkey
+17	Michael	Hartstein
+18	Shelley	Higgins</code></pre></details></li></ul><hr id="054b428b-7af2-4caa-91c9-b4bad93f8260"/><ul id="8324c71f-c406-4db4-b1b4-94a99bba8e73" class="bulleted-list"><li>5. Write a query to find the name (first_name, last_name), and salary of the employees whose salary is greater than the average salary.</li></ul><ul id="803003e0-aa53-41ab-9662-df207fa6bfee" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="72763024-1c4e-4113-b7bf-8a6aaf44f2e4" class="code"><code>## Idea
+
+- 이름, 연봉, 그리고 평균 연봉보다 큰 사람만 구하면 되는 쿼리
+- 평균 연봉 보다 큰 건 where에서 avg(salary)를 구하고 비교해주면 될 듯</code></pre><pre id="0313b91b-bb80-40fd-8d85-276faa88f063" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY &gt; (
+  select avg(SALARY)
+  from employees
+  );</code></pre><pre id="8ea09871-2e0d-4afc-9a49-09d168768dd3" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	SALARY
+1	Steven	King	24000.00
+2	Neena	Kochhar	17000.00
+3	Lex	De Haan	17000.00
+4	Alexander	Hunold	9000.00
+5	Nancy	Greenberg	12000.00
+6	Daniel	Faviet	9000.00
+7	John	Chen	8200.00
+8	Ismael	Sciarra	7700.00
+9	Jose Manuel	Urman	7800.00
+10	Luis	Popp	6900.00
+11	Den	Raphaely	11000.00</code></pre></details></li></ul><hr id="7248d3d0-ca44-454b-a094-fd53ea44df66"/><ul id="a31bd423-cce8-4426-876d-ef5a2a21f271" class="bulleted-list"><li>6. Write a query to find the name (first_name, last_name), and salary of the employees whose salary is equal to the minimum salary for their job grade.</li></ul><ul id="19df7e94-59e1-4552-9298-b3d1e2cc0f30" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="0d7a56d5-f3cf-4c97-9fb7-85b38124f41e" class="code"><code>## Idea
+
+- 문제에서 employees, jobs table을 이용하라고 했다.
+- 이름, 연봉 찾기
+  - 연봉은 가장 최소 연봉을 갖는 사람
+  - 최소 연봉은 job 테이블에서 나온 job 별 최소 기준
+
+## step 1
+- jobs table에서 job_id, min_salary를 query
+
+## step 2
+- job_id와 min_salary를 동시에 만족해야 하면서 서브쿼리를 이용할 게획
+- 어떻게 해야 할지 판단이 잘 안서서 검색을 해봄
+- where (항목1, 항목2...) in (subquery)를 하면 된다.
+- [참고](https://marobiana.tistory.com/141)
+
+## 해답을 찾아보니...
+- 서브 쿼리 내에서 where 조건으로 최소 연봉을 구하고 그리고 그것이 employees에 있는지 확인하더라.
+- 결과는 같은데 흠...
+</code></pre><pre id="11da6147-bb3e-4d5c-98b8-3b1c4266ae17" class="code"><code>## solution
+
+## my solution
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY,
+       JOB_ID
+from employees
+where (JOB_ID, SALARY) in (
+  select JOB_ID,
+         MIN_SALARY
+  from jobs
+);
+
+## web site solution
+SELECT first_name, last_name, salary 
+FROM employees 
+WHERE employees.salary = (SELECT min_salary
+FROM jobs
+WHERE employees.job_id = jobs.job_id);</code></pre><pre id="41477a46-2594-43bc-b8bf-21bff1205d8d" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	SALARY	JOB_ID
+1	Karen	Colmenares	2500.00	PU_CLERK
+2	Martha	Sullivan	2500.00	SH_CLERK
+3	Randall	Perkins	2500.00	SH_CLERK
+
+#	first_name	last_name	salary
+1	Karen	Colmenares	2500.00
+2	Martha	Sullivan	2500.00
+3	Randall	Perkins	2500.00</code></pre></details></li></ul><hr id="1faa38cb-be51-4f1d-a2d2-1db4208cf109"/><ul id="80221f75-b14e-4e89-920c-ddd7588be47d" class="bulleted-list"><li>7. Write a query to find the name (first_name, last_name), and salary of the employees who earns more than the average salary and works in any of the IT departments.</li></ul><ul id="ab9a4841-7cef-4305-aa36-a91aaa5e1c77" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="6c01ba46-047e-42ca-a552-c1301da3175e" class="code"><code>## Idea
+
+- 이름, 나이를 쿼리 해야 함
+- 평균 연봉보다 높은 연봉을 받고 IT 부서에서 일하는 사람
+- 처음에 해석을 잘못해서 틀렸었다.
+- 그렇다고 다시 했을 때 못 한건 아니다.</code></pre><pre id="c2284472-4a7e-45a5-99e4-1a742be2c7cc" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY &gt; (
+  select avg(SALARY)
+  from employees
+  )
+  and job_ID regexp &#x27;IT&#x27;;
+
+
+SELECT first_name, last_name, salary 
+FROM employees 
+WHERE department_id IN 
+(SELECT department_id FROM departments WHERE department_name LIKE &#x27;IT%&#x27;) 
+AND salary &gt; (SELECT avg(salary) FROM employees);</code></pre><pre id="0d48a4a6-4c2d-4954-a912-54a407adb032" class="code"><code>## query result
+
+#	FIRST_NAME	LAST_NAME	SALARY
+1	Alexander	Hunold	9000.00</code></pre></details></li></ul><hr id="b24d6a2a-a331-4285-af5b-c8c15e6071e0"/><ul id="ed8a9e98-ed92-40f9-96d0-11e59c176172" class="bulleted-list"><li>8. Write a query to find the name (first_name, last_name), and salary of the employees who earns more than the earning of Mr. Bell.</li></ul><ul id="a87df608-7080-46e1-a275-1c67e2e7c53b" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="c795f6d3-36a5-4d82-94bd-519e760e79a5" class="code"><code>## Idea
+
+## step 1
+- earning of Mr. Bell의 연봉을 찾는 것이 우선이다.
+  - Mr.Bell?
+  - First Name, Last Name에서 쿼리 조회
+
+## step 2
+- 연봉을 찾은 후에는 그 값 대비 높은 값만을 갖도록 쿼리를 구성한다.</code></pre><pre id="3d345df8-f388-48a6-abd5-1452edad512f" class="code"><code>## solution
+
+## step 1 - last name에서 조회 되었음
+select * from employees
+where LAST_NAME like &#x27;%Bell%&#x27;;
+
+select * from employees
+where FIRST_NAME like &#x27;%Bell%&#x27;;
+
+## step 2
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY &gt; (
+  select SALARY from employees
+  where LAST_NAME like &#x27;%Bell%&#x27;
+  );</code></pre><pre id="7d205692-09de-448e-8564-6cb1dffcd5ad" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,SALARY
+1,Steven,King,24000.00
+2,Neena,Kochhar,17000.00
+3,Lex,De Haan,17000.00
+4,Alexander,Hunold,9000.00
+5,Bruce,Ernst,6000.00
+6,David,Austin,4800.00
+7,Valli,Pataballa,4800.00
+8,Diana,Lorentz,4200.00
+9,Nancy,Greenberg,12000.00
+10,Daniel,Faviet,9000.00</code></pre></details></li></ul><hr id="19ae7328-8e70-4a0c-b6d0-59baf6357d47"/><ul id="dd2378c0-4a54-4c2d-9dac-5e1a23370226" class="bulleted-list"><li>9. Write a query to find the name (first_name, last_name), and salary of the employees who earn the same salary as the minimum salary for all departments.</li></ul><ul id="3e44b906-9024-48a3-8e83-b5cef287a283" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="c80016e0-fe3f-49b5-8b3f-d0b0e233aeec" class="code"><code>## Idea
+
+- 모든 부서 통틀어서 가장 작은 연봉을 받는 사람에 해당하는 경우 쿼리
+- 이름, 연봉이 결과로 나와야 함</code></pre><pre id="67009825-fc17-41b4-942c-0e2a16c2882e" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY = (
+  select min(SALARY)
+  from employees
+  )</code></pre><pre id="0721c8fd-1e6c-4913-bbe8-7c587a96358d" class="code"><code>## query result
+
+</code></pre></details></li></ul><hr id="b74ed3d5-b85e-490f-865a-adb34335aa1f"/><ul id="b400e0f4-08d2-48cf-bb82-20425eff6e7e" class="bulleted-list"><li>10. Write a query to find the name (first_name, last_name), and salary of the employees whose salary is greater than the average salary of all departments.</li></ul><ul id="9cd6c45d-3e47-4ec0-a43c-1162d9939a6f" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="f9eada3e-fefa-406d-bf5e-a63317eda137" class="code"><code>## Idea
+
+- 모든 부서 통틀어서 평균 연봉 보다 더 많이 받는 사람에 해당하는 경우 쿼리
+- 이름, 연봉이 결과로 나와야 함</code></pre><pre id="7fb0eb98-e96b-406a-b3dd-4661790a4ff8" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY &gt; (
+  select avg(SALARY)
+  from employees
+  );</code></pre><pre id="c9999cd5-012a-4598-bfad-db84749e86d8" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,SALARY
+1,Steven,King,24000.00
+2,Neena,Kochhar,17000.00
+3,Lex,De Haan,17000.00
+4,Alexander,Hunold,9000.00
+5,Nancy,Greenberg,12000.00
+6,Daniel,Faviet,9000.00
+7,John,Chen,8200.00
+8,Ismael,Sciarra,7700.00
+9,Jose Manuel,Urman,7800.00
+10,Luis,Popp,6900.00</code></pre></details></li></ul><hr id="33aef181-3adf-431d-bf74-3523908b1b90"/><ul id="81bd5bf7-d8f1-426a-ab90-e24498f1e559" class="bulleted-list"><li>11. Write a query to find the name (first_name, last_name) and salary of the employees who earn a salary that is higher than the salary of all the Shipping Clerk (JOB_ID = &#x27;SH_CLERK&#x27;). Sort the results of the salary of the lowest to highest.</li></ul><ul id="924f74ca-2da4-48aa-8dc8-47ecbf8aca02" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="4a781e02-f255-4bb7-b825-f198f42d931d" class="code"><code>## Idea
+
+- 모든 Shipping Clerk 사람들보다 큰 연봉에 해당하는 사람들을 오른차순 정렬
+  - Shipping Clerk에 max(salary), where job_id = &#x27;SH_CLERK&#x27;
+
+## 추가
+- ALL이라는 항목에 대해 서치함
+  -[IN, ANY, ALL](https://carami.tistory.com/18)</code></pre><pre id="d0ead1a8-b16a-471e-aeb4-b20249c4aaaf" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY &gt; (
+  select max(SALARY)
+  from employees
+  where JOB_ID = &#x27;SH_CLERK&#x27;
+  )
+order by SALARY;
+
+
+## ALL을 이용한 쿼리
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where SALARY &gt; ALL (
+  select SALARY
+  from employees
+  where JOB_ID = &#x27;SH_CLERK&#x27;
+  )
+order by SALARY;</code></pre><pre id="81eabfd5-a275-45b4-9785-5e7f24552504" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,SALARY
+1,Jennifer,Whalen,4400.00
+2,David,Austin,4800.00
+3,Valli,Pataballa,4800.00
+4,Kevin,Mourgos,5800.00
+5,Bruce,Ernst,6000.00
+6,Pat,Fay,6000.00
+7,Sundita,Kumar,6100.00
+8,Amit,Banda,6200.00
+9,Charles,Johnson,6200.00
+10,Sundar,Ande,6400.00</code></pre></details></li></ul><hr id="c512ee45-3df5-493c-b6ba-02c25f4580c7"/><ul id="d7821fc6-7775-4324-aee8-f7a6122f56b8" class="bulleted-list"><li>12. Write a query to find the name (first_name, last_name) of the employees who are not supervisors.</li></ul><ul id="349d955a-004c-46ac-8110-f56a20bb025a" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ec96ee0f-9058-4e47-95db-c4c4826c2585" class="code"><code>## Idea
+
+- supervisors가 아닌 경우를 찾으면 된다.
+  - supervisors? 어떻게 찾아야 하지?
+  - 잘 몰라서 댓글을 보니까 manager_id가 가리키는 사람이 supervisors다.
+- () in 방법을 사용하였다.
+
+## 추가
+
+- exists 방법도 있다.
+- gist에 별도로 정리하기도 했다.</code></pre><pre id="a1a145b5-5aa0-4628-96ec-0e3e96f8c6d8" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees
+where employees.EMPLOYEE_ID not in (
+  select MANAGER_ID
+  from employees
+)
+order by SALARY ASC;
+
+select FIRST_NAME,
+       LAST_NAME,
+       SALARY
+from employees as b
+where not exists(
+  select 1
+  from employees as a
+  where b.EMPLOYEE_ID = a.MANAGER_ID
+  )
+order by SALARY;</code></pre><pre id="d326e7e4-eeed-438a-b002-dc22647285ef" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,SALARY
+1,TJ,Olson,2100.00
+2,Steven,Markle,2200.00
+3,Hazel,Philtanker,2200.00
+4,Ki,Gee,2400.00
+5,James,Landry,2400.00
+6,Martha,Sullivan,2500.00
+7,Karen,Colmenares,2500.00
+8,James,Marlow,2500.00
+9,Joshua,Patel,2500.00
+10,Randall,Perkins,2500.00
+
+#,FIRST_NAME,LAST_NAME,SALARY
+1,TJ,Olson,2100.00
+2,Steven,Markle,2200.00
+3,Hazel,Philtanker,2200.00
+4,Ki,Gee,2400.00
+5,James,Landry,2400.00
+6,Martha,Sullivan,2500.00
+7,Karen,Colmenares,2500.00
+8,James,Marlow,2500.00
+9,Joshua,Patel,2500.00
+10,Randall,Perkins,2500.00</code></pre></details></li></ul><hr id="a6ed0c2b-c2b6-4cee-bc9a-6ec008cfd495"/><ul id="03839747-40c0-4c23-99b6-27a34402547d" class="bulleted-list"><li>13. Write a query to display the employee ID, first name, last name, and department names of all employees.</li></ul><ul id="376ea72a-5411-4e21-ace7-b88dd5e84090" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="86201f4b-a6fd-4423-abaa-bbe4e8d30104" class="code"><code>## Idea
+
+- join 쿼리를 쓰지 않고 한다면....?
+  - 이건 정말 몰라서 답을 참고 하였습니다.
+  - select 항목에 where 조건 절을 준 값을 컬럼으로 지정해서 값을 얻을 수도 있다.
+  - 비슷한 경우로 case when 조건 then 값 end도 되겠지
+    - [참고](https://extbrain.tistory.com/46)</code></pre><pre id="b366e15a-9e00-474b-b76f-05ae7b85a1e5" class="code"><code>## solution
+
+select EMPLOYEE_ID,
+       FIRST_NAME,
+       LAST_NAME,
+       (
+  select DEPARTMENT_NAME
+  from departments as dep
+  where dep.DEPARTMENT_ID = emp.DEPARTMENT_ID
+  ) department
+from employees as emp;</code></pre><pre id="df6fc29f-cefb-4a6c-9f53-78a3961c3505" class="code"><code>## query result
+
+#,EMPLOYEE_ID,FIRST_NAME,LAST_NAME,department
+1,100,Steven,King,Executive
+2,101,Neena,Kochhar,Executive
+3,102,Lex,De Haan,Executive
+4,103,Alexander,Hunold,IT
+5,104,Bruce,Ernst,IT
+6,105,David,Austin,IT
+7,106,Valli,Pataballa,IT
+8,107,Diana,Lorentz,IT
+9,108,Nancy,Greenberg,Finance
+10,109,Daniel,Faviet,Finance</code></pre></details></li></ul><hr id="62d19ae5-2dcf-4418-8dd1-b91e2c318f77"/><ul id="a9f58f9e-74c6-4ebc-859d-ce9212c71991" class="bulleted-list"><li>14. Write a query to display the employee ID, first name, last name, salary of all employees whose salary is above average for their departments.</li></ul><ul id="8ec22476-1d59-4f9e-8f6d-facba171ea07" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="6090b8c6-9384-46c9-9048-78093ff3ea74" class="code"><code>## Idea
+
+### 음....?
+- 각 부서의 평균 연봉보다 높은 사람들을 구하는 쿼리이다.
+  - 부서 사람들의 평균 연봉을 구하는 것이 첫 번째
+  - 평균 연봉과 비교 대상이 되는 값을 찾는 것이 두 번째
+- from에 두 개의 테이블을 작성해서 가져오는 방식을 진행하면 비교 할 수 있다.
+
+### 더 쉬운 방법 - 답안
+- where을 이용해서 부서가 일치할 때의 avg(salary)를 반영해서 쿼리하면 된다.</code></pre><pre id="14c378c0-df76-4e4d-a9da-245ea9b045ce" class="code"><code>## solution
+
+
+## 댓글에 groupby 써둔 것
+select employee_id,
+       first_name
+from employees as e ,
+     (
+       select department_id as aa,
+              avg(salary) as bb
+       from employees
+       group by department_id
+       ) as tt
+where e.salary &gt; tt.bb and e.department_id = tt.aa
+order by employee_id;
+
+
+## 웹페이지 해답
+select EMPLOYEE_ID,
+       FIRST_NAME
+from employees as emp
+where SALARY &gt; (
+  select avg(salary)
+  from employees as emp_dp
+  where emp.DEPARTMENT_ID = emp_dp.DEPARTMENT_ID
+  )
+
+## 댓글 중 괜찮은 것
+select employee_id,
+       first_name,
+       last_name,
+       salary
+FROM employees
+Where salary &gt; (
+  select AVG(salary)
+  From employees
+  Where department_id IN (select department_id FROM departments)
+  );</code></pre><pre id="283fb7cf-2621-4bae-b035-7c9bd87530f6" class="code"><code>## query result
+
+## 위의 두 개에 대한 쿼리 결과
+
+#,EMPLOYEE_ID,FIRST_NAME
+1,100,Steven
+2,103,Alexander
+3,104,Bruce
+4,108,Nancy
+5,109,Daniel
+6,114,Den
+7,120,Matthew
+8,121,Adam
+9,122,Payam
+10,123,Shanta
+
+## 아래 댓글 괜찮은 것
+
+#,employee_id,first_name,last_name,salary
+1,100,Steven,King,24000.00
+2,101,Neena,Kochhar,17000.00
+3,102,Lex,De Haan,17000.00
+4,103,Alexander,Hunold,9000.00
+5,108,Nancy,Greenberg,12000.00
+6,109,Daniel,Faviet,9000.00
+7,110,John,Chen,8200.00
+8,111,Ismael,Sciarra,7700.00
+9,112,Jose Manuel,Urman,7800.00
+10,113,Luis,Popp,6900.00
+11,114,Den,Raphaely,11000.00
+12,120,Matthew,Weiss,8000.00
+13,121,Adam,Fripp,8200.00
+14,122,Payam,Kaufling,7900.00</code></pre></details></li></ul><hr id="ef6f0aea-f978-48bc-b5b8-99a0ea6beafe"/><ul id="86092cec-2958-41db-901b-6928e3629b01" class="bulleted-list"><li>15. Write a query to fetch even numbered records from employees table.</li></ul><ul id="668964c5-bda5-44b5-bde5-c9665a2dd212" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="98264b94-99df-4ef1-a78f-2b3ff754a200" class="code"><code>## Idea
+
+- 짝수 번호를 가진 직원수 쿼리 해오기
+- 여러 가지 방법이 있을 것 같다.
+  - 직원 아이디를 2로 나눈 경우도 해당 될 듯
+  - [mysql MOD](https://blog.habonyphp.com/entry/mysql-n%EC%9D%84-m%EC%9C%BC%EB%A1%9C-%EB%82%98%EB%88%88-%EB%82%98%EB%A8%B8%EC%A7%80%EB%A5%BC-%EB%B0%98%ED%99%98%ED%95%98%EB%8A%94-MOD-%ED%95%A8%EC%88%98#.XPUbqNMzbUI)
+
+## 해석을 잘못 한듯
+- 짝수 레코드이지 짝수 id가 아니다.
+
+## 해답을 보니까...
+set 을 사용하여 정리하였다.
+- [solution](https://www.w3resource.com/mysql-exercises/subquery-exercises/write-a-query-to-fetch-even-numbered-records-from-employees-table.php)</code></pre><pre id="a8ff4394-4250-4dc5-9d18-b78e2b3a0087" class="code"><code>## solution
+
+select *
+from employees
+where 0 &lt;&gt; MOD(EMPLOYEE_ID, 2)
+
+# works in this table. But in general case, u cannot expect id to be sequential.
+# 이런 말이 있는거 보면 좋지 않은 쿼리인듯.
+
+
+SET @i = 0;
+SELECT i,
+       employee_id
+FROM (
+  SELECT @i := @i + 1 AS i,
+         employee_id
+  FROM employees) as sample
+WHERE MOD(sample.i, 2) = 0;</code></pre><pre id="e59135e0-c4b3-4f60-9c88-ba0c470c5bc5" class="code"><code>## query result
+
+#,EMPLOYEE_ID
+1,101
+2,103
+3,105
+4,107
+5,109
+6,111
+7,113
+8,115
+9,117
+10,119
+11,121
+
+
+#,i,EMPLOYEE_ID
+1,2,101
+2,4,103
+3,6,105
+4,8,107
+5,10,109
+6,12,111
+7,14,113
+8,16,115
+9,18,117
+10,20,119
+11,22,121
+12,24,123
+13,26,125
+14,28,127
+15,30,129
+16,32,131
+17,34,133</code></pre></details></li></ul><hr id="d36ff80d-7d94-439a-b8ba-3e1ab61a1736"/><ul id="b00f5724-1b48-4051-9fc6-c59f5e09f835" class="bulleted-list"><li>16. Write a query to find the 5th maximum salary in the employees table.</li></ul><ul id="0ab72e7b-da86-4069-b0b6-f70bef2c5d28" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="b7d4d622-e41a-46de-8ec9-a0a9b7185187" class="code"><code>## Idea
+
+- 다섯 번째로 높은 연봉을 받는 사람을 찾아라.
+  - limit 1 offset 4가 쉬운 쿼리이긴 한데....
+
+```sql
+1,24000.00
+2,17000.00
+3,17000.00
+4,14000.00
+5,13500.00
+6,13000.00
+```
+
+- 중복 되는 값이 있는 걸 보니 이게 함정 인듯
+- 결국 distinct salary 해야 함
+
+## 추가
+- 해답이 잘 이해가 되질 않네...
+- [solution](https://www.w3resource.com/mysql-exercises/subquery-exercises/write-a-query-to-find-the-5th-maximum-salary-in-the-employees-table.php)
+- 이해를 한 것
+  - 서브 쿼리가 하나씩 서브 쿼리의 where 조건에 따라 1개씩 판별을 하고
+  - 조건에 따라 5개가 되었을 때
+  - 그 때 다섯 번째 쿼리 결과를 뱉어낸다.
+
+```sql
+select count(distinct SALARY)
+from employees as em2
+where em2.SALARY &gt;= 13000;
+```</code></pre><pre id="6000f4e9-26ed-4b7a-ab71-234f52204a96" class="code"><code>## solution
+
+select distinct salary
+from employees
+order by SALARY DESC
+limit 1 offset 4;
+
+
+select distinct SALARY
+from employees as em1
+where 5 = (
+  select count(distinct SALARY)
+  from employees as em2
+  where em2.SALARY &gt;= em1.SALARY
+  );</code></pre><pre id="ae008b8c-b1ee-422a-957b-624027c9326c" class="code"><code>## query result
+
+13000.00</code></pre></details></li></ul><hr id="7c9784b0-2fa2-4e14-a3e2-495c0da1d6e7"/><ul id="37a2f28e-30d3-4917-a87b-e9bf7a540953" class="bulleted-list"><li>17. Write a query to find the 4th minimum salary in the employees table.</li></ul><ul id="092b5e23-03b3-4aeb-a5db-b570f6198c84" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="43007f4f-17cd-444a-81ed-963b18816658" class="code"><code>## Idea
+
+- distinct salary 한 다음 오름 차순, limit 1 offet 3
+- 또는 16번 문제 푸는 것을 응용해도 된다.
+
+```sql
+select distinct SALARY
+from employees as em1
+where 4 = (
+  select count(distinct SALARY)
+  from employees as em2
+  where em2.SALARY &lt;= em1.SALARY
+  );
+```</code></pre><pre id="1d70f7d3-783d-492b-adfe-3239fd23e335" class="code"><code>## solution
+
+select distinct SALARY
+from employees
+order by SALARY ASC
+limit 1 offset 3;
+
+
+select distinct SALARY
+from employees as em1
+where 4 = (
+  select count(distinct SALARY)
+  from employees as em2
+  where em2.SALARY &lt;= em1.SALARY
+  );</code></pre><pre id="8db3df27-7b32-4895-b066-2c6be27a0efe" class="code"><code>## query result
+
+2500.00</code></pre></details></li></ul><hr id="7beed2ea-9d52-4382-8da7-b36b08d7c8c8"/><ul id="b850482c-23ff-4179-ac2a-45294575064c" class="bulleted-list"><li>18. Write a query to select last 10 records from a table.</li></ul><ul id="26dafab3-b594-47f1-9488-3cce8b4c44dd" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ed0d2eee-2cdd-49fe-aa18-3566d5ba7388" class="code"><code>## Idea
+
+- 어떤 기준으로 마지막 10개인지는 모르겠다.
+- 일단 10개 기준을 뽑으려면 limit 10 </code></pre><pre id="e39ba3bd-d615-41ae-bdcc-4c8115f47868" class="code"><code>## solution
+
+select *
+from employees
+limit 0, 10;</code></pre><pre id="3e70979e-582f-49d3-be33-08ea08b7d82c" class="code"><code>## query result
+
+#,EMPLOYEE_ID,FIRST_NAME,LAST_NAME,EMAIL,PHONE_NUMBER,HIRE_DATE
+1,100,Steven,King,SKING,515.123.4567,1987-06-17
+2,101,Neena,Kochhar,NKOCHHAR,515.123.4568,1987-06-18
+3,102,Lex,De Haan,LDEHAAN,515.123.4569,1987-06-19
+4,103,Alexander,Hunold,AHUNOLD,590.423.4567,1987-06-20
+5,104,Bruce,Ernst,BERNST,590.423.4568,1987-06-21
+6,105,David,Austin,DAUSTIN,590.423.4569,1987-06-22
+7,106,Valli,Pataballa,VPATABAL,590.423.4560,1987-06-23
+8,107,Diana,Lorentz,DLORENTZ,590.423.5567,1987-06-24
+9,108,Nancy,Greenberg,NGREENBE,515.124.4569,1987-06-25
+10,109,Daniel,Faviet,DFAVIET,515.124.4169,1987-06-26</code></pre></details></li></ul><hr id="42cd4307-5143-454b-b0a0-a29178da4cf3"/><ul id="f1bab488-dab1-45d8-9ca8-e497fbcaf6d0" class="bulleted-list"><li>19. Write a query to list the department ID and name of all the departments where no employee is working.</li></ul><ul id="e7177671-7d4a-4697-8865-f7710ecde4ae" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="c5bfc758-e2b2-407e-a21f-55e697547103" class="code"><code>## Idea
+
+- 근로자가 없는 부서에 대해 쿼리를 하시오. 정도로 이해했다.
+- 이렇게 되면 서브쿼리에서 department ID가 없는 것을 찾으면 될 듯</code></pre><pre id="e3e8289c-e31b-48bd-9bf3-f8b40ce72f9e" class="code"><code>## solution
+
+select DEPARTMENT_ID,
+       DEPARTMENT_NAME
+from departments
+where DEPARTMENT_ID not in (
+  select distinct DEPARTMENT_ID
+  from employees
+);</code></pre><pre id="1e47a1b3-40a4-428d-911f-90c22ec2b6da" class="code"><code>## query result
+
+#,DEPARTMENT_ID,DEPARTMENT_NAME
+1,120,Treasury
+2,130,Corporate Tax
+3,140,Control And Credit
+4,150,Shareholder Services
+5,160,Benefits
+6,170,Manufacturing
+7,180,Construction
+8,190,Contracting
+9,200,Operations</code></pre></details></li></ul><hr id="ce40ea97-2cbb-4123-979c-9f2e74b7f4c5"/><ul id="1dcff174-5788-4c57-a591-a64230b25a45" class="bulleted-list"><li>20. Write a query to get 3 maximum salaries.</li></ul><ul id="dbbb6226-eb25-4c34-b030-8e377fac3e95" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="b20d8117-f252-4ba9-8e23-195d25cbd3b9" class="code"><code>## Idea
+
+- 연봉 Top 3를 찾아라.
+- limit 3 offset 0으로 해결
+
+## 추가
+- 해답은 마찬가지로 서브쿼리로 답안을 제시하였음
+- [해답](https://www.w3resource.com/mysql-exercises/subquery-exercises/write-a-query-to-get-3-maximum-salaries.php)</code></pre><pre id="ad4fa9bb-3427-4c8d-bbda-f1e11bea2dbe" class="code"><code>## solution
+
+select distinct SALARY
+from employees
+order by SALARY DESC
+limit 3 offset 0;
+
+select distinct SALARY
+from employees as em1
+where 3 &gt;= (
+  select count(distinct SALARY)
+  from employees as em2
+  where em1.SALARY &lt;= em2.SALARY
+  );</code></pre><pre id="440b006d-0009-42de-9663-9be4dd126e0f" class="code"><code>## query result
+
+#,SALARY
+1,24000.00
+2,17000.00
+3,14000.00</code></pre></details></li></ul><hr id="b0f4bcfe-eb03-462e-971c-c63c43a3e6bd"/><ul id="43390b0a-4bb1-4e8b-bb1d-ad24daaab388" class="bulleted-list"><li>21. Write a query to get 3 minimum salaries.</li></ul><ul id="b4fabe97-e85d-4432-998a-91c7d230906d" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="f5038192-8864-4432-9add-a901b2ae574f" class="code"><code>## Idea
+
+- 20번과 동일한 원리로 접근하면 된다.</code></pre><pre id="f88b7719-1673-4dbe-af16-4e332d905e88" class="code"><code>## solution
+
+select distinct SALARY
+from employees
+order by SALARY ASC
+limit 3 offset 0;
+
+select distinct SALARY
+from employees as em1
+where 3 &gt;= (
+  select count(distinct SALARY)
+  from employees as em2
+  where em1.SALARY &gt;= em2.SALARY
+  )
+order by SALARY;</code></pre><pre id="28e271b7-8595-4825-a121-d3c5c7fd4f24" class="code"><code>## query result
+
+#,SALARY
+1,2100.00
+2,2200.00
+3,2400.00</code></pre></details></li></ul><hr id="ba1d59c6-d318-43c4-a2e6-88423956dcfa"/><ul id="3c3f8d72-cca6-4159-9c59-b9beb7ecf9b8" class="bulleted-list"><li>22. Write a query to get nth max salaries of employees.</li></ul><ul id="d63c9cdc-3e3b-4efa-bb2a-fe91f9deb78b" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="03b51b23-6c6d-4713-a37b-0c983fa1efb3" class="code"><code>## Idea
+
+- 문제가 잘 이해가 가지 않았다.
+- 일단 해답을 적어둔다.</code></pre><pre id="60a4ac06-0523-472e-b750-c6da50e52a50" class="code"><code>## solution
+
+SELECT *
+FROM employees emp1
+WHERE (1) = (
+  SELECT COUNT(DISTINCT(emp2.salary))
+  FROM employees emp2
+  WHERE emp2.salary &gt; emp1.salary
+  );</code></pre><pre id="684e4732-b098-4b0e-a723-9823ca310f22" class="code"><code>## query result
+
+#,EMPLOYEE_ID,FIRST_NAME,LAST_NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,JOB_ID,SALARY,COMMISSION_PCT,MANAGER_ID,DEPARTMENT_ID
+1,101,Neena,Kochhar,NKOCHHAR,515.123.4568,1987-06-18,AD_VP,17000.00,0.00,100,90
+2,102,Lex,De Haan,LDEHAAN,515.123.4569,1987-06-19,AD_VP,17000.00,0.00,100,90</code></pre></details></li></ul></div><div id="83bd2254-e690-4d97-8e76-879bd2e78f5f" style="width:37.5%" class="column"><h2 id="4d604eb1-3f12-4862-9506-f9510184f432">Structure of &#x27;hr&#x27; database &amp; answer sample</h2><hr id="da4ec52f-83a3-46b8-bd12-e3afa06013bb"/><figure id="6206d9d9-6dae-4e38-aee6-11c25c637cb0" class="image"><a href="MySQL Subquery 22 exercises with solution/Untitled.png"><img style="width:960px" src="MySQL Subquery 22 exercises with solution/Untitled.png"/></a></figure><hr id="8b2f13c1-d336-4cc4-a17a-04ae4b005755"/><ul id="03a5fc4a-a582-4388-b78d-29a725d1c597" class="bulleted-list"><li>문제를 복사 해오면 될 듯</li></ul><ul id="8e308ae3-914a-4050-af70-6d9d744660f1" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ca4c8c84-4010-4eed-815d-8ec1139905e3" class="code"><code>## Idea
+
+- </code></pre><pre id="4c939039-7c5a-41bc-9462-9732bf65512c" class="code"><code>## solution
+
+select *
+from DB</code></pre><pre id="af3c6dc5-aa04-472d-99e0-80e687889585" class="code"><code>## query result
+
+</code></pre></details></li></ul><p id="0c76c64c-df90-4859-8b67-bddb0eac267d"></p></div></div></div></article></body></html>
