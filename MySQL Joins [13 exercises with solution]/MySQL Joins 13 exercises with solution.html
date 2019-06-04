@@ -1,0 +1,993 @@
+<html><head><title>MySQL Joins [13 exercises with solution]</title><style>
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	opacity: 0.5;
+}
+
+.sans { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif; }
+.mono { font-family: Nitti, 'Microsoft YaHei', '微软雅黑', monospace; }
+.pdf .sans { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .code { font-family: Source Code Pro, 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, KaiTi, STKaiTi, '华文楷体', KaiTi_GB2312, '楷体_GB2312', serif, 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC', 'Noto Sans CJK KR'; }
+
+.pdf .mono { font-family: PT Mono, Nitti, 'Microsoft YaHei', '微软雅黑', monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC', 'Noto Sans Mono CJK KR'; }
+
+.highlight-default {
+}
+.highlight-gray {
+	color: rgb(155,154,151);
+}
+.highlight-brown {
+	color: rgb(100,71,58);
+}
+.highlight-orange {
+	color: rgb(217,115,13);
+}
+.highlight-yellow {
+	color: rgb(223,171,1);
+}
+.highlight-teal {
+	color: rgb(15,123,108);
+}
+.highlight-blue {
+	color: rgb(11,110,153);
+}
+.highlight-purple {
+	color: rgb(105,64,165);
+}
+.highlight-pink {
+	color: rgb(173,26,114);
+}
+.highlight-red {
+	color: rgb(224,62,62);
+}
+.highlight-gray_background {
+	background: rgb(235,236,237);
+}
+.highlight-brown_background {
+	background: rgb(233,229,227);
+}
+.highlight-orange_background {
+	background: rgb(250,235,221);
+}
+.highlight-yellow_background {
+	background: rgb(251,243,219);
+}
+.highlight-teal_background {
+	background: rgb(221,237,234);
+}
+.highlight-blue_background {
+	background: rgb(221,235,241);
+}
+.highlight-purple_background {
+	background: rgb(234,228,242);
+}
+.highlight-pink_background {
+	background: rgb(244,223,235);
+}
+.highlight-red_background {
+	background: rgb(251,228,228);
+}
+.block-color-default {
+}
+.block-color-gray {
+	color: rgba(55, 53, 47, 0.6);
+}
+.block-color-brown {
+	color: rgb(100,71,58);
+}
+.block-color-orange {
+	color: rgb(217,115,13);
+}
+.block-color-yellow {
+	color: rgb(223,171,1);
+}
+.block-color-teal {
+	color: rgb(15,123,108);
+}
+.block-color-blue {
+	color: rgb(11,110,153);
+}
+.block-color-purple {
+	color: rgb(105,64,165);
+}
+.block-color-pink {
+	color: rgb(173,26,114);
+}
+.block-color-red {
+	color: rgb(224,62,62);
+}
+.block-color-gray_background {
+	background: rgb(235,236,237);
+}
+.block-color-brown_background {
+	background: rgb(233,229,227);
+}
+.block-color-orange_background {
+	background: rgb(250,235,221);
+}
+.block-color-yellow_background {
+	background: rgb(251,243,219);
+}
+.block-color-teal_background {
+	background: rgb(221,237,234);
+}
+.block-color-blue_background {
+	background: rgb(221,235,241);
+}
+.block-color-purple_background {
+	background: rgb(234,228,242);
+}
+.block-color-pink_background {
+	background: rgb(244,223,235);
+}
+.block-color-red_background {
+	background: rgb(251,228,228);
+}
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="12e18dee-c796-436e-9ca6-57be010533a3" class="page sans"><header><h1 class="page-title">MySQL Joins [13 exercises with solution]</h1></header><div class="page-body"><hr id="d1e4b58e-33ad-4f1b-9cb9-417dd8fc5d73"/><div id="951f5593-5fe0-43bf-8c06-0b6d54fddd25" class="column-list"><div id="1a5cc082-a56b-4e1b-bfe0-0bf59bc2bffd" style="width:62.5%" class="column"><h2 id="334dc4ea-929f-426e-b140-c30bc637a332">Wonny&#x27;s Solution</h2><hr id="86052064-7809-4766-95e5-7ca6562f3bfc"/><ul id="ccfecba1-29c7-4f38-9260-b00ca748e355" class="bulleted-list"><li>1. Write a query to find the addresses (location_id, street_address, city, state_province, country_name) of all the departments. Hint : Use NATURAL JOIN.</li></ul><ul id="9beeb351-50b4-4b18-96be-d4c33052e386" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ed780c05-2fed-492f-b112-6061a1a915e0" class="code"><code>## Idea
+
+- 기존에 사용했던 employees 와 다르기 때문에 우선 locations 조회
+- country_id로 조인하면 country_name을 구할 수 있다.
+- [Use NATURAL JOIN](https://www.w3resource.com/mysql/advance-query-in-mysql/mysql-natural-join.php)
+  - Natural Join: Guidelines
+    - The associated tables have one or more pairs of identically named columns.
+    - The columns must be the same data type.
+    - Don’t use ON clause in a NATURAL JOIN.
+  - on을 사용하지 않는 것이 특징이다.</code></pre><pre id="53240d7b-04a0-48b8-8e4f-109a14695070" class="code"><code>## solution
+
+# 처음에 의도 한 것
+select lc.LOCATION_ID,
+       lc.STREET_ADDRESS,
+       lc.CITY,
+       lc.STATE_PROVINCE,
+       ct.COUNTRY_NAME
+from locations as lc
+inner join countries as ct on ct.COUNTRY_ID = lc.COUNTRY_ID;
+
+# natural join
+select lc.LOCATION_ID,
+       lc.STREET_ADDRESS,
+       lc.CITY,
+       lc.STATE_PROVINCE,
+       ct.COUNTRY_NAME
+from locations as lc
+natural join countries as ct;</code></pre><pre id="6d4a9486-2141-41b5-ad23-cb779950fa71" class="code"><code>## query result
+
+#,LOCATION_ID,STREET_ADDRESS,CITY,STATE_PROVINCE,COUNTRY_NAME
+1,1000,1297 Via Cola di Rie,Roma,&quot;&quot;,Italy
+2,1100,93091 Calle della Testa,Venice,&quot;&quot;,Italy
+3,1200,2017 Shinjuku-ku,Tokyo,Tokyo Prefecture,Japan
+4,1300,9450 Kamiya-cho,Hiroshima,&quot;&quot;,Japan
+5,1400,2014 Jabberwocky Rd,Southlake,Texas,United States of America
+6,1500,2011 Interiors Blvd,South San Francisco,California,United States of America
+7,1600,2007 Zagora St,South Brunswick,New Jersey,United States of America
+8,1700,2004 Charade Rd,Seattle,Washington,United States of America
+9,1800,147 Spadina Ave,Toronto,Ontario,Canada
+10,1900,6092 Boxwood St,Whitehorse,Yukon,Canada
+11,2000,40-5-12 Laogianggen,Beijing,&quot;&quot;,China
+12,2100,1298 Vileparle (E),Bombay,Maharashtra,India
+13,2200,12-98 Victoria Street,Sydney,New South Wales,Australia
+14,2300,198 Clementi North,Singapore,&quot;&quot;,Singapore
+15,2400,8204 Arthur St,London,&quot;&quot;,United Kingdom
+16,2600,9702 Chester Road,Stretford,Manchester,United Kingdom
+17,2700,Schwanthalerstr. 7031,Munich,Bavaria,Germany
+18,2800,Rua Frei Caneca 1360,Sao Paulo,Sao Paulo,Brazil
+19,2900,20 Rue des Corps-Saints,Geneva,Geneve,Switzerland
+20,3000,Murtenstrasse 921,Bern,BE,Switzerland
+21,3100,Pieter Breughelstraat 837,Utrecht,Utrecht,Netherlands
+
+#,LOCATION_ID,STREET_ADDRESS,CITY,STATE_PROVINCE,COUNTRY_NAME
+1,1000,1297 Via Cola di Rie,Roma,&quot;&quot;,Italy
+2,1100,93091 Calle della Testa,Venice,&quot;&quot;,Italy
+3,1200,2017 Shinjuku-ku,Tokyo,Tokyo Prefecture,Japan
+4,1300,9450 Kamiya-cho,Hiroshima,&quot;&quot;,Japan
+5,1400,2014 Jabberwocky Rd,Southlake,Texas,United States of America
+6,1500,2011 Interiors Blvd,South San Francisco,California,United States of America
+7,1600,2007 Zagora St,South Brunswick,New Jersey,United States of America
+8,1700,2004 Charade Rd,Seattle,Washington,United States of America
+9,1800,147 Spadina Ave,Toronto,Ontario,Canada
+10,1900,6092 Boxwood St,Whitehorse,Yukon,Canada
+11,2000,40-5-12 Laogianggen,Beijing,&quot;&quot;,China
+12,2100,1298 Vileparle (E),Bombay,Maharashtra,India
+13,2200,12-98 Victoria Street,Sydney,New South Wales,Australia
+14,2300,198 Clementi North,Singapore,&quot;&quot;,Singapore
+15,2400,8204 Arthur St,London,&quot;&quot;,United Kingdom
+16,2600,9702 Chester Road,Stretford,Manchester,United Kingdom
+17,2700,Schwanthalerstr. 7031,Munich,Bavaria,Germany
+18,2800,Rua Frei Caneca 1360,Sao Paulo,Sao Paulo,Brazil
+19,2900,20 Rue des Corps-Saints,Geneva,Geneve,Switzerland
+20,3000,Murtenstrasse 921,Bern,BE,Switzerland
+21,3100,Pieter Breughelstraat 837,Utrecht,Utrecht,Netherlands</code></pre></details></li></ul><hr id="f5630e5d-8cd4-455c-b2db-a8edff57284c"/><ul id="6cbff849-7b79-4d87-8249-b3265a82add8" class="bulleted-list"><li>2. Write a query to find the name (first_name, last name), department ID and name of all the employees.</li></ul><ul id="02685cbe-0306-4727-bc9c-e1a3e2b645b4" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="86aaa6ea-b471-49d5-b721-a7b280fa3c18" class="code"><code>## Idea
+
+- employees에 left join으로 departments table을 join 하면 된다.
+- inner join을 하면 누락 되는 결과가 1개 발생한다.
+  - departments id가 0인 것이 있어서..
+
+- null로 찍히느냐, 아니면 null을 발생을 안 시키느냐 차이인 듯 하다.</code></pre><pre id="7986af25-eac0-4720-8ac6-5e2ca2982ea9" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       dep.DEPARTMENT_ID,
+       dep.DEPARTMENT_NAME
+from employees as emp
+left join departments as dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID;</code></pre><pre id="1b716a87-261c-4563-a5c5-44ca178135f5" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,DEPARTMENT_ID,DEPARTMENT_NAME
+1,Steven,King,90,Executive
+2,Neena,Kochhar,90,Executive
+3,Lex,De Haan,90,Executive
+4,Alexander,Hunold,60,IT
+5,Bruce,Ernst,60,IT
+6,David,Austin,60,IT
+7,Valli,Pataballa,60,IT
+8,Diana,Lorentz,60,IT
+9,Nancy,Greenberg,100,Finance
+10,Daniel,Faviet,100,Finance
+11,John,Chen,100,Finance
+12,Ismael,Sciarra,100,Finance
+13,Jose Manuel,Urman,100,Finance
+14,Luis,Popp,100,Finance
+15,Den,Raphaely,30,Purchasing
+16,Alexander,Khoo,30,Purchasing</code></pre></details></li></ul><hr id="51c56b10-c594-4c7d-8d5b-bbed778e9a72"/><ul id="f87a2049-fc94-4077-82a6-a3a3de585bb6" class="bulleted-list"><li>3. Write a query to find the name (first_name, last_name), job, department ID and name of the employees who works in London.</li></ul><ul id="0675093d-f327-4492-ab88-d9bd8cf51d68" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="b7aa2238-cab1-42d6-9be8-b8f86fe88c6e" class="code"><code>## Idea
+
+- 런던에서 일하는 근무자를 찾는 것
+- employees와 departments의 department_id join
+- department_id 와 locations의 location_id를 join
+- where 조건에 런던만 설정
+
+## 추가
+- 마지막에 lower처리를 해주면 좀 더 나은 것 같다.</code></pre><pre id="4a9eed70-93fe-4105-a77e-e785c7131c63" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       JOB_ID,
+       dep.DEPARTMENT_ID,
+       dep.DEPARTMENT_NAME
+from employees as emp
+left join departments as dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID
+left join locations as lc on dep.LOCATION_ID = lc.LOCATION_ID
+where lower(CITY) = &#x27;london&#x27;;</code></pre><pre id="222a1e70-bfbb-474d-b263-3dbb2a3743b7" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,JOB_ID,DEPARTMENT_ID,DEPARTMENT_NAME
+1,Susan,Mavris,HR_REP,40,Human Resources</code></pre></details></li></ul><hr id="93e95205-8b52-4660-b5ec-aa694132c16d"/><ul id="f9a9ed62-1fb0-46d7-9748-b6312e479573" class="bulleted-list"><li>4. Write a query to find the employee id, name (last_name) along with their manager_id and name (last_name).</li></ul><ul id="d247e998-4ee8-4d92-8218-8f53fce1fa7a" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="80cd7764-e0af-4286-be8d-8b338d02e158" class="code"><code>## Idea
+
+- 근로자와 각각 자신을 담당하고 있는 manager_id, manager_name(last_name)을 쿼리
+
+여러가지 방법이 있을텐데...
+- 매니저 아이디, 이름만 추출해서 join하는 방법도 있을거고...
+- employees를 employees join 하면 될 듯?
+- 컬럼 명을 emp2의 last_name을 manager_last_name으로 치환 하였다.</code></pre><pre id="2e541d1b-4fb9-499a-8713-819d8800c230" class="code"><code>## solution
+
+select emp_1.EMPLOYEE_ID,
+       emp_1.FIRST_NAME,
+       emp_1.LAST_NAME,
+       emp_2.LAST_NAME as manager_last_name
+from employees as emp_1
+inner join (
+  select FIRST_NAME,
+         LAST_NAME,
+         EMPLOYEE_ID
+  from employees
+  ) as emp_2 on emp_1.MANAGER_ID = emp_2.EMPLOYEE_ID
+order by emp_1.EMPLOYEE_ID;</code></pre><pre id="3619501a-2cf2-4d40-ba4e-d4086be51be9" class="code"><code>## query result
+
+#,EMPLOYEE_ID,FIRST_NAME,LAST_NAME,manager_last_name
+1,101,Neena,Kochhar,King
+2,102,Lex,De Haan,King
+3,103,Alexander,Hunold,De Haan
+4,104,Bruce,Ernst,Hunold
+5,105,David,Austin,Hunold
+6,106,Valli,Pataballa,Hunold
+7,107,Diana,Lorentz,Hunold
+8,108,Nancy,Greenberg,Kochhar
+9,109,Daniel,Faviet,Greenberg
+10,110,John,Chen,Greenberg
+11,111,Ismael,Sciarra,Greenberg
+12,112,Jose Manuel,Urman,Greenberg
+13,113,Luis,Popp,Greenberg
+14,114,Den,Raphaely,King</code></pre></details></li></ul><hr id="28003077-4dc3-4d67-b8e1-619eb13ce509"/><ul id="dd3cbb26-655c-4b01-86c6-17b076b7f8ce" class="bulleted-list"><li>5. Write a query to find the name (first_name, last_name) and hire date of the employees who was hired after &#x27;Jones&#x27;.</li></ul><ul id="0c3b9f3e-95c1-4642-8595-d57affca3ade" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="7f662227-9f1a-42ab-810b-f78850505b89" class="code"><code>## Idea
+
+- &#x27;Jones&#x27;라는 사람 뒤에 고용된 사람들의 명단을 찾는 쿼리
+
+## step 1
+우선 &#x27;Jones&#x27;라는 사람을 찾아보니 딱 한 명만 나왔고 1987-09-20애 입사하였다.
+
+## step 2
+서브 쿼리를 이용해서 해결. 답이 꼭 한 가지 방법만 있는건 아니니까...</code></pre><pre id="de8bbbd2-1f08-4460-849f-a512fee251a6" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       HIRE_DATE
+from employees
+where HIRE_DATE &gt; (
+  select HIRE_DATE
+  from employees
+  where LAST_NAME = &#x27;Jones&#x27;
+  );</code></pre><pre id="e71cd1fd-5c79-445c-a150-53c698deb0bb" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,HIRE_DATE
+1,Alana,Walsh,1987-09-21
+2,Kevin,Feeney,1987-09-22
+3,Donald,OConnell,1987-09-23
+4,Douglas,Grant,1987-09-24
+5,Jennifer,Whalen,1987-09-25
+6,Michael,Hartstein,1987-09-26
+7,Pat,Fay,1987-09-27
+8,Susan,Mavris,1987-09-28
+9,Hermann,Baer,1987-09-29
+10,Shelley,Higgins,1987-09-30
+11,William,Gietz,1987-10-01</code></pre></details></li></ul><hr id="c2226aeb-e4ea-47e3-a8d8-c26952dfed3b"/><ul id="a2f72ea1-e973-43d4-aa74-66752931d028" class="bulleted-list"><li>6. Write a query to get the department name and number of employees in the department.</li></ul><ul id="d0396174-9a90-434a-9b33-66b28f11e9ed" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="9ab735c7-a15b-494d-b71b-eca6a24f9af4" class="code"><code>## Idea
+
+- 부서 명, 그리고 그 부서에서 일하는 사람의 수를 구하는 문제
+- 부서와 근로자 테이블을 조인하고, groupby를 이용해서 부서, count(근로자) 하면 될 듯
+
+## 추가
+- join의 기준이 되는 항목에 따라 null을 처리 안 할 수도 있다.</code></pre><pre id="28dc5fed-8658-424d-b39c-b6d21968b50b" class="code"><code>## solution
+
+select dep.DEPARTMENT_NAME,
+       count(*) as count_department_employees
+from employees as emp
+left join departments as dep using (department_id)
+group by dep.DEPARTMENT_NAME
+order by count_department_employees DESC;
+
+SELECT department_name AS &#x27;Department Name&#x27;,
+COUNT(*) AS &#x27;No of Employees&#x27;
+FROM departments
+INNER JOIN employees
+ON employees.department_id = departments.department_id
+GROUP BY departments.department_id, department_name
+ORDER BY department_name;</code></pre><pre id="c7243856-5c19-421b-b01f-14adab0a25b1" class="code"><code>## query result
+
+
+## employees에 departments를 조인
+#,DEPARTMENT_NAME,count_department_employees
+1,Shipping,45
+2,Sales,34
+3,Purchasing,6
+4,Finance,6
+5,IT,5
+6,Executive,3
+7,Marketing,2
+8,Accounting,2
+9,Public Relations,1
+10,Human Resources,1
+11,,1
+12,Administration,1
+
+## departments에 employees를 조인
+
+#,Department Name,No of Employees
+1,Accounting,2
+2,Administration,1
+3,Executive,3
+4,Finance,6
+5,Human Resources,1
+6,IT,5
+7,Marketing,2
+8,Public Relations,1
+9,Purchasing,6
+10,Sales,34
+11,Shipping,45</code></pre></details></li></ul><hr id="526fbe43-4bff-4c04-a62f-542b187e5905"/><ul id="15b2e4f0-5621-4aaf-a0b1-d26bbafb4da4" class="bulleted-list"><li>7. Write a query to find the employee ID, job title, number of days between ending date and starting date for all jobs in department 90.</li></ul><ul id="c6afa0cd-be71-4c93-947d-251658d49abe" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ad180545-d259-4b02-9ddb-553b15b0e73f" class="code"><code>## Idea
+
+- job_history table + jobs table join
+- 날짜 차이를 계산하는 쿼리
+- department 90 부서만 찾으면 된다.
+- 날짜 차이를 계산하는 방법은 mysql에서 Datediff
+- 그 외 날짜 계산 하는 방법
+  - [mysql 시간 더하기, 빼기](https://extbrain.tistory.com/58)
+
+## 생각해보니...날짜 계산이 참 중요한 듯</code></pre><pre id="f2534a3a-538a-4a1d-b762-add716a5d414" class="code"><code>## solution
+
+select EMPLOYEE_ID,
+       START_DATE,
+       END_DATE,
+       DATEDIFF (END_DATE, START_DATE) as date_interval
+from job_history as jh
+left join jobs using(job_id)
+where DEPARTMENT_ID = &#x27;90&#x27;
+order by date_interval;</code></pre><pre id="d666d12d-3c9e-4d13-acbe-fdb494445a4a" class="code"><code>## query result
+
+#,EMPLOYEE_ID,START_DATE,END_DATE,date_interval
+1,200,1994-07-01,1998-12-31,1644
+2,200,1987-09-17,1993-06-17,2100</code></pre></details></li></ul><hr id="858ab9e2-ba4a-4527-bde6-a12d833dab6f"/><ul id="67ff6bda-dbb3-466f-9a83-789fdcf2cea2" class="bulleted-list"><li>8. Write a query to display the department ID and name and first name of manager.</li></ul><ul id="977e8acb-ae8b-415c-a0be-cc0843c49bb1" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="cc551b1b-75e5-469c-b28e-5757072660ee" class="code"><code>## Idea
+
+- 부서명, 부서 매니저의 first_name
+- 매니저 역할을 하는 사람들의 이름이 필요하다.
+  - 매니저 역할은 매니저 아이디에서 추출 가능함
+  - employees table에서 조인 쿼리로 뽑아내야 할 듯
+- 위의 결과를 부서 테이블하고 조인하면 될 듯
+
+## 추가
+- 확실히 where조건 상태에서 두 개의 테이블에 속한 컬럼을 연결이 미숙한 것 같다.
+- 해답과 댓글을 살펴보았다.</code></pre><pre id="3704c28b-4c40-4690-aa59-cd9ee18c4902" class="code"><code>## solution
+
+
+### fail query
+select dep.DEPARTMENT_ID,
+       FIRST_NAME
+from employees as emp_1
+inner join (
+  select distinct MANAGER_ID
+  from employees
+  ) as emp_2 on emp_1.EMPLOYEE_ID = emp_2.MANAGER_ID
+left join departments as dep on emp_1.DEPARTMENT_ID = dep.DEPARTMENT_ID
+order by 1;
+
+## success query
+
+select dep.DEPARTMENT_ID,
+       DEPARTMENT_NAME,
+       FIRST_NAME
+from departments as dep
+left join employees as emp on emp.EMPLOYEE_ID = dep.MANAGER_ID;
+
+select d.DEPARTMENT_ID , DEPARTMENT_NAME,FIRST_NAME
+from employees e, departments d
+where e.EMPLOYEE_ID =d.MANAGER_ID ;</code></pre><pre id="9efeaf9a-1285-4e91-b49a-231a2be3a2ef" class="code"><code>## query result
+
+#,DEPARTMENT_ID,DEPARTMENT_NAME,FIRST_NAME
+1,10,Administration,Jennifer
+2,20,Marketing,Michael
+3,30,Purchasing,Den
+4,40,Human Resources,Susan
+5,50,Shipping,Adam
+6,60,IT,Alexander
+7,70,Public Relations,Hermann
+8,80,Sales,John
+9,90,Executive,Steven
+10,100,Finance,Nancy
+11,110,Accounting,Shelley</code></pre></details></li></ul><hr id="7eae55c5-c381-4e90-b59d-dc909c11c485"/><ul id="9ea992b1-844b-4ec5-b178-8ee75bc56c73" class="bulleted-list"><li>9. Write a query to display the department name, manager name, and city.</li></ul><ul id="0372f065-7861-49fb-b6eb-99096751546b" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="5e1ed341-1ccc-41d1-b191-782ad285e605" class="code"><code>## Idea
+
+- 이전 문제의 것을 응용해서 city와 조인하면 될 듯</code></pre><pre id="e415111a-a528-4d2b-a0a6-8a784c3d06c9" class="code"><code>## solution
+
+
+## bas query?
+select *
+from (
+     select
+            dep.DEPARTMENT_ID,
+            DEPARTMENT_NAME,
+            concat(FIRST_NAME, &quot; &quot;, LAST_NAME) as name,
+            CITY
+from departments as dep
+left join employees as emp on emp.EMPLOYEE_ID = dep.MANAGER_ID
+left join locations as lc on lc.LOCATION_ID = dep.LOCATION_ID
+       ) as res
+where name is not null;
+
+## soso...
+
+select DEPARTMENT_NAME,
+       emp.FIRST_NAME,
+       lc.CITY
+from departments as dep
+inner join employees as emp on dep.MANAGER_ID = emp.EMPLOYEE_ID
+inner join locations as lc using(location_id);
+
+## others
+
+SELECT d.department_name, e.first_name, l.city 
+FROM departments d 
+JOIN employees e ON (d.manager_id = e.employee_id) 
+JOIN locations l ON (l.location_id = d.location_id);
+
+select d.DEPARTMENT_ID , DEPARTMENT_NAME,FIRST_NAME,l.LOCATION_ID,city
+from employees e, departments d ,locations l
+where e.EMPLOYEE_ID =d.MANAGER_ID and d.LOCATION_ID =l.LOCATION_ID ;</code></pre><pre id="1df3fbd8-3169-411f-b7fb-304a4e1316ba" class="code"><code>## query result
+
+#,DEPARTMENT_ID,DEPARTMENT_NAME,name,CITY
+1,10,Administration,Jennifer Whalen,Seattle
+2,20,Marketing,Michael Hartstein,Toronto
+3,30,Purchasing,Den Raphaely,Seattle
+4,40,Human Resources,Susan Mavris,London
+5,50,Shipping,Adam Fripp,South San Francisco
+6,60,IT,Alexander Hunold,Southlake
+7,70,Public Relations,Hermann Baer,Munich
+8,80,Sales,John Russell,OX9 9ZB
+9,90,Executive,Steven King,Seattle
+10,100,Finance,Nancy Greenberg,Seattle
+11,110,Accounting,Shelley Higgins,Seattle</code></pre></details></li></ul><hr id="fa9cc943-f430-49ba-a78a-52f7e23be410"/><ul id="4d6e12f4-b903-4535-92ac-7e7bc8cf7db8" class="bulleted-list"><li>10. Write a query to display the job title and average salary of employees.</li></ul><ul id="03bf2e92-3034-4c32-8baf-5a7e7f6351a6" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="ed068f21-db9a-4015-aec8-a735c2c7b0ef" class="code"><code>## Idea
+
+- jobs 와 employees 테이블 join
+- join key는 job_id
+- 우선 각 job_id별로 평균 연봉을 구하고 jobs랑 join해서 title 찾기</code></pre><pre id="31b921e9-a9aa-4e99-85d4-96596cc6ea92" class="code"><code>## solution
+
+select emp.JOB_ID,
+       avg(emp.SALARY),
+       JOB_TITLE
+from employees as emp
+left join jobs using(job_id)
+group by emp.JOB_ID
+order by JOB_TITLE;</code></pre><pre id="66f21a33-2d9d-45df-b96c-5b867ffaa4b9" class="code"><code>## query result
+
+#,JOB_ID,avg(emp.SALARY),JOB_TITLE
+1,FI_ACCOUNT,7920.000000,Accountant
+2,AC_MGR,12000.000000,Accounting Manager
+3,AD_ASST,4400.000000,Administration Assistant
+4,AD_VP,17000.000000,Administration Vice President
+5,FI_MGR,12000.000000,Finance Manager
+6,HR_REP,6500.000000,Human Resources Representative
+7,MK_MAN,13000.000000,Marketing Manager
+8,MK_REP,6000.000000,Marketing Representative
+9,AD_PRES,24000.000000,President
+10,IT_PROG,5760.000000,Programmer</code></pre></details></li></ul><hr id="3fff9ecb-2cac-487c-b8f2-e74ae322ba4c"/><ul id="96178026-64c2-4706-91ab-6d340965a093" class="bulleted-list"><li>11. Write a query to display job title, employee name, and the difference between salary of the employee and minimum salary for the job.</li></ul><ul id="4072fc7d-0cee-40e5-83ae-d24a5f1fd36e" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="21131749-7225-42dc-bb7c-56164b8a19f2" class="code"><code>## Idea
+
+- jobs table에 각 직업별 최소 연봉이 기록되어 있다.
+- 근로자의 연봉과 최소 연봉의 차를 구해야 한다.
+- employees와 jobs를 붙인 후 계산하면 될 듯</code></pre><pre id="d39254a1-586c-451e-b2d4-bd9c70d902f4" class="code"><code>## solution
+
+select jb.JOB_TITLE,
+       concat(emp.FIRST_NAME, &quot; &quot;, emp.LAST_NAME) as name,
+       (SALARY - jb.MIN_SALARY) as salary_diff
+from employees as emp
+left join jobs as jb on emp.JOB_ID = jb.JOB_ID</code></pre><pre id="7c0ac871-7196-4602-a4ee-2b95157c81b5" class="code"><code>## query result
+
+#,JOB_TITLE,name,salary_diff
+1,President,Steven King,4000.00
+2,Administration Vice President,Neena Kochhar,2000.00
+3,Administration Vice President,Lex De Haan,2000.00
+4,Programmer,Alexander Hunold,5000.00
+5,Programmer,Bruce Ernst,2000.00
+6,Programmer,David Austin,800.00
+7,Programmer,Valli Pataballa,800.00
+8,Programmer,Diana Lorentz,200.00
+9,Finance Manager,Nancy Greenberg,3800.00
+10,Accountant,Daniel Faviet,4800.00</code></pre></details></li></ul><hr id="3d2355a9-6006-4014-a107-54706bb60476"/><ul id="cd642215-c8e1-42b6-9685-cd81f284156d" class="bulleted-list"><li>12. Write a query to display the job history that were done by any employee who is currently drawing more than 10000 of salary.</li></ul><ul id="55878811-5ba1-42af-81f0-0e5971b7abfb" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="e4a225bc-96bd-4064-a2e4-d14ef690bc1b" class="code"><code>## Idea
+
+- 1만 달러 이상의 돈을 받는 사람의 job history를 보고 싶은건가?(해석이 안 돼..해석이)
+- job_history, employees table을 조인하여서 구하였다.
+</code></pre><pre id="1ff2dfc4-870d-40c0-8d56-7a8ebb2abe13" class="code"><code>## solution
+
+select emp.EMPLOYEE_ID,
+       jh. *
+from employees as emp
+inner join job_history as jh on jh.EMPLOYEE_ID = emp.EMPLOYEE_ID
+where emp.SALARY &gt; 10000;</code></pre><pre id="f0cea364-f65c-4c09-818a-dce44e3f030b" class="code"><code>## query result
+
+#,EMPLOYEE_ID,EMPLOYEE_ID,START_DATE,END_DATE,JOB_ID,DEPARTMENT_ID
+1,102,102,1993-01-13,1998-07-24,IT_PROG,60
+2,101,101,1989-09-21,1993-10-27,AC_ACCOUNT,110
+3,101,101,1993-10-28,1997-03-15,AC_MGR,110
+4,201,201,1996-02-17,1999-12-19,MK_REP,20
+5,114,114,1998-03-24,1999-12-31,ST_CLERK,50</code></pre></details></li></ul><hr id="4140dcda-3a88-4647-b93a-2c547229b130"/><ul id="56a545ff-488d-495e-8188-8a63a38ccfb8" class="bulleted-list"><li>13. Write a query to display department name, name (first_name, last_name), hire date, salary of the manager for all managers whose experience is more than 15 years.</li></ul><ul id="57425fc0-f387-4098-b557-2664f87e45c5" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="d8123c96-e335-4df4-a7cb-6c1c24b4e657" class="code"><code>## Idea
+
+- 근무 경력 15년차 이상의 매니저에 대해서
+  - department name, 
+  - name (first_name, last_name), hire date, salary of the manager
+
+- manager_id는 department table에 있다.
+  - 이거와 employees를 조인하고 거기서 hire date와 현재(now())의 차를 구한다.
+  - datediff(now(), hire_date)</code></pre><pre id="5af1b4ad-d851-44c1-acc2-9f1142014570" class="code"><code>## solution
+
+select FIRST_NAME,
+       LAST_NAME,
+       emp.HIRE_DATE,
+       (DATEDIFF(now(), emp.HIRE_DATE) / 365)as manager_experience
+from departments as dep
+inner join employees as emp on emp.EMPLOYEE_ID = dep.MANAGER_ID
+where (DATEDIFF(now(), emp.HIRE_DATE) / 365) &gt;= 15;</code></pre><pre id="a3b7af59-9313-4093-8877-e85966a4288e" class="code"><code>## query result
+
+#,FIRST_NAME,LAST_NAME,HIRE_DATE,manager_experience
+1,Steven,King,1987-06-17,31.9863
+2,Alexander,Hunold,1987-06-20,31.9781
+3,Nancy,Greenberg,1987-06-25,31.9644
+4,Den,Raphaely,1987-07-01,31.9479
+5,Adam,Fripp,1987-07-08,31.9288
+6,John,Russell,1987-08-01,31.8630
+7,Jennifer,Whalen,1987-09-25,31.7123
+8,Michael,Hartstein,1987-09-26,31.7096
+9,Susan,Mavris,1987-09-28,31.7041
+10,Hermann,Baer,1987-09-29,31.7014
+11,Shelley,Higgins,1987-09-30,31.6986</code></pre></details></li></ul><p id="b0b68e50-0665-4a04-b96e-77bdee936573"></p></div><div id="949a2438-1776-4331-a044-f45ad6780621" style="width:37.5%" class="column"><h2 id="31d551d5-5d48-45e6-a152-bc63951c60a4">Structure of &#x27;hr&#x27; database &amp; answer sample</h2><hr id="b8dc0b22-3333-41cd-b8b3-44d8a2d67b94"/><figure id="697b6a8b-3162-4b26-bc5b-cfd472cbfcfa" class="image"><a href="MySQL Joins 13 exercises with solution/Untitled.png"><img style="width:960px" src="MySQL Joins 13 exercises with solution/Untitled.png"/></a></figure><hr id="22cfac69-8d56-4eab-8e83-32fe058817f9"/><ul id="9ebb37aa-c203-4dce-b40a-d086048685bd" class="bulleted-list"><li>문제를 복사 해오면 될 듯</li></ul><ul id="483fd301-653f-4f3e-bf85-ad7745e2a409" class="toggle"><li><details open=""><summary>Idea, Solution, Result</summary><pre id="9fb61baa-ebfe-4869-ac8a-789b603fb5d4" class="code"><code>## Idea
+
+- </code></pre><pre id="5848097b-b05a-4a89-81f9-e5ab907ede9a" class="code"><code>## solution
+
+select *
+from DB</code></pre><pre id="431d6824-5e45-4128-a08f-045ef9a8693a" class="code"><code>## query result
+
+</code></pre></details></li></ul><p id="a9b37646-90b2-4a76-b3a5-bb86b75bafc4"></p></div></div></div></article></body></html>
