@@ -9,7 +9,6 @@
 
 > 문제 풀이 아래에는 [www.mysqltutorial.org](http://www.mysqltutorial.org/basic-mysql-tutorial.aspx)에서 학습하면서 필요한 내용을 정리하였습니다.
 
-
 ### :information_source: DB
 
 mysql 5.6을 설치하여 연습하였습니다.
@@ -33,7 +32,6 @@ MySQL Basic SELECT statement 19 Exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Basic%20SELECT%20statement%2019%20Exercises)
 - [gist](https://gist.github.com/timetobye/e7e8fe3b0b298cc82a8ec456c8b84dec)
 
-
 MySQL Restricting and Sorting data 11 exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Restricting%20and%20Sorting%20data%20%5B11%20exercises%5D)
 
@@ -46,6 +44,10 @@ MySQL Subquery 22 exercises
 MySQL Joins 13 exercises with solution
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Joins%20%5B13%20exercises%20with%20solution%5D)
 
+
+**thanks to**
+- sql을 활용해서 멋지게 일하시는 나의 동료 DD님 감사합니다.
+- sql 고민 할 때 이거 보세요 하고 링크 건네주셨던 G.S Park에게도 감사합니다.
 --------------------------
 
 
