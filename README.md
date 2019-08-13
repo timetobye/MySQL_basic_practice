@@ -718,3 +718,29 @@ limit 100
 8,"Kalloufi, Saniya"
 9,"Peac, Sumant"
 ```
+
+### IFNULL
+
+- MySQL IFNULL function is one of the MySQL control flow functions that accepts two arguments and returns the first argument if it is not NULL. Otherwise, the IFNULL function returns the second argument.
+```
+IFNULL(expression_1,expression_2);
+```
+- The IFNULL function returns expression_1 if expression_1 is not NULL ; otherwise, it returns expression_2.
+
+```
+select ifnull(1, 0);
+
+result : 1
+```
+
+```
+select ifnull('', 1);
+
+result : 빈칸 나옴 = ''
+```
+
+```
+select ifnull(null, 'IFNULL_FUNCTION');
+
+result : 'IFNULL_FUNCTION'
+```
