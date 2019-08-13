@@ -744,3 +744,57 @@ select ifnull(null, 'IFNULL_FUNCTION');
 
 result : 'IFNULL_FUNCTION'
 ```
+
+
+### Derived table
+
+- A derived table is a virtual table returned from a SELECT statement. A derived table is similar to a temporary table, but using a derived table in the SELECT statement is much simpler than a temporary table because it does not require steps of creating the temporary table.
+
+- The term **derived table** and subquery is often used interchangeably. When a stand-alone subquery is used in the FROM clause of a SELECT statement, we call it a derived table.
+
+- The following illustrates a query that uses a derived table:
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-Derived-Table.png)  
+
+```
+SELECT 
+    customerNumber,
+    ROUND(SUM(quantityOrdered * priceEach)) sales,
+    (CASE
+        WHEN SUM(quantityOrdered * priceEach) < 10000 THEN 'Silver'
+        WHEN SUM(quantityOrdered * priceEach) BETWEEN 10000 AND 100000 THEN 'Gold'
+        WHEN SUM(quantityOrdered * priceEach) > 100000 THEN 'Platinum'
+    END) customerGroup
+FROM
+    orderdetails
+        INNER JOIN
+    orders USING (orderNumber)
+WHERE
+    YEAR(shippedDate) = 2003
+GROUP BY customerNumber;
+```
+
+```
+SELECT 
+    customerGroup, 
+    COUNT(cg.customerGroup) AS groupCount
+FROM
+    (SELECT 
+        customerNumber,
+            ROUND(SUM(quantityOrdered * priceEach)) sales,
+            (CASE
+                WHEN SUM(quantityOrdered * priceEach) < 10000 THEN 'Silver'
+                WHEN SUM(quantityOrdered * priceEach) BETWEEN 10000 AND 100000 THEN 'Gold'
+                WHEN SUM(quantityOrdered * priceEach) > 100000 THEN 'Platinum'
+            END) customerGroup
+    FROM
+        orderdetails
+    INNER JOIN orders USING (orderNumber)
+    WHERE
+        YEAR(shippedDate) = 2003
+    GROUP BY customerNumber) cg
+GROUP BY cg.customerGroup;   
+```
+
+- result
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-Derived-Table-Customer-Group-Counts.png)
