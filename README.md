@@ -658,3 +658,63 @@ mysql> select now(), sysdate(), current_date(), sleep(5), now(), sysdate();
 ```
 
 - [참고 페이지](https://stackoverflow.com/questions/24137752/difference-between-now-sysdate-current-date-in-mysql)
+
+
+
+### concat_ws vs concat
+
+- concat_ws와 concat의 차이를 아래와 같다.
+- concat_ws에 문자열을 지정하면 두개의 문자열을 합치면서 그 사이에 지정된 문자열이 들어간다.
+
+```
+select concat_ws(', ', last_name, first_name) as full_name
+from employees
+limit 100;
+
+#,full_name
+1,"Facello, Georgi"
+2,"Simmel, Bezalel"
+3,"Bamford, Parto"
+4,"Koblick, Chirstian"
+5,"Maliniak, Kyoichi"
+6,"Preusig, Anneke"
+7,"Zielinski, Tzvetan"
+8,"Kalloufi, Saniya"
+9,"Peac, Sumant"
+```
+- 그렇다면 3개의 column이 지정되면...?
+```
+select concat_ws(', ', last_name, first_name, last_name) as full_name
+from employees
+limit 100;
+
+#,full_name
+1,"Facello, Georgi, Facello"
+2,"Simmel, Bezalel, Simmel"
+3,"Bamford, Parto, Bamford"
+4,"Koblick, Chirstian, Koblick"
+5,"Maliniak, Kyoichi, Maliniak"
+6,"Preusig, Anneke, Preusig"
+7,"Zielinski, Tzvetan, Zielinski"
+8,"Kalloufi, Saniya, Kalloufi"
+9,"Peac, Sumant, Peac"
+```
+- 위에 처럼 처음에 지정된 문자가 구분자가 된다.
+
+- concat은 하나하나씩 다 지정을 해줘야 한다.
+```
+select concat(last_name, ', ',first_name) as full_name
+from employees
+limit 100
+
+#,full_name
+1,"Facello, Georgi"
+2,"Simmel, Bezalel"
+3,"Bamford, Parto"
+4,"Koblick, Chirstian"
+5,"Maliniak, Kyoichi"
+6,"Preusig, Anneke"
+7,"Zielinski, Tzvetan"
+8,"Kalloufi, Saniya"
+9,"Peac, Sumant"
+```
