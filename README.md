@@ -800,11 +800,78 @@ GROUP BY cg.customerGroup;
 ![alt text](http://www.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-Derived-Table-Customer-Group-Counts.png)
 
 
+### MySQL CTE
+mysql 8.0부터 지원 가능한 기능이다. 그러나 이 기능은 redshift를 사용할 때 종종 사용했던 기법으로 알면 참 좋은 기능이다. 현재 5.6으로 학습을 하고 있는데 그럼에도 불구하고 좋아서 남긴다.
+```
+MySQL introduced the common table expression feature or CTE in short since version 8.0 so you should have MySQL 8.0 installed on your computer in order to practice with the statements in this tutorial.
+```
+
+```
+WITH customers_in_usa AS (
+    SELECT 
+        customerName, state
+    FROM
+        customers
+    WHERE
+        country = 'USA'
+) SELECT 
+    customerName
+ FROM
+    customers_in_usa
+ WHERE
+    state = 'CA'
+ ORDER BY customerName;
+```
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-CTE-Example-1.png)
+
+
+### recursive CTE
+- 나중에 학습 할 내용
+- http://www.mysqltutorial.org/mysql-recursive-cte/
+
+
+###
+
+```
+WITH topsales2003 AS (
+    SELECT 
+        salesRepEmployeeNumber employeeNumber,
+        SUM(quantityOrdered * priceEach) sales
+    FROM
+        orders
+            INNER JOIN
+        orderdetails USING (orderNumber)
+            INNER JOIN
+        customers USING (customerNumber)
+    WHERE
+        YEAR(shippedDate) = 2003
+            AND status = 'Shipped'
+    GROUP BY salesRepEmployeeNumber
+    ORDER BY sales DESC
+    LIMIT 5
+)
+SELECT 
+    employeeNumber, firstName, lastName, sales
+FROM
+    employees
+        JOIN
+    topsales2003 USING (employeeNumber);
+```
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-CTE-Example-2.png)
+
+
 ### Union vs Union All
 
 **Union**
 
-Union을 하게 되면 컬럼이 같은 두 개의 테이블을 결합 할 수 있다.
+Union을 하게 되면 컬럼이 같은 두 개의 테이블을 결합 할 수 있다. 단 중복되는 항목은 지워진다.
+
+**Union All**
+
+Union All을 하게 되면 마찬가지로 컬럼이 같은 두 개의 테이블을 결합 할 수 있다. 단 중복되는 항목은 지워지지 않는다.
+-  the duplicates appear in the combined result set because of the UNION ALL operation.
 
 ```
 SELECT id
@@ -863,3 +930,74 @@ FROM
 ```
 
 ![alt text](http://www.mysqltutorial.org/wp-content/uploads/2009/12/MySQL-UNION-example.png)
+
+
+### INTERSECT
+
+basic concept
+```
+(SELECT column_list 
+FROM table_1)
+INTERSECT
+(SELECT column_list
+FROM table_2);
+```
+
+To use the INTERSECT operator for two queries, the following rules are applied:
+- The order and the number of columns must be the same.
+- The data types of the corresponding columns must be compatible.
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2014/05/MySQL-INTERSECT.png)
+
+**but** Unfortunately, MySQL does not support the INTERSECT operator. However, you can simulate the INTERSECT operator.
+
+```
+SELECT id
+FROM t1;
+
+id
+----
+1
+2
+3
+
+SELECT id
+FROM t2;
+
+id
+---
+2
+3
+4
+```
+
+Simulate MySQL INTERSECT operator using DISTINCT operator and INNER JOIN clause.
+- The following statement uses DISTINCT operator and INNER JOIN clause to return the distinct rows in both tables:
+
+```
+SELECT DISTINCT 
+   id 
+FROM t1
+   INNER JOIN t2 USING(id);
+   
+id
+----
+2
+3
+
+
+ELECT DISTINCT
+    id
+FROM
+    t1
+WHERE
+    id IN (SELECT 
+            id
+        FROM
+            t2);
+	    
+id
+----
+2
+3
+```
