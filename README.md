@@ -1036,3 +1036,112 @@ FROM
 WHERE
     t2.id IS NULL;
 ```
+
+### Insert
+The INSERT statement allows you to insert one or more rows into a table. The following illustrates the syntax of the INSERT statement
+
+basice concept
+```
+INSERT INTO table(c1,c2,...)
+VALUES (v1,v2,...);
+
+
+INSERT INTO table(c1,c2,...)
+VALUES 
+   (v11,v12,...),
+   (v21,v22,...),
+    ...
+   (vnn,vn2,...);
+```
+
+ref : http://www.mysqltutorial.org/mysql-insert-statement.aspx
+
+
+### Insert into select
+
+basic concept
+
+```
+INSERT INTO table_name(column_list)
+SELECT 
+   select_list 
+FROM 
+   another_table;
+```
+
+아래와 같은 테이블을 만든다고 하자.
+
+```
+CREATE TABLE suppliers (
+    supplierNumber INT AUTO_INCREMENT,
+    supplierName VARCHAR(50) NOT NULL,
+    phone VARCHAR(50),
+    addressLine1 VARCHAR(50),
+    addressLine2 VARCHAR(50),
+    city VARCHAR(50),
+    state VARCHAR(50),
+    postalCode VARCHAR(50),
+    country VARCHAR(50),
+    customerNumber INT
+    PRIMARY KEY (supplierNumber)
+);
+```
+
+
+```
+SELECT 
+    customerNumber,
+    customerName,
+    phone,
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    country
+FROM
+    customers
+WHERE
+    country = 'USA' AND 
+    state = 'CA';
+```
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2018/09/MySQL-INSERT-INTO-SELECT-customers-data-to-be-inserted.png)
+
+새롭게 생성한 테이블에 아래의 쿼리문을 넣으면...!!
+```
+INSERT INTO suppliers (
+    supplierName, 
+    phone, 
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    country,
+    customerNumber
+)
+SELECT 
+    customerName,
+    phone,
+    addressLine1,
+    addressLine2,
+    city,
+    state ,
+    postalCode,
+    country,
+    customerNumber
+FROM 
+    customers
+WHERE 
+    country = 'USA' AND 
+    state = 'CA';
+    
+SELECT 
+    *
+FROM
+    suppliers;
+```
+
+이렇게 된다.
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2018/09/MySQL-INSERT-INTO-SELECT-Example.png)
