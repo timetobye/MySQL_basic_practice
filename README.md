@@ -1001,3 +1001,38 @@ id
 2
 3
 ```
+
+
+### Minus
+basic concept
+```
+SELECT column_list_1 FROM table_1
+MINUS 
+SELECT columns_list_2 FROM table_2;
+```
+- MYSQL에서는 Minus 기능을 지원하지 않는다.
+- 그렇다면 어떻게...? LEFT join을 응용하면 됩니다.
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-MINUS.png)
+
+
+```
+SELECT 
+    column_list 
+FROM 
+    table_1
+    LEFT JOIN table_2 ON join_predicate
+WHERE 
+    table_2.id IS NULL; 
+```
+
+```
+SELECT 
+    id
+FROM
+    t1
+        LEFT JOIN
+    t2 USING (id)
+WHERE
+    t2.id IS NULL;
+```
