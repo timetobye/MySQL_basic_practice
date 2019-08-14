@@ -798,3 +798,68 @@ GROUP BY cg.customerGroup;
 
 - result
 ![alt text](http://www.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-Derived-Table-Customer-Group-Counts.png)
+
+
+### Union vs Union All
+
+**Union**
+
+Union을 하게 되면 컬럼이 같은 두 개의 테이블을 결합 할 수 있다.
+
+```
+SELECT id
+FROM t1
+UNION
+SELECT id
+FROM t2;
+
++----+
+| id |
++----+
+|  1 |
+|  2 |
+|  3 |
+|  4 |
++----+
+
+
+SELECT id
+FROM t1
+UNION ALL
+SELECT id
+FROM t2;
+
++----+
+| id |
++----+
+|  1 |
+|  2 |
+|  3 |
+|  2 |
+|  3 |
+|  4 |
++----+
+```
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2009/12/MySQL-UNION.png)
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2009/12/MySQL-UNION-vs-JOIN.png)
+
+그렇다면 다른 join키가 없는 다른 테이블은 어떻게 결합 할 수 있을까?
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2013/02/employees_table.png)
+
+```
+SELECT 
+    firstName, 
+    lastName
+FROM
+    employees 
+UNION 
+SELECT 
+    contactFirstName, 
+    contactLastName
+FROM
+    customers;
+```
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2009/12/MySQL-UNION-example.png)
