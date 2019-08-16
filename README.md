@@ -1145,3 +1145,126 @@ FROM
 
 이렇게 된다.
 ![alt text](http://www.mysqltutorial.org/wp-content/uploads/2018/09/MySQL-INSERT-INTO-SELECT-Example.png)
+
+
+### Date Function
+
+#### CURDATE
+- The CURDATE() function returns the current date as a value in the 'YYYY-MM-DD' format if it is used in a string context or YYYMMDD format if it is used in a numeric context.
+
+shows how the CURDATE() function is used in the string context.
+```
+select curdate();
+
+2019-08-16
+```
+
+illustrates how the CURDATE() function is used in a numeric context
+```
+select curdate() + 0;
+
+20190816
+```
+
+The CURRENT_DATE and CURRENT_DATE() are synonyms for CURDATE().
+```
+select current_date(), current_date, curdate()
+
+#	current_date()	current_date	curdate()
+1	2019-08-16	2019-08-16	2019-08-16
+```
+
+CURDATE vs. NOW
+- The CURDATE() function returns the current date with date part only while the NOW() function returns both date and time parts of the current time.
+
+```
+select current_date, now()
+
+#	current_date	now()
+1	2019-08-16	2019-08-16 17:14:14
+
+
+select date(now());
+
+2019-08-16
+```
+
+
+#### DATEDIFF
+- The MySQL DATEDIFF function calculates the number of days between two  DATE,  DATETIME, or  TIMESTAMP values.
+- http://www.mysqltutorial.org/mysql-datediff.aspx
+
+basic concept
+```
+DATEDIFF(date_expression_1,date_expression_2);
+```
+
+```
+SELECT DATEDIFF('2011-08-17','2011-08-17'); --  0 day
+0
+
+SELECT DATEDIFF('2011-08-17','2011-08-08'); --  9 days
+9
+
+SELECT DATEDIFF('2011-08-08','2011-08-17'); -- -9 days
+-9
+```
+
+```
+SELECT 
+    orderNumber, 
+    DATEDIFF(requiredDate, shippedDate) daysLeft
+FROM
+    orders
+ORDER BY daysLeft DESC;
+
+#	orderNumber	daysleft
+1	10409	11
+2	10410	10
+3	10105	9
+4	10135	9
+5	10190	9
+6	10201	9
+7	10254	9
+8	10257	9
+9	10289	9
+10	10299	9
+11	10302	9
+
+
+SELECT
+    orderNumber,
+    DATEDIFF(requiredDate, orderDate) remaining_days
+FROM
+    orders
+WHERE
+    status = 'In Process'
+ORDER BY remaining_days;
+
+#	orderNumber	remaining_days
+1	10423	6
+2	10425	7
+3	10421	8
+4	10424	8
+5	10420	9
+6	10422	12
+
+
+SELECT 
+    orderNumber,
+    ROUND(DATEDIFF(requiredDate, orderDate) / 7, 2),
+    ROUND(DATEDIFF(requiredDate, orderDate) / 30,2)
+FROM
+    orders
+WHERE
+    status = 'In Process';
+    
+#	orderNumber	ROUND(DATEDIFF(requiredDate, orderDate) / 7, 2)	ROUND(DATEDIFF(requiredDate, orderDate) / 30,2)
+1	10420	1.29	0.30
+2	10421	1.14	0.27
+3	10422	1.71	0.40
+4	10423	0.86	0.20
+5	10424	1.14	0.27
+6	10425	1.00	0.23    
+```
+
