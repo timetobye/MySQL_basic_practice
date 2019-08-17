@@ -1422,3 +1422,77 @@ SELECT DATE_SUB('2017-07-04',INTERVAL 1 DAY) result;
 +------------+
 1 row in set (0.00 sec) 
 ```
+
+#### DATE_FORMAT
+- To format a date value to a specific format, you use the DATE_FORMAT function. The syntax of the DATE_FORMAT function is as follows:
+
+```
+DATE_FORMAT(date,format)
+```
+
+The DATE_FORMAT function accepts two arguments:
+- date : is a valid date value that you want to format
+- format : is a format string that consists of predefined specifiers. Each specifier is preceded by a percentage character ( % ). See the table below for a list of predefined specifiers.
+- 결국 %가 있는 부분을 잘 처리해야 하는데....너무 많아서 링크를 걸어놓고 자주 보자.
+- http://www.mysqltutorial.org/mysql-date_format/
+
+```
+SELECT 
+    orderNumber,
+    DATE_FORMAT(orderdate, '%Y-%m-%d') orderDate,
+    DATE_FORMAT(requireddate, '%a %D %b %Y') requireddate,
+    DATE_FORMAT(shippedDate, '%W %D %M %Y') shippedDate
+FROM
+    orders;
+    
+    #	orderNumber	orderDate	requireddate	shippedDate
+1	10100	2003-01-06	Mon 13th Jan 2003	Friday 10th January 2003
+2	10101	2003-01-09	Sat 18th Jan 2003	Saturday 11th January 2003
+3	10102	2003-01-10	Sat 18th Jan 2003	Tuesday 14th January 2003
+4	10103	2003-01-29	Fri 7th Feb 2003	Sunday 2nd February 2003
+5	10104	2003-01-31	Sun 9th Feb 2003	Saturday 1st February 2003
+6	10105	2003-02-11	Fri 21st Feb 2003	Wednesday 12th February 2003
+7	10106	2003-02-17	Mon 24th Feb 2003	Friday 21st February 2003
+....
+```
+
+#### STR_TO_DATE()
+- http://www.mysqltutorial.org/mysql-str_to_date/
+- The STR_TO_DATE() converts the str string into a date value based on the fmt format string. The STR_TO_DATE() function may return a DATE , TIME, or DATETIME value based on the input and format strings. If the input string is illegal, the STR_TO_DATE() function returns NULL.
+- 쿼리 할 때 종종 필요하더라...
+```
+STR_TO_DATE(str,fmt);
+```
+
+```
+SELECT STR_TO_DATE('21,5,2013','%d,%m,%Y');
+
+2013-05-21
+```
+
+Based on the format string ‘%d, %m, %Y’, the STR_TO_DATE() function scans the ‘21,5,2013’ input string.
+- First, it attempts to find a match for the %d format specifier, which is a day of the month (01…31), in the input string. Because the number 21 matches with the %d specifier, the function takes 21 as the day value.
+- Second, because the comma (,) literal character in the format string matches with the comma in the input string, the function continues to check the second format specifier %m , which is a month (01…12), and finds that the number 5 matches with the %m format specifier. It takes the number 5 as the month value.
+- Third, after matching the second comma (,), the STR_TO_DATE() function keeps finding a match for the third format specifier %Y , which is four-digit year e.g., 2012,2013, etc., and it takes the number 2013 as the year value.
+
+Point!!
+- The STR_TO_DATE() function ignores extra characters at the end of the input string when it parses the input string based on the format string. See the following example:
+
+```
+SELECT STR_TO_DATE('21,5,2013 extra characters','%d,%m,%Y');
+
+2013-05-21
+```
+
+불완전한 값이 들어오면...
+- The STR_TO_DATE() sets all incomplete date values, which are not provided by the input string, to zero. See the following example:
+```
+SELECT STR_TO_DATE('2013','%Y');
+
+2012-11-30
+
+
+SELECT STR_TO_DATE('113005','%h%i%s');
+
+11:30:05
+```
