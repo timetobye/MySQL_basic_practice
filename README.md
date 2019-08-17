@@ -1268,3 +1268,157 @@ WHERE
 6	10425	1.00	0.23    
 ```
 
+#### DAY
+
+```
+DAY(date)
+
+SELECT DAY('2010-01-15');
+
+15
+
+응용하면....
+
+
+SELECT 
+    DAY(orderdate) dayofmonth, 
+    COUNT(*)
+FROM
+    orders
+WHERE
+    YEAR(orderdate) = 2004
+GROUP BY dayofmonth
+ORDER BY dayofmonth;
+
+#	dayofmonth	COUNT(*)
+1	1	5
+2	2	9
+3	3	7
+4	4	8
+5	5	6
+6	6	3
+7	7	4
+8	8	4
+9	9	7
+10	10	7
+11	11	3
+12	12	5
+13	13	3
+...
+```
+
+#### DATE_ADD
+- http://www.mysqltutorial.org/mysql-date_add/
+- The DATE_ADD function adds an interval to a DATE or DATETIME value. The following illustrates the syntax of the DATE_ADD function
+
+```
+DATE_ADD(start_date, INTERVAL expr unit);
+```
+
+The DATE_ADD function may return a DATETIME value or a string, depending on the arguments:
+- 처음에 입력되는 형에 따라 달라진다.
+- DATETIME if the first argument is a DATETIME value or if the interval value has time element such as hour, minute or second, etc.
+- String otherwise.
+
+```
+SELECT 
+    DATE_ADD('1999-12-31 23:59:59',
+        INTERVAL 1 SECOND) result;
+ 
++---------------------+
+| result              |
++---------------------+
+| 2000-01-01 00:00:00 |
++---------------------+
+1 row in set (0.00 sec)
+```
+
+```
+SELECT 
+    DATE_ADD('1999-12-31 00:00:01',
+        INTERVAL 1 DAY) result;        
+ 
++---------------------+
+| result              |
++---------------------+
+| 2000-01-01 00:00:01 |
++---------------------+
+1 row in set (0.00 sec)
+```
+
+- 멀티타입으로 입력도 되는 듯 minute_second
+```
+SELECT 
+    DATE_ADD('1999-12-31 23:59:59',
+        INTERVAL '1:1' MINUTE_SECOND) result;
+ 
++---------------------+
+| result              |
++---------------------+
+| 2000-01-01 00:01:00 |
++---------------------+
+1 row in set (0.00 sec)
+```
+
+```
+SELECT DATE_ADD('2000-01-01 00:00:00',
+     INTERVAL '-1 5' DAY_HOUR) result;
+ 
++---------------------+
+| result              |
++---------------------+
+| 1999-12-30 19:00:00 |
++---------------------+
+1 row in set (0.00 sec)
+```
+
+**interval handling**
+
+```
+SELECT 
+    DATE_ADD('2000-01-01',
+        INTERVAL 5 / 2 HOUR_MINUTE) result;
+ 
+ 
++---------------------+
+| result              |
++---------------------+
+| 2000-01-04 13:20:00 |
++---------------------+
+1 row in set (0.00 sec)
+```
+
+```
+SELECT 
+    DATE_ADD('2010-01-30', 
+              INTERVAL 1 MONTH) result;
+ 
++------------+
+| result     |
++------------+
+| 2010-02-28 |
++------------+
+1 row in set (0.00 sec)
+```
+#### DATE_SUB
+- http://www.mysqltutorial.org/mysql-date_sub/
+- 결론적으로는 사용법 자체는 DATE_ADD랑 다를게 없는듯
+- The DATE_SUB() function subtracts a time value (or an interval) from a DATE or DATETIME value. The following illustrates the DATE_SUB() function:
+
+```
+DATE_SUB(start_date,INTERVAL expr unit)
+```
+
+The DATE_SUB() function accepts two arguments:
+- start_date is the starting DATE or DATETIME value.
+- expr is a string that determines an interval value to be subtracted from the starting date. The unit is the interval unit that expr should be interpreted e.g., DAY, HOUR, etc.
+
+```
+SELECT DATE_SUB('2017-07-04',INTERVAL 1 DAY) result;
++------------+
+| result     |
++------------+
+| 2017-07-03 |
++------------+
+1 row in set (0.00 sec) 
+```
