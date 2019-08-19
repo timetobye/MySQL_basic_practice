@@ -1146,6 +1146,111 @@ FROM
 이렇게 된다.
 ![alt text](http://www.mysqltutorial.org/wp-content/uploads/2018/09/MySQL-INSERT-INTO-SELECT-Example.png)
 
+### IF
+- MySQL IF function is one of the MySQL control flow functions that returns a value based on a condition. The IF function is sometimes referred to as IF ELSE or IF THEN ELSE function.
+
+```
+IF(expr,if_true_expr,if_false_expr)
+```
+
+- If the expr evaluates to TRUE i.e., expr is not NULL and expr is not 0, the IF function returns the if_true_expr , otherwise, it returns if_false_expr The IF function returns a numeric or a string, depending on how it is used.
+
+```
+SELECT IF(1 = 2,'true','false'); -- false
+
+SELECT IF(1 = 1,' true','false'); -- true
+```
+
+```
+SELECT
+    customerNumber, customerName, state, country
+FROM
+    customers;
+    
+#,customerNumber,customerName,state,country
+1,103,Atelier graphique,,France
+2,112,Signal Gift Stores,NV,USA
+3,114,"Australian Collectors, Co.",Victoria,Australia
+4,119,La Rochelle Gifts,,France
+5,121,Baane Mini Imports,,Norway
+6,124,Mini Gifts Distributors Ltd.,CA,USA
+7,125,Havel & Zbyszek Co,,Poland
+
+
+
+SELECT
+    customerNumber,
+    customerName,
+    if(state is Null,'N/A', state),
+    country
+FROM
+    customers;
+
+#,customerNumber,customerName,"if(state is Null,'N/A', state)",country
+1,103,Atelier graphique,N/A,France
+2,112,Signal Gift Stores,NV,USA
+3,114,"Australian Collectors, Co.",Victoria,Australia
+4,119,La Rochelle Gifts,N/A,France
+5,121,Baane Mini Imports,N/A,Norway
+6,124,Mini Gifts Distributors Ltd.,CA,USA
+7,125,Havel & Zbyszek Co,N/A,Poland
+```
+
+MySQL IF function with aggregate functions
+- MySQL SUM IF – Combining the IF function with the SUM function
+- The IF function is useful when it combines with an aggregate function. Suppose if you want to know how many orders have been shipped and cancelled, you can use the IF function with the SUM aggregate function as the following query:
+
+```
+select
+    sum(if(status = 'Shipped', 1, 0)) AS shipped,
+    sum(if(status = 'Cancelled', 1, 0)) AS Cancelled
+from
+    orders;
+
+#,shipped,Cancelled
+1,303,6
+```
+
+MySQL COUNT IF – Combining the IF function with the COUNT function
+
+```
+SELECT DISTINCT
+    status
+FROM
+    orders
+ORDER BY status;
+
+#,status
+1,Cancelled
+2,Disputed
+3,In Process
+4,On Hold
+5,Resolved
+6,Shipped
+
+
+SELECT 
+    COUNT(IF(status = 'Cancelled', 1, NULL)) Cancelled,
+    COUNT(IF(status = 'Disputed', 1, NULL)) Disputed,
+    COUNT(IF(status = 'In Process', 1, NULL)) 'In Process',
+    COUNT(IF(status = 'On Hold', 1, NULL)) 'On Hold',
+    COUNT(IF(status = 'Resolved', 1, NULL)) 'Resolved',
+    COUNT(IF(status = 'Shipped', 1, NULL)) 'Shipped'
+FROM
+    orders;
+    
+#,Cancelled,Disputed,In Process,On Hold,Resolved,Shipped
+1,6,3,6,4,4,303 
+```
+
+같은 결과로 아래와 같이 사용 할 수도 있다.
+```
+SELECT status, COUNT(STATUS)
+FROM orders
+GROUP BY status
+```
+- 가로로 보여주느냐,...세로로 보여주느냐...
+
 
 ### Date Function
 
