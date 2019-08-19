@@ -719,6 +719,42 @@ limit 100
 9,"Peac, Sumant"
 ```
 
+### group_concat
+- group by를 응용
+- grouping 되는 항목과 관련된 다른 값들을 concat해서 출력할 수 있다.
+- 구분자를 설정하지 않으면 기본적으로 ',' 가, 설정할 경우 예제에는 '-'가 표시되었다.
+
+```
+select productline, group_concat(distinct productScale)
+from products
+group by productLine
+
+
+#,productline,group_concat(distinct productScale)
+1,Classic Cars,"1:10,1:12,1:18,1:24"
+2,Motorcycles,"1:10,1:12,1:18,1:24,1:32,1:50"
+3,Planes,"1:18,1:72,1:24,1:700"
+4,Ships,"1:18,1:24,1:700,1:72"
+5,Trains,"1:18,1:32,1:50"
+6,Trucks and Buses,"1:12,1:18,1:24,1:32,1:50"
+7,Vintage Cars,"1:18,1:24,1:32,1:50"
+
+
+select productline, group_concat(distinct productScale separator'-')
+from products
+group by productLine
+
+#,productline,group_concat(distinct productScale separator'-')
+1,Classic Cars,1:10-1:12-1:18-1:24
+2,Motorcycles,1:10-1:12-1:18-1:24-1:32-1:50
+3,Planes,1:18-1:72-1:24-1:700
+4,Ships,1:18-1:24-1:700-1:72
+5,Trains,1:18-1:32-1:50
+6,Trucks and Buses,1:12-1:18-1:24-1:32-1:50
+7,Vintage Cars,1:18-1:24-1:32-1:50
+```
+
+
 ### IFNULL
 
 - MySQL IFNULL function is one of the MySQL control flow functions that accepts two arguments and returns the first argument if it is not NULL. Otherwise, the IFNULL function returns the second argument.
