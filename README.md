@@ -1288,6 +1288,139 @@ GROUP BY status
 - 가로로 보여주느냐,...세로로 보여주느냐...
 
 
+
+### Update
+- use the UPDATE statement to update existing data in a table. you can also use the UPDATE statement to change column values of a single row, a group of rows, or all rows in a table.
+
+```
+UPDATE [LOW_PRIORITY] [IGNORE] table_name 
+SET 
+    column_name1 = expr1,
+    column_name2 = expr2,
+    ...
+[WHERE
+    condition];
+```
+
+- First, specify the table name that you want to update data after the UPDATE keyword.
+- Second, the SET clause specifies which column that you want to modify and the new values. To update multiple columns, you use a list of comma-separated assignments. You supply a value in each column’s assignment in the form of a literal value, an expression, or a subquery.
+- Third, specify which rows to be updated using a condition in the WHERE clause. The WHERE clause is optional. If you omit the WHERE clause, the UPDATE statement will update all rows in the table.
+
+
+**LOW_PRIORITY**, **IGNORE**
+- The LOW_PRIORITY modifier instructs the UPDATE statement to delay the update until there is no connection reading data from the table. The LOW_PRIORITY takes effect for the storage engines that use table-level locking only, for example, MyISAM, MERGE, MEMORY.
+- The IGNORE modifier enables the UPDATE statement to continue updating rows even if errors occurred. The rows that cause errors such as duplicate-key conflicts are not updated.
+
+
+```
+SELECT 
+    firstname, lastname, email
+FROM
+    employees
+WHERE
+    employeeNumber = 1056;
+    
+#	firstname	lastname	email
+1	Mary	Patterson	mpatterso@classicmodelcars.com
+
+
+update employees
+set email = 'mary.patterson@classicmodelcars.com'
+where employeeNumber = 1056;
+
+
+SELECT 
+    firstname, lastname, email
+FROM
+    employees
+WHERE
+    employeeNumber = 1056;
+
+#	firstname	lastname	email
+1	Mary	Patterson	mary.patterson@classicmodelcars.com
+```
+
+```
+UPDATE employees 
+SET 
+    lastname = 'Hill',
+    email = 'mary.hill@classicmodelcars.com'
+WHERE
+    employeeNumber = 1056;
+    
+
+SELECT
+    firstname, lastname, email
+FROM
+    employees
+WHERE
+    employeeNumber = 1056;
+
+
+#	firstname	lastname	email
+1	Mary	Hill	mary.hill@classicmodelcars.com
+```
+
+```
+SELECT 
+    customername, salesRepEmployeeNumber
+FROM
+    customers
+WHERE
+    salesRepEmployeeNumber IS NULL;
+
+
+#	customername	salesRepEmployeeNumber
+1	Havel & Zbyszek Co	
+2	Porto Imports Co.	
+3	Asian Shopping Network, Co	
+4	Natürlich Autos	
+5	ANG Resellers	
+6	Messner Shopping Network
+
+
+
+UPDATE customers 
+SET 
+    salesRepEmployeeNumber = (SELECT 
+            employeeNumber
+        FROM
+            employees
+        WHERE
+            jobtitle = 'Sales Rep'
+        LIMIT 1)
+WHERE
+    salesRepEmployeeNumber IS NULL;
+    
+    
+SELECT
+     salesRepEmployeeNumber
+FROM
+    customers
+WHERE
+    salesRepEmployeeNumber IS NOT NULL;
+    
+    #	salesRepEmployeeNumber
+1	1165
+2	1165
+3	1165
+4	1165
+5	1165
+6	1165
+7	1165
+8	1165
+9	1165
+10	1165
+11	1165
+.....
+```
+
+
+
+
+---------------------------------------------------------------
+
+
 ### Date Function
 
 #### CURDATE
