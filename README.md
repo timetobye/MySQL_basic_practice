@@ -1415,8 +1415,44 @@ WHERE
 .....
 ```
 
+---------------------------------------------------------------
+### tips..
+- [MySQL IN() for two value/array?](https://stackoverflow.com/questions/793784/mysql-in-for-two-value-array)
+- mysql에서 한 쌍의 값을 검색하는 방법을 알아보자.
 
 
+우선 질문 올라온 건 아래와 같다.
+```
+foo,1
+boo,2
+goo,3
+
+SELECT * FROM [table] WHERE 
+(column1 = 'foo' AND column2 = 1) OR
+(column1 = 'boo' AND column2 = 2) OR
+(column1 = 'goo' AND column2 = 3);
+```
+
+답변은 아래와 같다.
+```
+SELECT  *
+FROM    foo
+WHERE   ROW(column1, column2) IN (ROW('foo', 1), ROW('bar', 2))
+
+
+SELECT *
+FROM `foo`
+WHERE (`id_obj` , `Foo_obj`)
+IN (
+  SELECT `id_obj` , `Foo_obj`
+  FROM `foo`
+  GROUP BY `id_obj` , `Foo_obj`
+  HAVING count(*) > 1
+)
+```
+
+테스트 해보니까 첫 번째 답변이 가장 좋은 것 같다. 직관적이고, 깔끔하다.
+단,왜 작동 하는지 모르겠다.....
 
 ---------------------------------------------------------------
 
