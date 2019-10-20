@@ -91,6 +91,24 @@ SQL 공부 내용을 담습니다.
 - 모르는 것, 새롭게 알게 된 것, 애매하게 알고 있는 것을 적었습니다.
 - ~~하면 할 수록 어렵냐...~~
 
+## :information_source: DB
+- 학습에 필요한 DB는 [이곳](http://www.mysqltutorial.org/mysql-sample-database.aspx)에서 받을 수 있습니다.
+- 설치 방법은 별도로 적지 않습니다. 잘 모르실 경우 메일 주세요.
+
+## schema
+The MySQL sample database schema consists of the following tables
+- Customers: stores customer’s data.
+- Products: stores a list of scale model cars.
+- ProductLines: stores a list of product line categories.
+- Orders: stores sales orders placed by customers.
+- OrderDetails: stores sales order line items for each sales order.
+- Payments: stores payments made by customers based on their accounts.
+- Employees: stores all employee information as well as the organization structure such as who reports to whom.
+- Offices: stores sales office data.
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2009/12/MySQL-Sample-Database-Schema.png)
+
+
 ### odrer by
 - 아래와 같은 것을 새롭게 배웠다.
 
