@@ -3,6 +3,70 @@
 ![alt text](https://img.shields.io/badge/result-idea%26query__solution-blue.svg)
 [![alt text](https://img.shields.io/badge/data-web-red.svg)](https://www.w3resource.com/mysql-exercises/)
 
+SQL 공부 내용을 담습니다.
+- MySQL
+  - 5.6 버전으로 학습하였습니다.
+  - 기본적인 내용보다는, 얕게 알거나 몰랐던 것 위주로 정리하였습니다.
+  - 참고 : [MySQL 5.6 공식 문서](https://dev.mysql.com/doc/refman/5.6/en/)
+- Redshift
+  - 개인이 하기에는 어렵고 회사 업무를 보면서 사용 중 입니다.
+  - 내용은 차차 올릴 예정입니다.
+  - 참고 : [Redshift 공식 문서](https://docs.aws.amazon.com/ko_kr/redshift/latest/mgmt/welcome.html)
+  
+  
+# Table of Contents
+  - [MySQL Quiz](ㄴㅁㄴㅁㅇㄹ)
+    - [MySQL Basic SELECT statement 19 Exercises]()
+    - [MySQL Restricting and Sorting data 11 exercises]()
+    - [MySQL Aggregate Functions and Group by 14 exercises]()
+    - [MySQL Subquery 22 exercises]()
+    - [MySQL Joins 13 exercises with solution]()
+  - [MySQL Study]()
+    - [order by](https://github.com/timetobye/MySQL_basic_practice#odrer-by)
+    - [IN vs OR](https://github.com/timetobye/MySQL_basic_practice#in-vs-or)
+    - [IN 에서 subquery를 사용](https://github.com/timetobye/MySQL_basic_practice#in-%EC%97%90%EC%84%9C-subquery%EB%A5%BC-%EC%82%AC%EC%9A%A9)
+    - [between](https://github.com/timetobye/MySQL_basic_practice#between)
+    - [between with cast](https://github.com/timetobye/MySQL_basic_practice#between-with-cast)
+    - [LIKE](https://github.com/timetobye/MySQL_basic_practice#like)
+      - [escape in LIKE](https://github.com/timetobye/MySQL_basic_practice#escape-in-like)
+    - [Null에 대한 이해](https://github.com/timetobye/MySQL_basic_practice#null%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9D%B4%ED%95%B4)
+    - [exists](https://github.com/timetobye/MySQL_basic_practice#exists)
+      - [update-in-exists](https://github.com/timetobye/MySQL_basic_practice#update-in-exists)
+    - [limit](https://github.com/timetobye/MySQL_basic_practice#limit)
+    - [inner join](https://github.com/timetobye/MySQL_basic_practice#inner-join)
+    - [left join](https://github.com/timetobye/MySQL_basic_practice#left-join)
+    - [group by, having](https://github.com/timetobye/MySQL_basic_practice#group-by-having)
+    - [Rollup](https://github.com/timetobye/MySQL_basic_practice#rollup)
+    - [DEFAULT CHARSET=utf8](https://github.com/timetobye/MySQL_basic_practice#default-charsetutf8)
+    - [now(), sysdate(), current_date()](https://github.com/timetobye/MySQL_basic_practice#now-sysdate-current_date)
+    - [concat_ws vs concat](https://github.com/timetobye/MySQL_basic_practice#concat_ws-vs-concat)
+    - [group_concat](https://github.com/timetobye/MySQL_basic_practice#group_concat)
+    - [IFNULL](https://github.com/timetobye/MySQL_basic_practice#ifnull)
+    - [Derived table](https://github.com/timetobye/MySQL_basic_practice#derived-table)
+    - [CTE](https://github.com/timetobye/MySQL_basic_practice#derived-table)
+    - [recursive CTE](https://github.com/timetobye/MySQL_basic_practice#recursive-cte)
+    - [Union vs Union All](https://github.com/timetobye/MySQL_basic_practice#union-vs-union-all)
+    - [INTERSECT](https://github.com/timetobye/MySQL_basic_practice#intersect)
+    - [Minus](https://github.com/timetobye/MySQL_basic_practice#minus)
+    - [Insert](https://github.com/timetobye/MySQL_basic_practice#insert)
+    - [Insert into select](https://github.com/timetobye/MySQL_basic_practice#insert-into-select)
+    - [IF](https://github.com/timetobye/MySQL_basic_practice#if)
+    - [Update](https://github.com/timetobye/MySQL_basic_practice#update)
+    - [tips](https://github.com/timetobye/MySQL_basic_practice#tips)
+    - [Date Function](https://github.com/timetobye/MySQL_basic_practice#date-function)
+      - [CURDATE](https://github.com/timetobye/MySQL_basic_practice#curdate)
+      - [DATEDIFF](https://github.com/timetobye/MySQL_basic_practice#datediff)
+      - [DAY](https://github.com/timetobye/MySQL_basic_practice#day)
+      - [DATE_ADD](https://github.com/timetobye/MySQL_basic_practice#date_add)
+      - [DATE_SUB](https://github.com/timetobye/MySQL_basic_practice#date_sub)
+      - [DATE_FORMAT](https://github.com/timetobye/MySQL_basic_practice#date_format)
+      - [STR_TO_DATE()](https://github.com/timetobye/MySQL_basic_practice#str_to_date)
+    
+
+---------------------------------
+
+## MySQL Quiz
+
 > 기초적인 Mysql Quiz에 대해 idea, solution, result를 정리해두었습니다. mysql을 remind 하기 위해 만들었습니다.
 
 > 어떤 면에서는 무척 쉽습니다. 쿼리를 사용 할 때 idea, solution, result 3 단계를 차근차근 해보기 위해 작성하였습니다.
@@ -11,54 +75,43 @@
 
 ### :information_source: DB
 
-mysql 5.6을 설치하여 연습하였습니다.
-> mysql 설치는 건너뛰도록 하겠습니다.
-
-연습에 필요한 DB는 [여기서](https://www.w3resource.com/mysql-exercises//) 구하였습니다.
-- [HR Database](https://www.w3resource.com/mysql-exercises//db.sql)
-
-### :bookmark: Quiz
-
-Quiz도 위와 동일한 페이지에서 구하였습니다.
+연습에 필요한 DB는 [w3resource](https://www.w3resource.com/mysql-exercises//)의 [HR Database](https://www.w3resource.com/mysql-exercises//db.sql)를 이용하였습니다.
 
 ### 💾 File
 
 문서 작성은 Notion을 이용하여 작성하였습니다. 그 후 HTML 파일, Markdown 파일을 받아서 git에 정리하였습니다.
-> 연습이 필요하신 분은 HTML 파일을 다운 받아서 보시는 걸 권장 드립니다.
+> 연습이 필요하신 분은 HTML 파일을 다운 받아서 보거나 웹에서 바로 볼 수 있는 링크를 참고해주세요.
 
 ### :book: Result
 
-MySQL Basic SELECT statement 19 Exercises
+#### MySQL Basic SELECT statement 19 Exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Basic%20SELECT%20statement%2019%20Exercises)
-- [gist](https://gist.github.com/timetobye/e7e8fe3b0b298cc82a8ec456c8b84dec)
 
-MySQL Restricting and Sorting data 11 exercises
+#### MySQL Restricting and Sorting data 11 exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Restricting%20and%20Sorting%20data%20%5B11%20exercises%5D)
 
-Aggregate Functions and Group by 14 exercises
-- [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/Aggregate%20Functions%20and%20Group%20by%20%5B14%20exercises%5D)
+#### Aggregate Functions and Group by 14 exercises
+- [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Aggregate%20Functions%20and%20Group%20by%20%5B14%20exercises%5D)
 
-MySQL Subquery 22 exercises
+#### MySQL Subquery 22 exercises
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Subquery%20%5B22%20exercises%20with%20solution%5D)
 
-MySQL Joins 13 exercises with solution
+#### MySQL Joins 13 exercises with solution
 - [html](https://github.com/timetobye/MySQL_basic_practice/tree/master/MySQL%20Joins%20%5B13%20exercises%20with%20solution%5D)
 
 
 **thanks to**
 - sql을 활용해서 멋지게 일하시는 나의 동료 DD님 감사합니다.
 - sql 고민 할 때 이거 보세요 하고 링크 건네주셨던 G.S Park에게도 감사합니다.
+- sql 처음 할 때 [sql 첫걸음](https://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9788968482311) 추천해주신 Noah 님 감사합니다.
 --------------------------
 
 
 MySQL 학습
 --------------------------
 
-# mysql 학습
-- mysql 학습 하면서 배운 내용을 적어 두었습니다.
-- 학습 링크 : [www.mysqltutorial.org](http://www.mysqltutorial.org/basic-mysql-tutorial.aspx)
-
-## mysql 정리
+# MySQL 학습
+- [www.mysqltutorial.org](http://www.mysqltutorial.org/basic-mysql-tutorial.aspx)에 게시된 자료를 바탕으로 정리하였습니다.
 - 모르는 것, 새롭게 알게 된 것, 애매하게 알고 있는 것을 적는다.
 
 ### odrer by
@@ -82,6 +135,51 @@ ORDER BY FIELD(status,
 - 이렇게 하면 정렬을 자유자재로 할 수 있다.
 
 ![Alt text](http://www.mysqltutorial.org/wp-content/uploads/2010/01/MySQL-ORDER-BY-and-FIELD-function.jpg)
+
+
+문자와 숫자가 함께 섞여 있는 경우의 정렬은 어떻게 하면 좋을까?
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2014/01/MySQL-Natural-Sorting-Example.jpg)
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2014/01/MySQL-Natural-Sorting-Example-correct-order.jpg)
+
+- 두번재 그림을 기대하였다.
+
+```
+SELECT 
+    item_no
+FROM
+    items
+ORDER BY CAST(item_no AS UNSIGNED) , item_no;
+```
+- item_no의 데이터를 cast를 사용하여 부호없는 정수로 변환
+- 그 다음 정렬
+
+```
+TRUNCATE TABLE items;
+ 
+INSERT INTO items(item_no)
+VALUES('A-1'),
+      ('A-2'),
+      ('A-3'),
+      ('A-4'),
+      ('A-5'),
+      ('A-10'),
+      ('A-11'),
+      ('A-20'),
+      ('A-30');
+```
+
+```
+SELECT 
+    item_no
+FROM
+    items
+ORDER BY item_no;
+```
+
+- truncate 후에 위의 쿼리를 날리면 아래와 같은 결과가 안 나온다...~~뭐야..~~
+
+![alt text](http://www.mysqltutorial.org/wp-content/uploads/2014/01/MySQL-Natural-Sorting-Another-Good-Example.jpg)
 
 
 ### IN VS OR
@@ -366,54 +464,6 @@ inner join offices on offices.officeCode = employees.officeCode
 - 풀스캔해야 하기 때문이다.
 - 적으면 in이 낫다.
 - http://yahwang.tk/posts/35
-
-
-### order by
-
-- 문자와 숫자가 함께 섞여 있는 경우의 정렬은 어떻게 하면 좋을까?
-
-![alt text](http://www.mysqltutorial.org/wp-content/uploads/2014/01/MySQL-Natural-Sorting-Example.jpg)
-![alt text](http://www.mysqltutorial.org/wp-content/uploads/2014/01/MySQL-Natural-Sorting-Example-correct-order.jpg)
-
-- 두번재 그림을 기대하였다.
-
-```
-SELECT 
-    item_no
-FROM
-    items
-ORDER BY CAST(item_no AS UNSIGNED) , item_no;
-```
-- item_no의 데이터를 cast를 사용하여 부호없는 정수로 변환
-- 그 다음 정렬
-
-```
-TRUNCATE TABLE items;
- 
-INSERT INTO items(item_no)
-VALUES('A-1'),
-      ('A-2'),
-      ('A-3'),
-      ('A-4'),
-      ('A-5'),
-      ('A-10'),
-      ('A-11'),
-      ('A-20'),
-      ('A-30');
-```
-
-```
-SELECT 
-    item_no
-FROM
-    items
-ORDER BY item_no;
-```
-
-- truncate 후에 위의 쿼리를 날리면 아래와 같은 결과가 안 나온다...~~뭐야..~~
-
-![alt text](http://www.mysqltutorial.org/wp-content/uploads/2014/01/MySQL-Natural-Sorting-Another-Good-Example.jpg)
-
 
 #### length 함수를 이용하여 작업
 
