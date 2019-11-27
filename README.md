@@ -1852,3 +1852,50 @@ SELECT STR_TO_DATE('113005','%h%i%s');
 
 11:30:05
 ```
+
+#### extract
+- The EXTRACT() function extracts part of a date.
+- The EXTRACT() function requires two arguments unit and date.
+- unit 지정하고, datetime을 넣어서 추출하면 됨!
+
+```sql
+extract (unit from date)
+```
+
+example query
+````sql
+SELECT EXTRACT(DAY FROM '2017-07-14 09:04:44') DAY;
++------+
+| DAY  |
++------+
+|   14 |
++------+
+````
+
+````sql
+SELECT EXTRACT(DAY_HOUR FROM '2017-07-14 09:04:44') DAYHOUR;
++---------+
+| DAYHOUR |
++---------+
+|    1409 |
++---------+
+````
+
+````sql
+SELECT EXTRACT(YEAR FROM '2017-07-14 09:04:44') YEAR;
++------+
+| YEAR |
++------+
+| 2017 |
++------+
+````
+
+````sql
+SELECT EXTRACT(YEAR_MONTH FROM '2017-07-14 09:04:44') YEARMONTH;
++-----------+
+| YEARMONTH |
++-----------+
+|    201707 |
++-----------+
+````
+
