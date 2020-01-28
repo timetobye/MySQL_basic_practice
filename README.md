@@ -9,10 +9,12 @@ SQL 공부 내용을 담습니다.
   - 5.6 버전으로 학습하였습니다.
   - 기본적인 내용보다는, 얕게 알거나 몰랐던 것 위주로 정리하였습니다.
   - 참고 : [MySQL 5.6 공식 문서](https://dev.mysql.com/doc/refman/5.6/en/)
-- ~~Redshift~~
-  - ~~개인이 하기에는 어렵고 회사 업무를 보면서 사용 중 입니다.~~
-  - ~~내용은 차차 올릴 예정입니다.~~
-  - 참고 : [Redshift 공식 문서](https://docs.aws.amazon.com/ko_kr/redshift/latest/mgmt/welcome.html)
+- Redshift 외 등
+  - Redshift에는 좋은 가이드 문서들이 많이 올라와 있습니다. AWS 제품 뿐만 아니라, 어떠한 항목에 대한 개념,사용 방법,확장성 등이 안내 되어 있습니다.
+  - [Redshift 공식 문서](https://docs.aws.amazon.com/ko_kr/redshift/latest/mgmt/welcome.html)
+  - [열 기반 데이터베이스란 무엇입니까?](https://aws.amazon.com/ko/nosql/columnar/)
+  - [NOSQL이란?](https://aws.amazon.com/ko/nosql/)
+  - 분산 환경에서 작업되는 항목들은 별도의 페이지를 작성해서 학습 노트를 기록할 예정입니다.
   
   
 # Table of Contents
