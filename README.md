@@ -1901,3 +1901,87 @@ SELECT EXTRACT(YEAR_MONTH FROM '2017-07-14 09:04:44') YEARMONTH;
 +-----------+
 ````
 
+------------------------------
+### MySQL Window Functions
+
+- MySQL has supported window functions since version 8.0. The window functions allow you to solve query problems in new, easier ways, and with better performance.
+- **Window functions?**
+  - 행과 행간의 관계를 쉽게 정의하기 위해 만든 함수가 바로 WINDOW FUNCTION이다.
+  - 윈도우 함수를 활용하면 복잡한 프로그램을 하나의 SQL 문장으로 쉽게 해결할 수 있다.
+  - 분석 함수(ANALYTIC FUNCTION)나 순위 함수(RANK FUNCTION)로도 알려져 있는 윈도우 함수 (ANSI/ISOSQL 표준은 WINDOW FUNCTION이란 용어를 사용함)는 데이터웨어하우스에서 발전한 기능이다.
+  - WINDOW 함수는 다른 함수와는 달리 중첩(NEST)해서 사용하지는 못하지만, 서브쿼리에서는 사용할 수 있다.
+  - 출처 : http://www.gurubee.net/lecture/2382
+- Window functions 종류
+  - CUME_DIST : Calculates the cumulative distribution of a value in a set of values.
+  - DENSE_RANK : Assigns a rank to every row within its partition based on the ORDER BY clause. It assigns the same rank to the rows with equal values. If two or more rows have the same rank, then there will be no gaps in the sequence of ranked values.
+  - FIRST_VALUE : Returns the value of the specified expression with respect to the first row in the window frame.
+  - LAG	Returns : the value of the Nth row before the current row in a partition. It returns NULL if no preceding row exists.
+  - LAST_VALUE : Returns the value of the specified expression with respect to the last row in the window frame.
+  - LEAD : Returns the value of the Nth row after the current row in a partition. It returns NULL if no subsequent row exists.
+  - NTH_VALUE : Returns value of argument from Nth row of the window frame
+  - NTILE : Distributes the rows for each window partition into a specified number of ranked groups.
+  - PERCENT_RANK : Calculates the percentile rank of a row in a partition or result set
+  - RANK : Similar to the DENSE_RANK() function except that there are gaps in the sequence of ranked values when two or more rows have the same rank.
+  - ROW_NUMBER : Assigns a sequential integer to every row within its partition
+
+
+### 기본적인 window function 예제
+- https://www.mysqltutorial.org/mysql-window-functions/ 를 바탕으로 공부하였다.
+- 아래 쿼리에서 사용하는 sales라는 테이블은 위 링크를 참고하여 만들었다.
+
+````sql
+SELECT 
+    fiscal_year, 
+    sales_employee,
+    sale,
+    SUM(sale) OVER (PARTITION BY fiscal_year) as total_sales
+FROM
+    sales; 
+````
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-Window-Function-SUM-window-function.png)
+
+
+fiscal_year을 기준으로 partition 하는 것이 아니라, sales_employee를 기준으로 다시 쿼리를 작성해보았다.
+```sql
+select
+  fiscal_year,
+  sales_employee,
+  sale,
+  sum(sale) over (partition by sales_employee) as total_sales
+from sales;
+```
+
+이름 순으로 묶여서 정리가 되었다.
+
+```bash
+#,fiscal_year,sales_employee,sale,total_sales
+1,2016,Alice,150.00,450.00
+2,2017,Alice,100.00,450.00
+3,2018,Alice,200.00,450.00
+4,2016,Bob,100.00,450.00
+5,2017,Bob,150.00,450.00
+6,2018,Bob,200.00,450.00
+7,2016,John,200.00,600.00
+8,2017,John,150.00,600.00
+9,2018,John,250.00,600.00
+```
+
+### window function 구조
+```bash
+window_function_name(expression) 
+    OVER (
+        [partition_defintion]
+        [order_definition]
+        [frame_definition]
+    )
+```
+
+- First, specify the window function name followed by an expression.
+- Second, specify the OVER clause which has three possible elements
+  - partition definition - 이해함
+  - order definition - 이해함
+  - frame definition - 이해 못 함
+
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/09/mysql-window-functions-frame-clause-bound.png)
