@@ -1985,3 +1985,185 @@ window_function_name(expression)
 
 
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/09/mysql-window-functions-frame-clause-bound.png)
+
+
+#### CUME_DIST Function
+The CUME_DIST() is a window function that returns the cumulative distribution of a value within a set of values. 
+It represents the number of rows with values less than or equal to that row’s value divided by the total number of rows.
+- 요약하면 누적분포를 돌려주는 참 좋은 함수이다.
+
+
+The returned value of the CUME_DIST() function is greater than zero and less than or equal one (0 < CUME_DIST() <= 1). 
+The repeated column values receive the same CUME_DIST() value.
+- 리턴되는 값은 0보다 크고, 1보다는 작거나 같은 값을 준다.
+
+
+````sql
+--basic query
+
+CUME_DIST() OVER (
+    PARTITION BY expr, ...
+    ORDER BY expr [ASC | DESC], ...
+)
+````
+
+```sql
+CREATE TABLE scores (
+    name VARCHAR(20) PRIMARY KEY,
+    score INT NOT NULL
+);
+
+INSERT INTO
+    scores(name, score)
+VALUES
+    ('Smith',81),
+    ('Jones',55),
+    ('Williams',55),
+    ('Taylor',62),
+    ('Brown',62),
+    ('Davies',84),
+    ('Evans',87),
+    ('Wilson',72),
+    ('Thomas',72),
+    ('Johnson',100);
+
+-- main
+    
+SELECT
+    name,
+    score,
+    ROW_NUMBER() OVER (ORDER BY score) row_num,
+    CUME_DIST() OVER (ORDER BY score) cume_dist_val
+FROM
+    scores;   
+    
+```
+
+```bash
+#,name,score,row_num,cume_dist_val
+1,Jones,55,1,0.2
+2,Williams,55,2,0.2
+3,Brown,62,3,0.4
+4,Taylor,62,4,0.4
+5,Thomas,72,5,0.6
+6,Wilson,72,6,0.6
+7,Smith,81,7,0.7
+8,Davies,84,8,0.8
+9,Evans,87,9,0.9
+10,Johnson,100,10,1
+```
+
+- 아래 이미지처럼 나오게 하려면 쿼리를 바꿔야 할 것 같다. 자세한 건 차차 공부해서 아래 내용을 이해해보자.
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-CUME_DIST-Function-Third-Row.png)
+
+
+#### DENSE_RANK()
+The DENSE_RANK() is a window function that assigns a rank to each row within a partition or result set with no gaps in ranking values.
+
+The rank of a row is increased by one from the number of distinct rank values which come before the row.
+
+```sql
+-- basic query
+
+DENSE_RANK() OVER (
+    PARTITION BY <expression>[{,<expression>...}]
+    ORDER BY <expression> [ASC|DESC], [{,<expression>...}]
+)
+```
+
+
+```sql
+SELECT
+    sales_employee,
+    fiscal_year,
+    sale,
+    DENSE_RANK() OVER (
+      PARTITION BY fiscal_year
+      ORDER BY sale DESC
+      ) sales_rank
+FROM
+    sales;
+
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-DENSE_RANK-Assign-Rank-to-sales-employees.png)
+
+
+step by step
+- First, the PARTITION BY clause divided the result sets into partitions using fiscal year.
+  - 빨간, 보라, 노랑으로 구간 나누기
+- Second, the ORDER BY clause specified the order of the sales employees by sales in descending order.
+  - 각 색깔별 박스 내에서 내림차순 정렬하기
+- Third, the DENSE_RANK() function is applied to each partition with the rows order specified by the ORDER BY clause.
+  - 정렬된 것을 기준으로 각각의 partition에 랭크함수를 적용
+
+
+#### FIRST_VALUE()
+
+The FIRST_VALUE() is a window function that allows you to select the first row of a window frame, partition, or result set.
+
+```sql
+FIRST_VALUE(expression) OVER (
+        [partition_clause]
+        [order_clause]
+        [frame_clause]
+)
+```
+
+```sql
+CREATE TABLE overtime (
+    employee_name VARCHAR(50) NOT NULL,
+    department VARCHAR(50) NOT NULL,
+    hours INT NOT NULL,
+    PRIMARY KEY (employee_name , department)
+);
+INSERT INTO overtime(employee_name, department, hours)
+VALUES('Diane Murphy','Accounting',37),
+('Mary Patterson','Accounting',74),
+('Jeff Firrelli','Accounting',40),
+('William Patterson','Finance',58),
+('Gerard Bondur','Finance',47),
+('Anthony Bow','Finance',66),
+('Leslie Jennings','IT',90),
+('Leslie Thompson','IT',88),
+('Julie Firrelli','Sales',81),
+('Steve Patterson','Sales',29),
+('Foon Yue Tseng','Sales',65),
+('George Vanauf','Marketing',89),
+('Loui Bondur','Marketing',49),
+('Gerard Hernandez','Marketing',66),
+('Pamela Castillo','SCM',96),
+('Larry Bott','SCM',100),
+('Barry Jones','SCM',65);
+
+SELECT
+    employee_name,
+    hours,
+    FIRST_VALUE(employee_name) OVER (
+        ORDER BY hours
+    ) least_over_time
+FROM
+    overtime;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Example.png)
+
+- 이해가 잘 된다... :)
+
+또 다른 예제
+
+```sql
+SELECT
+    employee_name,
+    department,
+    hours,
+    FIRST_VALUE(employee_name) OVER (
+        PARTITION BY department
+        ORDER BY hours
+    ) least_over_time
+FROM
+    overtime;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Over-Partition-Example.png)
