@@ -2167,3 +2167,239 @@ FROM
 ```
 
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Over-Partition-Example.png)
+
+
+#### LAG
+
+The LAG() function is a window function that allows you to look back a number of rows and access data of that row from the current row.
+
+```bash
+LAG(<expression>[,offset[, default_value]]) OVER (
+    PARTITION BY expr,...
+    ORDER BY expr [ASC|DESC],...
+)
+```
+
+
+The LAG() function ...
+- returns the value of the expression from the row that precedes the current row by offset number of rows within its partition or result set.
+
+**offset**
+- The offset is the number of rows back from the current row from which to get the value. 
+The offset must be zero or a literal positive integer. If offset is zero, then the LAG() function evaluates the expression for the current row. 
+If you don’t specify the offset, then the LAG() function uses one by default.
+
+
+````sql
+WITH productline_sales AS (
+    SELECT productline,
+           YEAR(orderDate) order_year,
+           ROUND(SUM(quantityOrdered * priceEach),0) order_value
+    FROM orders
+    INNER JOIN orderdetails USING (orderNumber)
+    INNER JOIN products USING (productCode)
+    GROUP BY productline, order_year
+)
+SELECT
+    productline,
+    order_year,
+    order_value,
+    LAG(order_value, 1) OVER (
+        PARTITION BY productLine
+        ORDER BY order_year
+    ) prev_year_order_value
+FROM
+    productline_sales;
+````
+
+```bash
+#,productline,order_year,order_value,prev_year_order_value
+1,Classic Cars,2003,1374832,
+2,Classic Cars,2004,1763137,1374832
+3,Classic Cars,2005,715954,1763137
+4,Motorcycles,2003,348909,
+5,Motorcycles,2004,527244,348909
+6,Motorcycles,2005,245273,527244
+7,Planes,2003,309784,
+8,Planes,2004,471971,309784
+9,Planes,2005,172882,471971
+10,Ships,2003,222182,
+11,Ships,2004,337326,222182
+12,Ships,2005,104490,337326
+13,Trains,2003,65822,
+14,Trains,2004,96286,65822
+15,Trains,2005,26425,96286
+16,Trucks and Buses,2003,376657,
+17,Trucks and Buses,2004,465390,376657
+18,Trucks and Buses,2005,182066,465390
+19,Vintage Cars,2003,619161,
+20,Vintage Cars,2004,854552,619161
+21,Vintage Cars,2005,323846,854552
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAG-function-current-and-previous-year-example.png)
+
+example summary
+- First, we used a common table expression to get the order value of every product in every year.
+- Then, we divided the products using the product lines into partitions, sorted each partition by order year, and applied the LAG() function to each sorted partition to get the previous year’s order value of each product.
+
+
+```sql
+-- change LAG(order_value, 1->2)
+WITH productline_sales AS (
+    SELECT productline,
+           YEAR(orderDate) order_year,
+           ROUND(SUM(quantityOrdered * priceEach),0) order_value
+    FROM orders
+    INNER JOIN orderdetails USING (orderNumber)
+    INNER JOIN products USING (productCode)
+    GROUP BY productline, order_year
+)
+SELECT
+    productline,
+    order_year,
+    order_value,
+    LAG(order_value, 2) OVER (
+        PARTITION BY productLine
+        ORDER BY order_year
+    ) prev_year_order_value
+FROM
+    productline_sales;
+```
+
+```bash
+#,productline,order_year,order_value,prev_year_order_value
+1,Classic Cars,2003,1374832,
+2,Classic Cars,2004,1763137,
+3,Classic Cars,2005,715954,1374832
+4,Motorcycles,2003,348909,
+5,Motorcycles,2004,527244,
+6,Motorcycles,2005,245273,348909
+7,Planes,2003,309784,
+8,Planes,2004,471971,
+9,Planes,2005,172882,309784
+10,Ships,2003,222182,
+11,Ships,2004,337326,
+12,Ships,2005,104490,222182
+13,Trains,2003,65822,
+14,Trains,2004,96286,
+15,Trains,2005,26425,65822
+16,Trucks and Buses,2003,376657,
+17,Trucks and Buses,2004,465390,
+18,Trucks and Buses,2005,182066,376657
+19,Vintage Cars,2003,619161,
+20,Vintage Cars,2004,854552,
+21,Vintage Cars,2005,323846,619161
+```
+
+
+#### LAST_VALUE()
+
+- The LAST_VALUE() function is a window function that allows you to select the last row in an ordered set of rows.
+- 각 partition의 마지막 값을 추린다고 생각하면 될 듯
+
+
+```sql
+CREATE TABLE overtime (
+    employee_name VARCHAR(50) NOT NULL,
+    department VARCHAR(50) NOT NULL,
+    hours INT NOT NULL,
+     PRIMARY KEY (employee_name , department)
+);
+INSERT INTO overtime(employee_name, department, hours)
+VALUES('Diane Murphy','Accounting',37),
+('Mary Patterson','Accounting',74),
+('Jeff Firrelli','Accounting',40),
+('William Patterson','Finance',58),
+('Gerard Bondur','Finance',47),
+('Anthony Bow','Finance',66),
+('Leslie Jennings','IT',90),
+('Leslie Thompson','IT',88),
+('Julie Firrelli','Sales',81),
+('Steve Patterson','Sales',29),
+('Foon Yue Tseng','Sales',65),
+('George Vanauf','Marketing',89),
+('Loui Bondur','Marketing',49),
+('Gerard Hernandez','Marketing',66),
+('Pamela Castillo','SCM',96),
+('Larry Bott','SCM',100),
+('Barry Jones','SCM',65);
+```
+
+```sql
+SELECT
+    employee_name,
+    hours,
+    LAST_VALUE(employee_name) OVER (
+        ORDER BY hours
+        RANGE BETWEEN
+            UNBOUNDED PRECEDING AND
+            UNBOUNDED FOLLOWING
+    ) highest_overtime_employee
+FROM
+    overtime;
+```
+ 
+ 
+```bash
+#,employee_name,hours,highest_overtime_employee
+1,Steve Patterson,29,Larry Bott
+2,Diane Murphy,37,Larry Bott
+3,Jeff Firrelli,40,Larry Bott
+4,Gerard Bondur,47,Larry Bott
+5,Loui Bondur,49,Larry Bott
+6,William Patterson,58,Larry Bott
+7,Barry Jones,65,Larry Bott
+8,Foon Yue Tseng,65,Larry Bott
+9,Anthony Bow,66,Larry Bott
+10,Gerard Hernandez,66,Larry Bott
+11,Mary Patterson,74,Larry Bott
+12,Julie Firrelli,81,Larry Bott
+13,Leslie Thompson,88,Larry Bott
+14,George Vanauf,89,Larry Bott
+15,Leslie Jennings,90,Larry Bott
+16,Pamela Castillo,96,Larry Bott
+17,Larry Bott,100,Larry Bott
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-example.png)
+
+
+```sql
+SELECT
+    employee_name,
+    department,
+    hours,
+    LAST_VALUE(employee_name) OVER (
+        PARTITION BY department
+        ORDER BY hours
+        RANGE BETWEEN
+        UNBOUNDED PRECEDING AND
+            UNBOUNDED FOLLOWING
+    ) most_overtime_employee
+FROM
+    overtime;
+```
+
+```bash
+#,employee_name,department,hours,most_overtime_employee
+1,Diane Murphy,Accounting,37,Mary Patterson
+2,Jeff Firrelli,Accounting,40,Mary Patterson
+3,Mary Patterson,Accounting,74,Mary Patterson
+4,Gerard Bondur,Finance,47,Anthony Bow
+5,William Patterson,Finance,58,Anthony Bow
+6,Anthony Bow,Finance,66,Anthony Bow
+7,Leslie Thompson,IT,88,Leslie Jennings
+8,Leslie Jennings,IT,90,Leslie Jennings
+9,Loui Bondur,Marketing,49,George Vanauf
+10,Gerard Hernandez,Marketing,66,George Vanauf
+11,George Vanauf,Marketing,89,George Vanauf
+12,Steve Patterson,Sales,29,Julie Firrelli
+13,Foon Yue Tseng,Sales,65,Julie Firrelli
+14,Julie Firrelli,Sales,81,Julie Firrelli
+15,Barry Jones,SCM,65,Larry Bott
+16,Pamela Castillo,SCM,96,Larry Bott
+17,Larry Bott,SCM,100,Larry Bott
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-OVER-partitions-example.png)
