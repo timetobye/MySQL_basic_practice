@@ -2403,3 +2403,199 @@ FROM
 ```
 
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-OVER-partitions-example.png)
+
+
+#### LEAD
+The LEAD() function is a window function that allows you to look forward a number of rows and access data of that row from the current row.
+
+Similar to the LAG() function, the LEAD() function is very useful for calculating 
+the difference between the current row and the subsequent row within the same result set.
+
+```sql
+LEAD(<expression>[,offset[, default_value]]) OVER (
+    PARTITION BY (expr)
+    ORDER BY (expr)
+)
+```
+
+**offset**
+- The offset is the number of rows forward from the current row from which to obtain the value.
+- The offset must be a non-negative integer. If offset is zero, then the LEAD() function evaluates the expression for the current row.
+- In case you omit offset, then the LEAD() function uses one by default.
+
+
+```sql
+SELECT
+    customerName,
+    orderDate,
+    LEAD(orderDate,1) OVER (
+        PARTITION BY customerNumber
+        ORDER BY orderDate ) nextOrderDate
+FROM
+    orders
+INNER JOIN customers USING (customerNumber);
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LEAD-Function-Example.png)
+
+
+
+#### Nth value
+The NTH_VALUE() is a window function that allows you to get a value from the Nth row in an ordered set of rows.
+
+```sql
+NTH_VALUE(expression, N)
+FROM FIRST
+OVER (
+    partition_clause
+    order_clause
+    frame_clause
+)
+```
+
+- The NTH_VALUE() function returns the value of expression from the Nth row of the window frame. If that Nth row does not exist, the function returns NULL. N must be a positive integer e.g., 1, 2, and 3.
+- The FROM FIRST instructs the NTH_VALUE() function to begin calculation at the first row of the window frame.
+- Note that SQL standard supports both FROM FIRST and FROM LAST. However, MySQL only supports FROM FIRST. If you want to simulate the effect of FROM LAST, then you can use the ORDER BY in the over_clause to sort the result set in reverse order.
+
+```sql
+-- make a example table
+CREATE TABLE basic_pays(
+    employee_name VARCHAR(50) NOT NULL,
+    department VARCHAR(50) NOT NULL,
+    salary INT NOT NULL,
+    PRIMARY KEY (employee_name , department)
+);
+
+-- insert example data
+INSERT INTO
+    basic_pays(employee_name,
+               department,
+               salary)
+VALUES
+    ('Diane Murphy','Accounting',8435),
+    ('Mary Patterson','Accounting',9998),
+    ('Jeff Firrelli','Accounting',8992),
+    ('William Patterson','Accounting',8870),
+    ('Gerard Bondur','Accounting',11472),
+    ('Anthony Bow','Accounting',6627),
+    ('Leslie Jennings','IT',8113),
+    ('Leslie Thompson','IT',5186),
+    ('Julie Firrelli','Sales',9181),
+    ('Steve Patterson','Sales',9441),
+    ('Foon Yue Tseng','Sales',6660),
+    ('George Vanauf','Sales',10563),
+    ('Loui Bondur','SCM',10449),
+    ('Gerard Hernandez','SCM',6949),
+    ('Pamela Castillo','SCM',11303),
+    ('Larry Bott','SCM',11798),
+    ('Barry Jones','SCM',10586);
+```
+
+```sql
+SELECT
+    employee_name,
+    salary,
+    NTH_VALUE(employee_name, 2) OVER  (
+        ORDER BY salary DESC
+    ) second_highest_salary
+FROM
+    basic_pays;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTH_VALUE-Function-Example-1.png)
+
+
+
+```sql
+SELECT
+    employee_name,
+    department,
+    salary,
+    NTH_VALUE(employee_name, 2) OVER  (
+        PARTITION BY department
+        ORDER BY salary DESC
+        RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) second_highest_salary
+FROM
+    basic_pays;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTH_VALUE-Function-OVER-partition-example.png)
+
+
+#### NTILE
+
+The MySQL NTILE() function divides the rows in a sorted partition into a specific number of groups. Each group is assigned a bucket number starting at one. 
+For each row, the NTILE() function returns a bucket number representing the group to which the row belongs.
+
+```sql
+NTILE(n) OVER (
+    PARTITION BY <expression>[{,<expression>...}]
+    ORDER BY <expression> [ASC|DESC], [{,<expression>...}]
+)
+```
+
+- n is a literal positive integer. The bucket number is in the range from 1 to n.
+- The PARTITION BY divides the result set returned from the FROM clause into partitions to which the NTILE() function is applied.
+- The ORDER BY clause specifies the order in which the NTILE() values are assigned to the rows in a partition.
+
+```sql
+CREATE TABLE ntiletest (
+    val INT NOT NULL
+);
+
+INSERT INTO ntiletest(val)
+VALUES(1),(2),(3),(4),(5),(6),(7),(8),(9);
+
+
+SELECT * FROM ntiletest;
+```
+
+```sql
+SELECT
+    val,
+    NTILE (4) OVER (
+        ORDER BY val
+    ) bucket_no
+FROM
+    ntiletest;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-groups-with-the-different-number-of-rows.png)
+
+```sql
+SELECT
+    val,
+    NTILE (3) OVER (
+        ORDER BY val
+    ) bucket_no
+FROM
+    ntiletest;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-groups-with-difference-in-rows.png)
+
+````sql
+WITH productline_sales AS (
+    SELECT productline,
+           year(orderDate) order_year,
+           ROUND(SUM(quantityOrdered * priceEach),0) order_value
+    FROM orders
+    INNER JOIN orderdetails USING (orderNumber)
+    INNER JOIN products USING (productCode)
+    GROUP BY productline, order_year
+)
+SELECT
+    productline,
+    order_year,
+    order_value,
+    NTILE(3) OVER (
+        PARTITION BY order_year
+        ORDER BY order_value DESC
+    ) product_line_group
+FROM
+    productline_sales;
+````
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-with-CTE-example.png)
+
