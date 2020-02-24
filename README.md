@@ -2599,3 +2599,171 @@ FROM
 
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-with-CTE-example.png)
 
+
+#### PERCENT_RANK
+
+The PERCENT_RANK() is a window function that calculates the percentile rank of a row within a partition or result set.
+- https://www.mysqltutorial.org/mysql-window-functions/mysql-percent_rank-function/
+- 예시로 나온 부분이 잘 안되어서 수정을 조금 하였고, 이해하였
+
+```sql
+PERCENT_RANK()
+    OVER (
+        PARTITION BY expr,...
+        ORDER BY expr [ASC|DESC],...
+    )
+```
+
+
+```sql
+with sample_table as (
+  select
+    productline,
+    orderYear,
+    orderValue
+  from (
+  SELECT
+      productline,
+      YEAR(orderdate) as orderYear,
+      quantityordered * priceEach as orderValue
+  FROM orderdetails
+      INNER JOIN orders USING (orderNumber)
+      INNER JOIN products USING (productcode)
+  ) as sample
+  GROUP BY 1, 2, 3)
+
+
+select
+    productline,
+    orderYear,
+    orderValue,
+    ROUND(
+    PERCENT_RANK()
+    OVER (
+        PARTITION BY orderYear
+        ORDER BY orderValue
+    ),2) percentile_rank
+FROM sample_table;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-PERCENT_RANK-function-over-partition-example-1.png)
+
+#### RANK
+
+- Note that MySQL has been supporting the RANK() function and other window functions since version 8.0
+- 랭크 함수는 이전부터 지원 해왔당.
+
+
+The RANK() function assigns a rank to each row within the partition of a result set. The rank of a row is specified by one plus the number of ranks that come before it.
+
+```sql
+RANK() OVER (
+    PARTITION BY <expression>[{,<expression>...}]
+    ORDER BY <expression> [ASC|DESC], [{,<expression>...}]
+)
+```
+
+```sql
+CREATE TABLE rank_test (
+    val INT
+);
+ 
+INSERT INTO rank_test(val)
+VALUES(1),(2),(2),(3),(4),(4),(5);
+ 
+ 
+SELECT * FROM rank_test;
+
+------------
+-- Query....
+
+SELECT
+    val,
+    RANK() OVER (
+        ORDER BY val
+    ) my_rank
+FROM
+    t;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-RANK-function-example.png)
+
+
+
+```sql
+CREATE TABLE IF NOT EXISTS sales(
+    sales_employee VARCHAR(50) NOT NULL,
+    fiscal_year INT NOT NULL,
+    sale DECIMAL(14,2) NOT NULL,
+    PRIMARY KEY(sales_employee,fiscal_year)
+);
+ 
+INSERT INTO sales(sales_employee,fiscal_year,sale)
+VALUES('Bob',2016,100),
+      ('Bob',2017,150),
+      ('Bob',2018,200),
+      ('Alice',2016,150),
+      ('Alice',2017,100),
+      ('Alice',2018,200),
+       ('John',2016,200),
+      ('John',2017,150),
+      ('John',2018,250);
+ 
+SELECT * FROM sales;
+```
+
+
+````sql
+SELECT
+    sales_employee,
+    fiscal_year,
+    sale,
+    RANK() OVER (PARTITION BY
+                     fiscal_year
+                 ORDER BY
+                     sale DESC
+                ) sales_rank
+FROM
+    sales;
+````
+
+```bash
+-- 위의 쿼리 결과....
+#,sales_employee,fiscal_year,sale,sales_rank
+1,John,2016,200.00,1
+2,Alice,2016,150.00,2
+3,Bob,2016,100.00,3
+4,Bob,2017,150.00,1
+5,John,2017,150.00,1
+6,Alice,2017,100.00,3
+7,John,2018,250.00,1
+8,Alice,2018,200.00,2
+9,Bob,2018,200.00,2
+```
+
+
+```sql
+WITH order_values AS(
+    SELECT 
+        orderNumber, 
+        YEAR(orderDate) order_year,
+        quantityOrdered*priceEach AS order_value,
+        RANK() OVER (
+            PARTITION BY YEAR(orderDate)
+            ORDER BY quantityOrdered*priceEach DESC
+        ) order_value_rank
+    FROM
+        orders
+    INNER JOIN orderDetails USING (orderNumber)
+)
+SELECT 
+    * 
+FROM 
+    order_values
+WHERE 
+    order_value_rank <=3;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-RANK-function-order-values-example.png)
+
+- 실제로는 수 백등까지 rank가 형성되어 있다.
