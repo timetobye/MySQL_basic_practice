@@ -2767,3 +2767,209 @@ WHERE
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-RANK-function-order-values-example.png)
 
 - 실제로는 수 백등까지 rank가 형성되어 있다.
+
+
+#### Row_number
+
+MySQL introduced the ROW_NUMBER() function since version 8.0. The ROW_NUMBER() is a window function or analytic function that assigns a sequential number to each row to which it applied beginning with one.
+
+
+**번외**
+
+Row_number를 모르더라도 구현할 수 있는 방법이 있다.
+- https://www.mysqltutorial.org/mysql-row_number/
+
+```sql
+SET @row_number = 0; 
+SELECT 
+    (@row_number:=@row_number + 1) AS num, 
+    firstName, 
+    lastName
+FROM
+    employees
+ORDER BY firstName, lastName    
+LIMIT 5;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2019/08/mysql-row_number-emulation.png)
+
+- 더 많은 내용은 별도 정리 할 것
+
+본론으로 돌아와서......
+
+
+**Assigning sequential numbers to rows**
+
+```sql
+SELECT 
+    ROW_NUMBER() OVER (
+        ORDER BY productName
+    ) row_num,
+    productName,
+    msrp
+FROM 
+    products
+ORDER BY 
+    productName;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-assign-sequential-numbers.png)
+
+
+**Finding top N rows of every group**
+
+```sql
+WITH inventory
+AS (SELECT 
+       productLine,
+       productName,
+       quantityInStock,
+       ROW_NUMBER() OVER (
+          PARTITION BY productLine 
+          ORDER BY quantityInStock DESC) row_num
+    FROM 
+       products
+   )
+SELECT 
+   productLine,
+   productName,
+   quantityInStock
+FROM 
+   inventory
+WHERE 
+   row_num <= 3;
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Top-N-rows-from-group.png)
+
+
+위 쿼리를 살짝 뜯어 보면....
+
+```sql
+SELECT
+       productLine,
+       productName,
+       quantityInStock,
+       ROW_NUMBER() OVER (
+          PARTITION BY productLine
+          ORDER BY quantityInStock DESC) row_num
+    FROM
+       products;
+```
+
+```bash
+#,productLine,productName,quantityInStock,row_num
+1,Classic Cars,1995 Honda Civic,9772,1
+2,Classic Cars,2002 Chevy Corvette,9446,2
+3,Classic Cars,1976 Ford Gran Torino,9127,3
+4,Classic Cars,1968 Dodge Charger,9123,4
+5,Classic Cars,1965 Aston Martin DB5,9042,5
+6,Classic Cars,1948 Porsche Type 356 Roadster,8990,6
+7,Classic Cars,1948 Porsche 356-A Roadster,8826,7
+....
+....
+39,Motorcycles,2002 Suzuki XREO,9997,1
+40,Motorcycles,1982 Ducati 996 R,9241,2
+41,Motorcycles,1969 Harley Davidson Ultimate Chopper,7933,3
+42,Motorcycles,1957 Vespa GS150,7689,4
+43,Motorcycles,1997 BMW R 1100 S,7003,5
+44,Motorcycles,1982 Ducati 900 Monster,6840,6
+45,Motorcycles,1996 Moto Guzzi 1100i,6625,7
+46,Motorcycles,2003 Harley-Davidson Eagle Drag Bike,5582,8
+....
+....
+52,Planes,America West Airlines B757-200,9653,1
+53,Planes,American Airlines: MD-11S,8820,2
+54,Planes,ATA: B757-300,7106,3
+55,Planes,Corsair F4U ( Bird Cage),6812,4
+56,Planes,1900s Vintage Bi-Plane,5942,5
+....
+....
+```
+
+위 결과에서 각 row_num이 3보다 작거나 같은 경우에만 추려서 쿼리를 실행한 것이다.
+
+
+**Removing duplicate rows**
+
+작업을 하기 위해 테이블을 만들어 보자
+
+```sql
+CREATE TABLE duplicated_test (
+    id INT,
+    name VARCHAR(10) NOT NULL
+);
+ 
+INSERT INTO duplicated_test(id,name) 
+VALUES(1,'A'),
+      (2,'B'),
+      (2,'B'),
+      (3,'C'),
+      (3,'C'),
+      (3,'C'),
+      (4,'D');
+```
+
+```sql
+SELECT
+    id,
+    name,
+    ROW_NUMBER() OVER (
+      PARTITION BY id, name ORDER BY id
+    ) AS row_num
+FROM duplicated_test;
+```
+
+다음과 같은 결과가 나온다.
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Duplicate-Rows.png)
+
+
+중복되는 걸 지워야 하니까...CTE를 써서 정리를 해보자.
+
+As you can see from the output, the unique rows are the ones whose the row number equals one.
+- you can use the common table expression (CTE) to return the duplicate rows and delete statement to remove
+- Notice that the MySQL does not support CTE based delete, therefore, we had to join the original table with the CTE as a workaround.
+
+```sql
+WITH dups AS (SELECT
+        id,
+        name,
+        ROW_NUMBER() OVER(PARTITION BY id, name ORDER BY id) AS row_num
+    FROM duplicated_test)
+
+DELETE FROM duplicated_test USING duplicated_test JOIN dups ON duplicated_test.id = dups.id
+WHERE dups.row_num <> 1;
+```
+
+- 중복되는 항목을 지울 수 있다.
+- to-do list : name이 중복되는 경우를 다 지워서 살짝 이해가 안 간다. 나중에 다시 확인 할 것 2020-02-28
+
+```bash
+#,id,name
+1,1,A
+2,4,D
+```
+
+#### Pagination using  ROW_NUMBER() function
+
+Because the ROW_NUMBER() assigns each row in the result set a unique number, you can use it for pagination. Suppose, you need to display a list of products with 10 products per page. To get the products for the second page, you use the following query:
+
+- Pagination : 페이지 매김..1페이지, 2페이지...
+
+
+```sql
+SELECT *
+FROM
+    (SELECT productName,
+         msrp,
+         row_number()
+        OVER (order by msrp) AS row_num
+    FROM products) t
+WHERE row_num BETWEEN 11 AND 20
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Pagination-Example.png)
+
+
+
