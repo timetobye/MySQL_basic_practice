@@ -1966,6 +1966,31 @@ from sales;
 9,2018,John,250.00,600.00
 ```
 
+
+#### 누적합 구하기
+
+누적합을 구하는 것을 연습하였다. 잊지 말고 잘 사용하자.
+
+```sql
+select
+    distinct officeCode,
+    sum(officeCode) over (order by officeCode asc)
+from (select distinct officeCode as officeCode from employees) as distinct_employees;
+```
+
+```bash
+#,officeCode,sum(officeCode) over (order by officeCode asc)
+1,1,1
+2,2,3
+3,3,6
+4,4,10
+5,5,15
+6,6,21
+7,7,28
+
+```
+
+
 ### window function 구조
 ```bash
 window_function_name(expression) 
