@@ -232,6 +232,9 @@ step by step
 ### FIRST_VALUE()
 
 The FIRST_VALUE() is a window function that allows you to select the first row of a window frame, partition, or result set.
+- window frame, partition, or result set의 가장 첫 번째 row에 오는 값을 리턴하는 함수이다.
+- 이것도 예제를 보면 이해가 쉽다.
+
 
 ```sql
 FIRST_VALUE(expression) OVER (
@@ -240,6 +243,7 @@ FIRST_VALUE(expression) OVER (
         [frame_clause]
 )
 ```
+
 
 ```sql
 CREATE TABLE overtime (
@@ -266,7 +270,9 @@ VALUES('Diane Murphy','Accounting',37),
 ('Pamela Castillo','SCM',96),
 ('Larry Bott','SCM',100),
 ('Barry Jones','SCM',65);
+```
 
+```sql
 SELECT
     employee_name,
     hours,
@@ -277,11 +283,14 @@ FROM
     overtime;
 ```
 
+
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Example.png)
 
 - 이해가 잘 된다... :)
+- hours로 정렬하였을 때 employee_name 이라는항목에서 가장 첫 번째 값을 least_over_time으로 할당한다.
+ 
 
-또 다른 예제
+또 다른 예제는 구간 별로 설정되었을 때 각 구간의 첫 번쨰 값을 할당하는 방식을 안내한다.
 
 ```sql
 SELECT
@@ -298,10 +307,14 @@ FROM
 
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Over-Partition-Example.png)
 
+- department 별로 partition을 나눈 후, hours를 기준으로 정렬한 뒤 각 department의 첫 번째 값을 할당하였다.
 
-### LAG
+
+### LAG()
 
 The LAG() function is a window function that allows you to look back a number of rows and access data of that row from the current row.
+- LAG()는 이전 행을 현재 행에 배치시킬 수 있는 기능을 하는 함수이다.
+- 사실 이렇게 말을 해도 잘 와닿지는 않은데 결과를 살펴보면 단번에 어떤 의미인지 알 수 있다.
 
 ```bash
 LAG(<expression>[,offset[, default_value]]) OVER (
@@ -318,6 +331,9 @@ The LAG() function ...
 - The offset is the number of rows back from the current row from which to get the value. 
 The offset must be zero or a literal positive integer. If offset is zero, then the LAG() function evaluates the expression for the current row. 
 If you don’t specify the offset, then the LAG() function uses one by default.
+- offset은 0이나 양수여야 한다.
+- 0일 경우에는 이전 행이 아닌 자기 자신을 구하고자 하는 행으로 할당한다.
+- 양수일 경우 해당 숫자만큼 내려가서 구하고자 하는 행에 값을 할당한다.
 
 
 ````sql
@@ -426,7 +442,8 @@ FROM
 ### LAST_VALUE()
 
 - The LAST_VALUE() function is a window function that allows you to select the last row in an ordered set of rows.
-- 각 partition의 마지막 값을 추린다고 생각하면 될 듯
+- 각 partition의 마지막 값을 구한다고 생각하면 쉽다.
+- FIRST_VALUE()의 원리를 기억하자.
 
 
 ```sql
@@ -511,6 +528,7 @@ FROM
     overtime;
 ```
 
+
 ```bash
 #,employee_name,department,hours,most_overtime_employee
 1,Diane Murphy,Accounting,37,Mary Patterson
@@ -535,11 +553,14 @@ FROM
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-OVER-partitions-example.png)
 
 
-### LEAD
+### LEAD()
 The LEAD() function is a window function that allows you to look forward a number of rows and access data of that row from the current row.
 
 Similar to the LAG() function, the LEAD() function is very useful for calculating 
 the difference between the current row and the subsequent row within the same result set.
+- LAG() function의 반대로 생각하면 이해하기 쉽다.
+- 특히 날짜 차이 계산을 할 때 이용하면 유용하다.
+
 
 ```sql
 LEAD(<expression>[,offset[, default_value]]) OVER (
@@ -572,6 +593,7 @@ INNER JOIN customers USING (customerNumber);
 
 ### Nth value
 The NTH_VALUE() is a window function that allows you to get a value from the Nth row in an ordered set of rows.
+- 정렬된 row 내에서 N 번째 값을 할당할 수 있는 함수
 
 ```sql
 NTH_VALUE(expression, N)
@@ -583,9 +605,13 @@ OVER (
 )
 ```
 
-- The NTH_VALUE() function returns the value of expression from the Nth row of the window frame. If that Nth row does not exist, the function returns NULL. N must be a positive integer e.g., 1, 2, and 3.
+
+- The NTH_VALUE() function returns the value of expression from the Nth row of the window frame. 
+If that Nth row does not exist, the function returns NULL. N must be a positive integer e.g., 1, 2, and 3.
 - The FROM FIRST instructs the NTH_VALUE() function to begin calculation at the first row of the window frame.
-- Note that SQL standard supports both FROM FIRST and FROM LAST. However, MySQL only supports FROM FIRST. If you want to simulate the effect of FROM LAST, then you can use the ORDER BY in the over_clause to sort the result set in reverse order.
+- Note that SQL standard supports both FROM FIRST and FROM LAST. However, MySQL only supports FROM FIRST. 
+If you want to simulate the effect of FROM LAST, then you can use the ORDER BY in the over_clause to sort the result set in reverse order.
+
 
 ```sql
 -- make a example table
