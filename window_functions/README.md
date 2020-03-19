@@ -683,6 +683,13 @@ FROM
 
 The MySQL NTILE() function divides the rows in a sorted partition into a specific number of groups. Each group is assigned a bucket number starting at one. 
 For each row, the NTILE() function returns a bucket number representing the group to which the row belongs.
+- 이게 무슨 말일까?... 고민이 되겠지만...
+- NTILE(숫자)을 설정하면 설정된 숫자만큼 그룹을 나눈다.
+  - 그 다음에 각 그룹에 번호를 할당한다.
+  - 전체 숫자가 지정된 숫자로 딱 나누어 떨어지지 않으면 번호 할당이 가장 먼저된 그룹이 가장 많은 비율을 차지하는 구조이다.
+- Partition 작업을 하는 것과 어떤 차이가 있는지는 아래 예제를 통해 이해할 수 있다.
+
+
 
 ```sql
 NTILE(n) OVER (
@@ -731,6 +738,12 @@ FROM
 
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-groups-with-difference-in-rows.png)
 
+
+- 다음 주어지는 쿼리를 실행하면 NTILE()과 함께 사용되는 PARTITION을 이해할 수 있다.
+  - 우선 지정된 컬럼에 따라 PARTITION을 나눈다.
+  - PARTITION으로 나누어진 상태에서 각각의 그룹을 NTILE에 지정된 숫자만큼 또 나눈다.
+  - 그래서 아래와 같은 결과를 얻는다.
+
 ````sql
 WITH productline_sales AS (
     SELECT productline,
@@ -760,7 +773,7 @@ FROM
 
 The PERCENT_RANK() is a window function that calculates the percentile rank of a row within a partition or result set.
 - https://www.mysqltutorial.org/mysql-window-functions/mysql-percent_rank-function/
-- 예시로 나온 부분이 잘 안되어서 수정을 조금 하였고, 이해하였
+- 예시로 나온 부분이 잘 안되어서 수정을 조금 하였고, 이해하였다.
 
 ```sql
 PERCENT_RANK()
