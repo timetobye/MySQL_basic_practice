@@ -161,15 +161,21 @@ where marks > 75
 order by right(name, 3) asc, id
 ```
 
-## 
+## Employee Names
 
 ```sql
-
+select name
+from Employee
+order by 1
 ```
 
-## 
+## Employee Salaries
 
 ```sql
-
+select
+    name
+from Employee
+where months < 10 and salary > 2000
+order by employee_id asc
 ```
 
