@@ -103,3 +103,112 @@ FROM
 문자열 + 공백 + 문자열 구조로 출력되어서 나온다.
 
 ### CONCAT_WS
+
+기본적인 구조는 아래와 같다.
+- The first argument is the separator for other arguments: string1, string2, …
+- The CONCAT_WS function adds the separator between string arguments and returns a single string with the separator inserted between string arguments.
+
+```sql
+CONCAT_WS(seperator,string1,string2, ... );
+```
+
+예시
+```sql
+SELECT CONCAT_WS(',','John','Doe');
+```
+
+```bash
+John,Doe
+```
+
+Null이 들어갈 경우에는 null을 무시하고 나머지 항목만 연산 후 돌려준다.
+- Unlike the CONCAT function, the CONCAT_WS function skips NULL values after the separator argument. In other words, it ignores NULL values.
+
+```sql
+SELECT CONCAT_WS(',','Jonathan', 'Smith',NULL);
+```
+
+```bash
+Jonathan,Smith
+```
+
+
+
+```sql
+SELECT
+    CONCAT_WS(CHAR(13),
+            CONCAT_WS(' ', contactLastname, contactFirstname),
+            addressLine1,
+            addressLine2,
+            CONCAT_WS(' ', postalCode, city),
+            country,
+            CONCAT_WS(CHAR(13), '')) AS Customer_Address
+FROM
+    customers;
+```
+
+```bash
+Customer_Address
+"Schmitt Carine 
+54, rue Royale
+44000 Nantes
+France
+"
+King Jean
+8489 Strong St.
+83030 Las Vegas
+USA
+
+....
+```
+
+## INSTR
+
+The INSTR function returns the position of the first occurrence of a substring in a string. 
+If the substring is not found in the str, the INSTR function returns zero (0).
+- Like처럼 문자열을 찾을 때 사용하는 함수 중 하나이다.
+- Like와 비교하면 속도면에서는 같다.
+  - 그러나 index가 걸린 컬럼이라면 Like가 월등히 빠른 속도를 보여준다.
+  > The INSTR function performs a table scan even though the productname column has an index. This is because MySQL cannot make any assumption about the semantics of the INSTR function, whereby MySQL can utilize its understanding of the semantics of the LIKE operator.
+  - 그렇기 때문에 굳이...써야하나..?
+  - The fastest way to test if a substring exists in a string is to use a **full-text index**. 
+  However, it is required a configure and maintain the index properly.
+  
+```sql
+INSTR(str,substr);
+```
+
+- The str is the string that you want to search in.
+- The substr is the substring that you want to search for.
+
+
+```sql
+SELECT INSTR('MySQL INSTR', 'MySQL');
+```
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2013/12/MySQL-INSTR-example.jpg)
+
+
+## LENGTH
+
+LENGTH
+- To get the length of a string measured in bytes, you use the LENGTH  function as follows:
+
+```sql
+LENGTH(str);
+```
+
+CHAR_LENGTH
+- You use the CHAR_LENGTH  function to get the length of a string measured in characters as follows:
+
+무슨 차이가 있을까?
+- LENGTH는 문자의 Byte 길이를 가져온다. 한글은 정확한 길이를 알 수가 없다.
+- CHAR_LENGTH는 순수한 길이만을 가져오기 때문에 한 글자의 한글이 작성되어도 문자열의 길이는 1이 된다.
+
+나의 경우에는 CHAR_LENGTH를 사용하는 것이 더 많을 것 같다.
+
+```sql
+CHAR_LENGTH(str);
+```
+
+
