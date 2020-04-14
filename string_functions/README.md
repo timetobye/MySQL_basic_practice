@@ -212,3 +212,64 @@ CHAR_LENGTH(str);
 ```
 
 
+## LEFT
+The LEFT function is a string function that returns the left part of a string with a specified length.
+
+```sql
+LEFT(str,length);
+```
+
+The LEFT function accepts two arguments:
+- The str is the string that you want to extract the substring.
+- The length is a positive integer that specifies the number of characters will be returned.
+
+
+The LEFT function returns the leftmost length characters from the str string. 
+- It returns a NULL value if either str or length argument is NULL.
+- NULL을 넣으면 NULL을 리턴한다.
+
+If the length is zero or negative, the LEFT function returns an empty string. 
+- 0 또는 음수가 들어올 경우 empty string을 전달한다.
+
+If the length is greater than the length of the str string, the LEFT function returns the entire str string.
+- 주어진 string보다 긴 숫자가 들어올 경우 string 전체를 반환한다.
+
+일반적인 경우
+
+```sql
+SELECT LEFT('MySQL LEFT', 5);
+```
+
+````bash
+MySQL
+````
+
+전체 길이보다 큰 수가 들어왔을 경우
+
+````sql
+SELECT LEFT('MySQL LEFT', 9999);
+````
+
+````bash
+MySQL LEFT
+````
+
+음의 값이 들어왔을 경우
+
+````sql
+SELECT LEFT('MySQL LEFT', -2);
+````
+
+````bash
+
+````
+
+NULL이 들어올 경우
+
+```sql
+SELECT LEFT('MySQL LEFT', NULL);
+```
+
+````bash
+NULL
+````
