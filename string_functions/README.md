@@ -273,3 +273,28 @@ SELECT LEFT('MySQL LEFT', NULL);
 ````bash
 NULL
 ````
+
+
+## LOWER
+
+The LOWER() function accepts a string argument and returns the lowercase version of that string.
+- 특별할 건 없다. 대문자로 되어 있는 것을 소문자로 처리해준다.
+
+```sql
+LOWER(str)
+```
+
+```sql
+SELECT 
+    LOWER('MySQL')
+```
+
+
+```bash
++----------------+
+| LOWER('MySQL') |
++----------------+
+| mysql          |
++----------------+
+1 row in set (0.00 sec)
+```
