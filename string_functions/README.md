@@ -298,3 +298,190 @@ SELECT
 +----------------+
 1 row in set (0.00 sec)
 ```
+
+
+## LTRIM
+The LTRIM() function takes a string argument and returns a new string with all the leading space characters removed.
+- 왼쪽 공백만 제거 한다.
+
+```sql
+SELECT 
+    LTRIM('   MySQL Tutorial') result;
+```
+
+## Replace
+MySQL provides you with a useful string function called REPLACE that allows you to replace a string in a column of a table by a new string.
+- 문자열을 원하는 형태로 바꾸는 것
+- The REPLACE function is very handy to search and replace text in a table such as updating obsolete URL, correcting a spelling mistake, etc.
+  - UPDATE, SET과 결합해서 사용하면 잘못 입력된 경우를 고칠 수 있다.
+
+```sql
+REPLACE(str,old_string,new_string);
+```
+
+```sql
+UPDATE tbl_name 
+SET 
+    field_name = REPLACE(field_name,
+        string_to_find,
+        string_to_replace)
+WHERE
+    conditions;
+```
+
+```sql
+UPDATE products 
+SET 
+    productDescription = REPLACE(productDescription,
+        'abuot',
+        'about');
+```
+
+### RIGHT
+The MySQL RIGHT() function extracts a specified number of rightmost characters from a string.
+
+````sql
+RIGHT(str,length)
+````
+
+The RIGHT() function accepts two arguments:
+- str is the string from which you want to extract the substring.
+- length is the number the rightmost characters that you want to extract from the str.
+
+The RIGHT() function will return NULL if any argument is NULL.
+
+
+````sql
+SELECT RIGHT('MySQL', 3);
+````
+
+```bash
++-------------------+
+| RIGHT('MySQL', 3) |
++-------------------+
+| SQL               |
++-------------------+
+1 row in set (0.00 sec)
+```
+
+````sql
+SET @str = '12/31/2019';
+SELECT 
+    RIGHT(@str, 4) year,
+    LEFT(@str, 2) month,
+    SUBSTRING(@str, 4, 2) day;
+````
+
+```bash
++------+-------+------+
+| year | month | day  |
++------+-------+------+
+| 2019 | 12    | 31   |
++------+-------+------+
+1 row in set (0.00 sec)
+```
+
+
+## RTRIM
+The RTRIM() function takes a string argument and returns a new string with all the trailing space characters removed.
+- 오른쪽 공백을 지우는 함수이다.
+
+```sql
+SELECT 
+    RTRIM('MySQL   ') result;
+```
+
+```bash
++--------+
+| result |
++--------+
+| MySQL  |
++--------+
+1 row in set (0.00 sec)
+```
+
+## SUBSTRING
+The SUBSTRING function returns a substring with a given length from a string starting at a specific position. MySQL provides various forms of the substring function.
+
+```sql
+SUBSTRING(string,position);
+SUBSTRING(string FROM position);
+```
+
+### MySQL SUBSTRING with position parameter
+substring에 양수 값을 position으로 지정할 때
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2011/05/mysql-substring-string-demo.png)
+
+
+```sql
+SELECT SUBSTRING('MYSQL SUBSTRING', 7);
+```
+
+문자의 7번째 부터 출력을 해준다.
+
+```bash
+SUBSTRING
+``` 
+
+substring에 음수 값을 position으로 지정할 때
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2011/05/MySQLsubstring-with-negative-position.png)
+
+
+````sql
+SELECT SUBSTRING('MySQL SUBSTRING',-10);
+````
+
+문자열의 -10번 위치를 시작 값으로 하여 문자열을 출력한다.
+
+
+if the position is zero, the SUBSTRING function returns an empty string
+- 0을 넣을 경우 빈 문자열을 돌려준다.
+
+```sql
+SELECT SUBSTRING('MYSQL SUBSTRING', 0);
+```
+
+From을 써서 표현을 할 수 있다.
+- 이럴 경우 ','는 빠지게 된다.
+
+```sql
+SELECT SUBSTRING('MySQL SUBSTRING' FROM -10);
+```
+
+### MySQL SUBSTRING with position and length
+If you want to specify the length of the substring that you want to extract from a string, you can use the following form of the SUBSTRING function:
+- 시작지점과 끝점을 지정하고 싶을 때는 아래와 같이 한다.
+
+```sql
+SUBSTRING(string,position,length);
+```
+
+```sql
+-- SQL-standard version
+SUBSTRING(string FROM position FOR length);
+```
+
+아래의 문자열 구성에서 MySQL만 뽑아낸다고 하자.
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2011/05/mysql-substring-string-demo.png)
+
+```sql
+SELECT SUBSTRING('MySQL SUBSTRING',1,5);
+```
+
+```sql
+SELECT SUBSTRING('MySQL SUBSTRING' FROM 1 FOR 5);
+```
+
+아래처럼 음의 값을 넣을 때도 동일하게 MySQL이라는 단어를 추출할 수 있다.
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2011/05/MySQLsubstring-with-negative-position.png)
+
+```sql
+SELECT SUBSTRING('MySQL SUBSTRING',-15,5);
+```
+
+```sql
+SELECT SUBSTRING('MySQL SUBSTRING' FROM -15 FOR 5);
+```
