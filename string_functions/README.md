@@ -485,3 +485,160 @@ SELECT SUBSTRING('MySQL SUBSTRING',-15,5);
 ```sql
 SELECT SUBSTRING('MySQL SUBSTRING' FROM -15 FOR 5);
 ```
+
+
+## Substring_index
+The SUBSTRING_INDEX() function returns a substring from a string before a specified number of occurrences of the delimiter.
+- 지정한 delimiter 를 기준으로 지정된 index 까지만큼만 출력하는 함수
+
+```sql
+SUBSTRING_INDEX(str,delimiter,n)
+```
+
+- str is the string from which you want to extract a substring.
+- delimiter is a string that acts as a delimiter. The function performs a case-sensitive match when searching for the delimiter.
+- n is an integer that specifies the number of occurrences of the delimiter. 
+The n can be negative or positive. If n is positive, the function returns every character from the left of the string up to n number of occurrences of the delimiter. 
+If n is negative, the function returns every character from right up to n number of occurrences of the delimiter.
+
+
+### Using MySQL SUBSTRING_INDEX() function with a positive number of occurrences of a delimiter
+
+Hello world에서 'l'에 의해 다음과 같이 'He / l / lo wor / ld' 나누어 진다. 그리고 각 index를 기준으로 이전에 구성된 string을 다 포함하는 방식을 취한다.
+
+```sql
+SELECT 
+    SUBSTRING_INDEX('Hello World', 'l', 1);
+```
+
+```bash
++----------------------------------------+
+| SUBSTRING_INDEX('Hello World', 'l', 1) |
++----------------------------------------+
+| He                                     |
++----------------------------------------+
+1 row in set (0.00 sec)
+```
+
+```sql
+SELECT 
+    SUBSTRING_INDEX('Hello World', 'l', 2);
+```
+
+```bash
++----------------------------------------+
+| SUBSTRING_INDEX('Hello World', 'l', 2) |
++----------------------------------------+
+| Hel                                    |
++----------------------------------------+
+1 row in set (0.00 sec)
+```
+
+```sql
+SELECT 
+    SUBSTRING_INDEX('Hello World', 'l', 3);
+```
+
+```bash
++----------------------------------------+
+| SUBSTRING_INDEX('Hello World', 'l', 3) |
++----------------------------------------+
+| Hello Wor                              |
++----------------------------------------+
+1 row in set (0.00 sec)
+```
+
+### Using MySQL SUBSTRING_INDEX() function with a negative number of occurrences of a delimiter
+
+양수가 아닌 음수 index가 들어가도 원리는 동일하다.
+
+```sql
+SELECT 
+    SUBSTRING_INDEX('Hello World', 'l', -1);
+```
+
+```bash
++-----------------------------------------+
+| SUBSTRING_INDEX('Hello World', 'l', -1) |
++-----------------------------------------+
+| d                                       |
++-----------------------------------------+
+1 row in set (0.00 sec)
+```
+
+```sql
+SELECT
+    SUBSTRING_INDEX('Hello World', 'l', - 2) result1,
+    SUBSTRING_INDEX('Hello World', 'l', - 3) result2;
+```
+
+```bash
++---------+----------+
+| result1 | result2  |
++---------+----------+
+| o World | lo World |
++---------+----------+
+1 row in set (0.00 sec)
+```
+
+### Using MySQL SUBSTRING_INDEX() function with the table data example
+example을 살펴보면 공백(' ')으로 나눈 후에 필요한 문자열을 출력하는 방식을 취하고 있다.
+
+
+```sql
+SELECT
+    customerName,
+    addressLine1,
+    SUBSTRING_INDEX(addressLine1, ' ', 1) house_no # 공백으로 split한 뒤 필요한 값만 취하기.
+FROM
+    customers
+WHERE
+    country = 'USA'
+ORDER BY
+    customerName;
+```
+
+```bash
++------------------------------+---------------------------+----------+
+| customerName                 | addressLine1              | house_no |
++------------------------------+---------------------------+----------+
+| American Souvenirs Inc       | 149 Spinnaker Dr.         | 149      |
+| Auto-Moto Classics Inc.      | 16780 Pompton St.         | 16780    |
+| Boards & Toys Co.            | 4097 Douglas Av.          | 4097     |
+| Cambridge Collectables Co.   | 4658 Baden Av.            | 4658     |
+| Classic Gift Ideas, Inc      | 782 First Street          | 782      |
+| Classic Legends Inc.         | 5905 Pompton St.          | 5905     |
+| Collectable Mini Designs Co. | 361 Furth Circle          | 361      |
+| Collectables For Less Inc.   | 7825 Douglas Av.          | 7825     |
+| Corporate Gift Ideas Co.     | 7734 Strong St.           | 7734     |
+| Diecast Classics Inc.        | 7586 Pompton St.          | 7586     |
+| Diecast Collectables         | 6251 Ingle Ln.            | 6251     |
+| FunGiftIdeas.com             | 1785 First Street         | 1785     |
+| Gift Depot Inc.              | 25593 South Bay Ln.       | 25593    |
+| Gift Ideas Corp.             | 2440 Pompton St.          | 2440     |
+| Gifts4AllAges.com            | 8616 Spinnaker Dr.        | 8616     |
+| Land of Toys Inc.            | 897 Long Airport Avenue   | 897      |
+| Marta's Replicas Co.         | 39323 Spinnaker Dr.       | 39323    |
+| Men 'R' US Retailers, Ltd.   | 6047 Douglas Av.          | 6047     |
+| Microscale Inc.              | 5290 North Pendale Street | 5290     |
+| Mini Classics                | 3758 North Pendale Street | 3758     |
+| Mini Creations Ltd.          | 4575 Hillside Dr.         | 4575     |
+| Mini Gifts Distributors Ltd. | 5677 Strong St.           | 5677     |
+| Mini Wheels Co.              | 5557 North Pendale Street | 5557     |
+| Motor Mint Distributors Inc. | 11328 Douglas Av.         | 11328    |
+| Muscle Machine Inc           | 4092 Furth Circle         | 4092     |
+| Online Diecast Creations Co. | 2304 Long Airport Avenue  | 2304     |
+| Online Mini Collectables     | 7635 Spinnaker Dr.        | 7635     |
+| Signal Collectibles Ltd.     | 2793 Furth Circle         | 2793     |
+| Signal Gift Stores           | 8489 Strong St.           | 8489     |
+| Super Scale Inc.             | 567 North Pendale Street  | 567      |
+| Technics Stores Inc.         | 9408 Furth Circle         | 9408     |
+| Tekni Collectables Inc.      | 7476 Moss Rd.             | 7476     |
+| The Sharp Gifts Warehouse    | 3086 Ingle Ln.            | 3086     |
+| Toys4GrownUps.com            | 78934 Hillside Dr.        | 78934    |
+| Vitachrome Inc.              | 2678 Kingston Rd.         | 2678     |
+| West Coast Collectables Co.  | 3675 Furth Circle         | 3675     |
++------------------------------+---------------------------+----------+
+36 rows in set (0.00 sec)
+
+```
