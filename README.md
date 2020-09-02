@@ -1,94 +1,77 @@
-# MySQL_basic_practice
+MySQL_basic_practice
+-----
 [![alt text](https://img.shields.io/badge/mysql-5.6-green.svg)](https://dev.mysql.com/doc/relnotes/mysql/5.6/en/)
 ![alt text](https://img.shields.io/badge/result-idea%26query__solution-blue.svg)
 [![alt text](https://img.shields.io/badge/data-web-red.svg)](https://www.w3resource.com/mysql-exercises/)
 
-SQL 공부 내용을 담습니다.
-- MySQL
-  - 5.6 버전으로 학습하였습니다.
-  - 기본적인 내용보다는, 얕게 알거나 몰랐던 것 위주로 정리하였습니다.
-  - 참고 : [MySQL 5.6 공식 문서](https://dev.mysql.com/doc/refman/5.6/en/)
-- Redshift 외 등
-  - Redshift에는 좋은 가이드 문서들이 많이 올라와 있습니다. AWS 제품 뿐만 아니라, 어떠한 항목에 대한 개념,사용 방법,확장성 등이 안내 되어 있습니다.
-  - [Redshift 공식 문서](https://docs.aws.amazon.com/ko_kr/redshift/latest/mgmt/welcome.html)
-  - [열 기반 데이터베이스란 무엇입니까?](https://aws.amazon.com/ko/nosql/columnar/)
-  - [NOSQL이란?](https://aws.amazon.com/ko/nosql/)
-  - 분산 환경에서 작업되는 항목들은 별도의 페이지를 작성해서 학습 노트를 기록할 예정입니다.
+
+## Introduction
+MySQL 기본 학습
+- 8.0 버전으로 학습 중 입니다.(2020/09/02 ~ , 기존에는 5.6 버전 이용)
+- 기본적인 내용보다는, 얕게 알거나 몰랐던 것 위주로 정리하였습니다.
+- 참고문서
+  - [MySQL 5.6 공식 문서](https://dev.mysql.com/doc/refman/5.6/en/)
+  - [mysqltutorial](https://www.mysqltutorial.org/)
   
-  
-# Table of Contents
+이 문서에서는 문법 및 활용 부분 위주로 작성이 되어있습니다.
+- MySQL Quiz 와 관련된 내용은 아래 링크를 참고해주시기 바랍니다.
   - [MySQL Quiz](https://github.com/timetobye/MySQL_basic_practice#mysql-quiz)
-  - [MySQL 학습](https://github.com/timetobye/MySQL_basic_practice#mysql-학습-1)
-    - [order by](https://github.com/timetobye/MySQL_basic_practice#odrer-by)
-    - [IN vs OR](https://github.com/timetobye/MySQL_basic_practice#in-vs-or)
-    - [IN 에서 subquery를 사용](https://github.com/timetobye/MySQL_basic_practice#in-%EC%97%90%EC%84%9C-subquery%EB%A5%BC-%EC%82%AC%EC%9A%A9)
-    - [between](https://github.com/timetobye/MySQL_basic_practice#between)
-    - [between with cast](https://github.com/timetobye/MySQL_basic_practice#between-with-cast)
-    - [LIKE](https://github.com/timetobye/MySQL_basic_practice#like)
-      - [escape in LIKE](https://github.com/timetobye/MySQL_basic_practice#escape-in-like)
-    - [Null에 대한 이해](https://github.com/timetobye/MySQL_basic_practice#null%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9D%B4%ED%95%B4)
-    - [exists](https://github.com/timetobye/MySQL_basic_practice#exists)
-      - [update-in-exists](https://github.com/timetobye/MySQL_basic_practice#update-in-exists)
-    - [limit](https://github.com/timetobye/MySQL_basic_practice#limit)
-    - [inner join](https://github.com/timetobye/MySQL_basic_practice#inner-join)
-    - [left join](https://github.com/timetobye/MySQL_basic_practice#left-join)
-    - [group by, having](https://github.com/timetobye/MySQL_basic_practice#group-by-having)
-    - [Rollup](https://github.com/timetobye/MySQL_basic_practice#rollup)
-    - [DEFAULT CHARSET=utf8](https://github.com/timetobye/MySQL_basic_practice#default-charsetutf8)
-    - [now(), sysdate(), current_date()](https://github.com/timetobye/MySQL_basic_practice#now-sysdate-current_date)
-    - [concat_ws vs concat](https://github.com/timetobye/MySQL_basic_practice#concat_ws-vs-concat)
-    - [group_concat](https://github.com/timetobye/MySQL_basic_practice#group_concat)
-    - [IFNULL](https://github.com/timetobye/MySQL_basic_practice#ifnull)
-    - [Derived table](https://github.com/timetobye/MySQL_basic_practice#derived-table)
-    - [CTE](https://github.com/timetobye/MySQL_basic_practice#derived-table)
-    - [recursive CTE](https://github.com/timetobye/MySQL_basic_practice#recursive-cte)
-    - [Union vs Union All](https://github.com/timetobye/MySQL_basic_practice#union-vs-union-all)
-    - [INTERSECT](https://github.com/timetobye/MySQL_basic_practice#intersect)
-    - [Minus](https://github.com/timetobye/MySQL_basic_practice#minus)
-    - [Insert](https://github.com/timetobye/MySQL_basic_practice#insert)
-    - [Insert into select](https://github.com/timetobye/MySQL_basic_practice#insert-into-select)
-    - [IF](https://github.com/timetobye/MySQL_basic_practice#if)
-    - [Update](https://github.com/timetobye/MySQL_basic_practice#update)
-    - [tips](https://github.com/timetobye/MySQL_basic_practice#tips)
-    - [Date Function](https://github.com/timetobye/MySQL_basic_practice#date-function)
-      - [CURDATE](https://github.com/timetobye/MySQL_basic_practice#curdate)
-      - [DATEDIFF](https://github.com/timetobye/MySQL_basic_practice#datediff)
-      - [DAY](https://github.com/timetobye/MySQL_basic_practice#day)
-      - [DATE_ADD](https://github.com/timetobye/MySQL_basic_practice#date_add)
-      - [DATE_SUB](https://github.com/timetobye/MySQL_basic_practice#date_sub)
-      - [DATE_FORMAT](https://github.com/timetobye/MySQL_basic_practice#date_format)
-      - [STR_TO_DATE()](https://github.com/timetobye/MySQL_basic_practice#str_to_date)
-    
-
----------------------------------
-
-## MySQL Quiz
-- 기초적인 Mysql Quiz에 대해 idea, solution, result를 정리해두었습니다. mysql을 remind 하기 위해 만들었습니다.
-- 어떤 면에서는 무척 쉽습니다. 쿼리를 사용 할 때 idea, solution, result 3 단계를 차근차근 해보기 위해 작성하였습니다.
-- 문제 풀이 아래에는 [www.mysqltutorial.org](http://www.mysqltutorial.org/basic-mysql-tutorial.aspx)에서 학습하면서 필요한 내용을 정리하였습니다.
-- 문서 작성은 Notion을 이용하여 작성하였습니다. 그 후 HTML 파일, Markdown 파일을 받아서 git에 정리하였습니다.
-> 연습이 필요하신 분은 HTML 파일을 다운 받아서 보거나 웹에서 바로 볼 수 있는 링크를 참고해주세요.
-
-### :information_source: DB
-
-연습에 필요한 DB는 [w3resource](https://www.w3resource.com/mysql-exercises//)의 [HR Database](https://www.w3resource.com/mysql-exercises//db.sql)를 이용하였습니다.
-
-### :book: Quiz Result
-- [MySQL Basic SELECT statement 19 Exercises](http://htmlpreview.github.io/?https://github.com/timetobye/MySQL_basic_practice/blob/master/MySQL%20Quiz/MySQL%20Basic%20SELECT%20statement%2019%20Exercises/MySQL%20Basic%20SELECT%20statement%2019%20Exercises.html)
-- [MySQL Restricting and Sorting data 11 exercises](http://htmlpreview.github.io/?https://github.com/timetobye/MySQL_basic_practice/blob/master/MySQL%20Quiz/MySQL%20Restricting%20and%20Sorting%20data%20%5B11%20exercises%5D/MySQL%20Restricting%20and%20Sorting%20data%2011%20exercises.html)
-- [MySQL Aggregate Functions and Group by 14 exercises](http://htmlpreview.github.io/?https://github.com/timetobye/MySQL_basic_practice/blob/master/MySQL%20Quiz/MySQL%20Aggregate%20Functions%20and%20Group%20by%20%5B14%20exercises%5D/Aggregate%20Functions%20and%20Group%20by%2014%20exercises.html)
-- [MySQL Subquery 22 exercises](http://htmlpreview.github.io/?https://github.com/timetobye/MySQL_basic_practice/blob/master/MySQL%20Quiz/MySQL%20Subquery%20%5B22%20exercises%20with%20solution%5D/MySQL%20Subquery%2022%20exercises%20with%20solution.html)
-- [MySQL Joins 13 exercises with solution](http://htmlpreview.github.io/?https://github.com/timetobye/MySQL_basic_practice/blob/master/MySQL%20Quiz/MySQL%20Joins%20%5B13%20exercises%20with%20solution%5D/MySQL%20Joins%2013%20exercises%20with%20solution.html)
-
-
+  - [hackerrank_sql_quiz](https://github.com/timetobye/MySQL_basic_practice/tree/master/hackerrank_sql_quiz) 
+  
 **thanks to**
 - SQL을 활용해서 멋지게 일하시는 나의 동료 DD님 감사합니다.
 - SQL 고민 할 때 이거 보세요 하고 링크 건네주셨던 G.S Park에게도 감사합니다.
 - SQL 처음 할 때 [sql 첫걸음](https://www.kyobobook.co.kr/product/detailViewKor.laf?mallGb=KOR&ejkGb=KOR&barcode=9788968482311) 추천해주신 Noah 님 감사합니다.
+
+## Table of Contents
+### MySQL 학습 자료 및 데이터 안내
+
+
+### MySQL 학습
+- [order by](https://github.com/timetobye/MySQL_basic_practice#odrer-by)
+- [IN vs OR](https://github.com/timetobye/MySQL_basic_practice#in-vs-or)
+- [IN 에서 subquery를 사용](https://github.com/timetobye/MySQL_basic_practice#in-%EC%97%90%EC%84%9C-subquery%EB%A5%BC-%EC%82%AC%EC%9A%A9)
+- [between](https://github.com/timetobye/MySQL_basic_practice#between)
+- [between with cast](https://github.com/timetobye/MySQL_basic_practice#between-with-cast)
+- [LIKE](https://github.com/timetobye/MySQL_basic_practice#like)
+  - [escape in LIKE](https://github.com/timetobye/MySQL_basic_practice#escape-in-like)
+- [Null에 대한 이해](https://github.com/timetobye/MySQL_basic_practice#null%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9D%B4%ED%95%B4)
+- [exists](https://github.com/timetobye/MySQL_basic_practice#exists)
+  - [update-in-exists](https://github.com/timetobye/MySQL_basic_practice#update-in-exists)
+- [limit](https://github.com/timetobye/MySQL_basic_practice#limit)
+- [inner join](https://github.com/timetobye/MySQL_basic_practice#inner-join)
+- [left join](https://github.com/timetobye/MySQL_basic_practice#left-join)
+- [group by, having](https://github.com/timetobye/MySQL_basic_practice#group-by-having)
+- [Rollup](https://github.com/timetobye/MySQL_basic_practice#rollup)
+- [DEFAULT CHARSET=utf8](https://github.com/timetobye/MySQL_basic_practice#default-charsetutf8)
+- [now(), sysdate(), current_date()](https://github.com/timetobye/MySQL_basic_practice#now-sysdate-current_date)
+- [concat_ws vs concat](https://github.com/timetobye/MySQL_basic_practice#concat_ws-vs-concat)
+- [group_concat](https://github.com/timetobye/MySQL_basic_practice#group_concat)
+- [IFNULL](https://github.com/timetobye/MySQL_basic_practice#ifnull)
+- [Derived table](https://github.com/timetobye/MySQL_basic_practice#derived-table)
+- [CTE](https://github.com/timetobye/MySQL_basic_practice#derived-table)
+- [recursive CTE](https://github.com/timetobye/MySQL_basic_practice#recursive-cte)
+- [Union vs Union All](https://github.com/timetobye/MySQL_basic_practice#union-vs-union-all)
+- [INTERSECT](https://github.com/timetobye/MySQL_basic_practice#intersect)
+- [Minus](https://github.com/timetobye/MySQL_basic_practice#minus)
+- [Insert](https://github.com/timetobye/MySQL_basic_practice#insert)
+- [Insert into select](https://github.com/timetobye/MySQL_basic_practice#insert-into-select)
+- [IF](https://github.com/timetobye/MySQL_basic_practice#if)
+- [Update](https://github.com/timetobye/MySQL_basic_practice#update)
+- [tips](https://github.com/timetobye/MySQL_basic_practice#tips)
+- [Date Function](https://github.com/timetobye/MySQL_basic_practice#date-function)
+  - [CURDATE](https://github.com/timetobye/MySQL_basic_practice#curdate)
+  - [DATEDIFF](https://github.com/timetobye/MySQL_basic_practice#datediff)
+  - [DAY](https://github.com/timetobye/MySQL_basic_practice#day)
+  - [DATE_ADD](https://github.com/timetobye/MySQL_basic_practice#date_add)
+  - [DATE_SUB](https://github.com/timetobye/MySQL_basic_practice#date_sub)
+  - [DATE_FORMAT](https://github.com/timetobye/MySQL_basic_practice#date_format)
+  - [STR_TO_DATE()](https://github.com/timetobye/MySQL_basic_practice#str_to_date)
+
 --------------------------
 
 
-# MySQL 학습
+## MySQL 학습 자료 및 데이터 안내
 - [www.mysqltutorial.org](http://www.mysqltutorial.org/basic-mysql-tutorial.aspx)에 게시된 자료를 바탕으로 정리하였습니다.
 - 모르는 것, 새롭게 알게 된 것, 애매하게 알고 있는 것을 적었습니다.
 - ~~하면 할 수록 어렵냐...~~
