@@ -660,6 +660,7 @@ FROM
 
 ![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTH_VALUE-Function-Example-1.png)
 
+위의 경우에는 range가 지정되지 않아서 current_row, 그러니까 NTH_VALUE 값이 지정된 위치 포함해서 아래만 구현 되는 것으로 보임  
 
 
 ```sql
@@ -689,6 +690,10 @@ For each row, the NTILE() function returns a bucket number representing the grou
   - 전체 숫자가 지정된 숫자로 딱 나누어 떨어지지 않으면 번호 할당이 가장 먼저된 그룹이 가장 많은 비율을 차지하는 구조이다.
 - Partition 작업을 하는 것과 어떤 차이가 있는지는 아래 예제를 통해 이해할 수 있다.
 
+이 값이 있어야 전체 partition의 값을 다 채우게 된다.
+```sql
+RANGE BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+```
 
 
 ```sql
