@@ -1,6 +1,10 @@
-### Date Function
+Date Function
+-----
+MySQL 8.0 기준 Date Function 정리 내용 입니다.
+- 자료 출처 : https://www.mysqltutorial.org/mysql-date-functions/
 
-#### CURDATE
+
+### CURDATE
 - The CURDATE() function returns the current date as a value in the 'YYYY-MM-DD' format if it is used in a string context or YYYMMDD format if it is used in a numeric context.
 
 shows how the CURDATE() function is used in the string context.
@@ -41,7 +45,7 @@ select date(now());
 ```
 
 
-#### DATEDIFF
+### DATEDIFF
 - The MySQL DATEDIFF function calculates the number of days between two  DATE,  DATETIME, or  TIMESTAMP values.
 - http://www.mysqltutorial.org/mysql-datediff.aspx
 
@@ -119,7 +123,7 @@ WHERE
 6	10425	1.00	0.23    
 ```
 
-#### DAY
+### DAY
 
 ```
 DAY(date)
@@ -158,7 +162,19 @@ ORDER BY dayofmonth;
 ...
 ```
 
-#### DATE_ADD
+**LAST_DAY**
+- 특정 연월일이 존재할 떄, 그 달의 마지막 day 값을 구하기 위한 함수이다.
+
+
+```sql
+SELECT DAY(LAST_DAY('2020-03-05'));
+
+-- 31
+```
+
+
+
+### DATE_ADD
 - http://www.mysqltutorial.org/mysql-date_add/
 - The DATE_ADD function adds an interval to a DATE or DATETIME value. The following illustrates the syntax of the DATE_ADD function
 
@@ -251,7 +267,64 @@ SELECT
 +------------+
 1 row in set (0.00 sec)
 ```
-#### DATE_SUB
+
+
+```sql
+SELECT 
+    DATE_ADD('2000-01-01',
+        INTERVAL CAST(6/4 AS DECIMAL(3,1)) HOUR_MINUTE) result;
+
++---------------------+
+| result              |
++---------------------+
+| 2000-01-01 01:05:00 |
++---------------------+
+1 row in set (0.00 sec)
+```
+
+**Invalid starting date**
+
+```sql
+SELECT DATE_ADD('2000-02-30', 
+            INTERVAL 1 DAY) result;
++--------+
+| result |
++--------+
+| NULL   |
++--------+
+1 row in set, 1 warning (0.00 sec)
+```
+
+윤년이 껴있을 경우에 대한 예시
+
+```
+SELECT 
+    DATE_ADD('2010-01-30', 
+              INTERVAL 1 MONTH) result;
+
++------------+
+| result     |
++------------+
+| 2010-02-28 |
++------------+
+1 row in set (0.00 sec)
+```
+
+```
+SELECT 
+    DATE_ADD('2012-01-30', 
+            INTERVAL 1 MONTH) result;
+
++------------+
+| result     |
++------------+
+| 2012-02-29 |
++------------+
+1 row in set (0.00 sec)
+```
+
+
+### DATE_SUB
 - http://www.mysqltutorial.org/mysql-date_sub/
 - 결론적으로는 사용법 자체는 DATE_ADD랑 다를게 없는듯
 - The DATE_SUB() function subtracts a time value (or an interval) from a DATE or DATETIME value. The following illustrates the DATE_SUB() function:
@@ -274,7 +347,54 @@ SELECT DATE_SUB('2017-07-04',INTERVAL 1 DAY) result;
 1 row in set (0.00 sec) 
 ```
 
-#### DATE_FORMAT
+음의 값을 넣으면 +로 처리한다.(수학과 같은 개념)
+
+```sql
+SELECT DATE_SUB('2017-07-03',INTERVAL -1 DAY) result;
++------------+
+| result     |
++------------+
+| 2017-07-04 |
++------------+
+1 row in set (0.00 sec)
+```
+
+**Invalid or malformed date**
+
+```sql
+SELECT DATE_SUB('2017-02-29', INTERVAL - 1 DAY) result;
++--------+
+| result |
++--------+
+| NULL   |
++--------+
+1 row in set, 1 warning (0.00 sec)
+```
+
+형식에 맞게 사용하자
+
+```sql
+SELECT DATE_SUB('03/07/2017', INTERVAL 1 DAY) result;
++--------+
+| result |
++--------+
+| NULL   |
++--------+
+1 row in set, 1 warning (0.00 sec)
+
+
+SELECT DATE_SUB(NULL, INTERVAL 1 DAY) result;
++--------+
+| result |
++--------+
+| NULL   |
++--------+
+1 row in set (0.00 sec)
+```
+
+
+
+### DATE_FORMAT
 - To format a date value to a specific format, you use the DATE_FORMAT function. The syntax of the DATE_FORMAT function is as follows:
 
 ```
@@ -307,51 +427,104 @@ FROM
 ....
 ```
 
-#### STR_TO_DATE()
-- http://www.mysqltutorial.org/mysql-str_to_date/
-- The STR_TO_DATE() converts the str string into a date value based on the fmt format string. The STR_TO_DATE() function may return a DATE , TIME, or DATETIME value based on the input and format strings. If the input string is illegal, the STR_TO_DATE() function returns NULL.
-- 쿼리 할 때 종종 필요하더라...
-```
-STR_TO_DATE(str,fmt);
-```
 
-```
-SELECT STR_TO_DATE('21,5,2013','%d,%m,%Y');
+### DAYNAME
 
-2013-05-21
+DAYNAME function returns the name of a weekday for a specified date.
+- https://www.mysqltutorial.org/mysql-dayname/
+
+```bash
+DAYNAME(date);
 ```
 
-Based on the format string ‘%d, %m, %Y’, the STR_TO_DATE() function scans the ‘21,5,2013’ input string.
-- First, it attempts to find a match for the %d format specifier, which is a day of the month (01…31), in the input string. Because the number 21 matches with the %d specifier, the function takes 21 as the day value.
-- Second, because the comma (,) literal character in the format string matches with the comma in the input string, the function continues to check the second format specifier %m , which is a month (01…12), and finds that the number 5 matches with the %m format specifier. It takes the number 5 as the month value.
-- Third, after matching the second comma (,), the STR_TO_DATE() function keeps finding a match for the third format specifier %Y , which is four-digit year e.g., 2012,2013, etc., and it takes the number 2013 as the year value.
-
-Point!!
-- The STR_TO_DATE() function ignores extra characters at the end of the input string when it parses the input string based on the format string. See the following example:
-
-```
-SELECT STR_TO_DATE('21,5,2013 extra characters','%d,%m,%Y');
-
-2013-05-21
+```sql
+mysql> SELECT DAYNAME('2000-01-01') dayname;
++----------+
+| dayname  |
++----------+
+| Saturday |
++----------+
+1 row in set (0.00 sec)
 ```
 
-불완전한 값이 들어오면...
-- The STR_TO_DATE() sets all incomplete date values, which are not provided by the input string, to zero. See the following example:
+만일 다른 나라(영어권 이외의 국가) 방식으로 표기하려면...
+
+```sql
+
+mysql> SELECT @@lc_time_names;
++-----------------+
+| @@lc_time_names |
++-----------------+
+| en_US           |
++-----------------+
+1 row in set (0.00 sec)
+
+
+mysql> SET @@lc_time_names = 'fr_FR';
+Query OK, 0 rows affected (0.00 sec)
+
+
+mysql> SELECT DAYNAME('2000-01-01') dayname;
++---------+
+| dayname |
++---------+
+| samedi  |
++---------+
+1 row in set (0.00 sec)
 ```
-SELECT STR_TO_DATE('2013','%Y');
 
-2012-11-30
+Example Query
 
-
-SELECT STR_TO_DATE('113005','%h%i%s');
-
-11:30:05
+```sql
+SELECT 
+    DAYNAME(orderdate) weekday, 
+    COUNT(*) total_orders
+FROM
+    orders
+WHERE
+    YEAR(orderdate) = 2004
+GROUP BY weekday
+ORDER BY total_orders DESC;
 ```
 
-#### extract
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-DAYNAME.png)
+
+### DAYOFWEEK
+The DAYOFWEEK function returns the weekday index for a date i.e., 1 for Sunday, 2 for Monday, … 7 for Saturday.
+
+```bash
+DAYOFWEEK(date)
+```
+
+2012-12-01 : 7 이고, 2020-12-02 : 1 이다.
+
+
+``` sql
+mysql> SELECT DAYNAME('2012-12-01'), DAYOFWEEK('2012-12-01');
++-----------------------+-------------------------+
+| DAYNAME('2012-12-01') | DAYOFWEEK('2012-12-01') |
++-----------------------+-------------------------+
+| Saturday              |                       7 |
++-----------------------+-------------------------+
+1 row in set (0.00 sec)
+```
+
+``` sql
+mysql> SELECT DAYNAME('2012-12-02'), DAYOFWEEK('2012-12-02');
++-----------------------+-------------------------+
+| DAYNAME('2012-12-02') | DAYOFWEEK('2012-12-02') |
++-----------------------+-------------------------+
+| Sunday                |                       1 |
++-----------------------+-------------------------+
+1 row in set (0.00 sec)
+```
+
+### extract
 - The EXTRACT() function extracts part of a date.
 - The EXTRACT() function requires two arguments unit and date.
 - unit 지정하고, datetime을 넣어서 추출하면 됨!
+- https://www.mysqltutorial.org/mysql-extract/
+  - 여기서 가능한 항목들을 확인할 수 있다.
 
 ```sql
 extract (unit from date)
@@ -394,4 +567,139 @@ SELECT EXTRACT(YEAR_MONTH FROM '2017-07-14 09:04:44') YEARMONTH;
 +-----------+
 ````
 
-------------------------------
+### LAST DAY
+The LAST_DAY() function takes a DATE or DATETIME value and returns the last day of the month for the input date.
+- https://www.mysqltutorial.org/mysql-last_day/
+
+
+![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2017/07/MySQL-LAST_DAY-Function-Example-200x200.png)
+
+```sql
+LAST_DAY(date);
+```
+
+
+```sql
+SELECT LAST_DAY('2016-02-03');
+
++------------------------+
+| LAST_DAY('2016-02-03') |
++------------------------+
+| 2016-02-29             |
++------------------------+
+1 row in set (0.00 sec)
+```
+
+
+### STR_TO_DATE()
+- http://www.mysqltutorial.org/mysql-str_to_date/
+- The STR_TO_DATE() converts the str string into a date value based on the fmt format string. The STR_TO_DATE() function may return a DATE , TIME, or DATETIME value based on the input and format strings. If the input string is illegal, the STR_TO_DATE() function returns NULL.
+- 쿼리 할 때 종종 필요하더라...
+```
+STR_TO_DATE(str,fmt);
+```
+
+```
+SELECT STR_TO_DATE('21,5,2013','%d,%m,%Y');
+
+2013-05-21
+```
+
+Based on the format string ‘%d, %m, %Y’, the STR_TO_DATE() function scans the ‘21,5,2013’ input string.
+- First, it attempts to find a match for the %d format specifier, which is a day of the month (01…31), in the input string. Because the number 21 matches with the %d specifier, the function takes 21 as the day value.
+- Second, because the comma (,) literal character in the format string matches with the comma in the input string, the function continues to check the second format specifier %m , which is a month (01…12), and finds that the number 5 matches with the %m format specifier. It takes the number 5 as the month value.
+- Third, after matching the second comma (,), the STR_TO_DATE() function keeps finding a match for the third format specifier %Y , which is four-digit year e.g., 2012,2013, etc., and it takes the number 2013 as the year value.
+
+Point!!
+- The STR_TO_DATE() function ignores extra characters at the end of the input string when it parses the input string based on the format string. See the following example:
+
+```
+SELECT STR_TO_DATE('21,5,2013 extra characters','%d,%m,%Y');
+
+2013-05-21
+```
+
+불완전한 값이 들어오면...
+- The STR_TO_DATE() sets all incomplete date values, which are not provided by the input string, to zero. See the following example:
+```
+SELECT STR_TO_DATE('2013','%Y');
+
+2012-11-30
+
+
+SELECT STR_TO_DATE('113005','%h%i%s');
+
+11:30:05
+```
+
+
+### SYSDATE
+The SYSDATE() function returns the current date and time as a value in 'YYYY-MM-DD HH:MM:SS' format if the function is used in a string context or YYYYMMDDHHMMSS format in case the function is used in a numeric context.
+
+
+```sql
+mysql> SELECT SYSDATE();
++---------------------+
+| SYSDATE()           |
++---------------------+
+| 2017-07-13 17:42:37 |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT SYSDATE(3);
++-------------------------+
+| SYSDATE(3)              |
++-------------------------+
+| 2017-07-13 17:42:55.875 |
++-------------------------+
+1 row in set (0.00 sec)
+
+```
+
+사실 제일 중요한 건 다음이다.
+
+**SYSDATE vs. NOW**
+
+```sql
+-- 별 차이가 없어 보인다.
+
+mysql>  SELECT SYSDATE(), 
+               NOW();
++---------------------+---------------------+
+| SYSDATE()           | NOW()               |
++---------------------+---------------------+
+| 2017-07-13 17:46:30 | 2017-07-13 17:46:30 |
++---------------------+---------------------+
+1 row in set (0.00 sec)
+
+
+-- NOW 의 경우 SLEEP을 줘도 동일
+
+mysql> SELECT NOW(), 
+              SLEEP(5), 
+              NOW();
++---------------------+----------+---------------------+
+| NOW()               | SLEEP(5) | NOW()               |
++---------------------+----------+---------------------+
+| 2017-07-13 17:49:18 |        0 | 2017-07-13 17:49:18 |
++---------------------+----------+---------------------+
+1 row in set (5.00 sec)
+
+
+-- SYSDATE의 경우 시스템 서버 시간으로 바
+mysql> SELECT SYSDATE(), SLEEP(5), SYSDATE();
++---------------------+----------+---------------------+
+| SYSDATE()           | SLEEP(5) | SYSDATE()           |
++---------------------+----------+---------------------+
+| 2017-07-13 17:50:57 |        0 | 2017-07-13 17:51:02 |
++---------------------+----------+---------------------+
+1 row in set (5.00 sec)
+
+```
+
+Within the same statement, SYSDATE() function returns different time values that reflect the time at which the SYSDATE() function was executed.
+
+Because the SYSDATE() function is non-deterministic, indexes cannot be utilized for evaluating expressions that refer to it.
+
+
+
