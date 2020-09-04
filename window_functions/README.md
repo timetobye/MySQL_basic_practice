@@ -1171,4 +1171,3 @@ from (select distinct officeCode as officeCode from employees) as distinct_emplo
 
 가장 중요한 부분은 `sum(column_name) over (order by column_name asc)` 항목이다.
 - 합계를 구하는데 각 컬럼의 합계를 부분적으로 판단해서 구하는 것으로 보인다.
-- [ ] 원리에 대해서는 조금 더 리서치 해볼 것 
