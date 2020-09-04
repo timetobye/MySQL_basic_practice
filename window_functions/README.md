@@ -1,8 +1,6 @@
 Window Functions
 --------
 
-# Window Function Basic
-
 ## MySQL 8.0 Window Functions Intro
 
 MySQL has supported window functions since version 8.0. The window functions allow you to solve query problems in new, 
