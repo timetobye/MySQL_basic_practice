@@ -43,7 +43,7 @@ FROM
     sales;
 ````
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-Window-Function-SUM-window-function.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-Window-Function-SUM-window-function.png)
 
 
 fiscal_year을 기준으로 partition 하는 것이 아니라, sales_employee를 기준으로 다시 쿼리를 작성해보았다.
@@ -86,10 +86,12 @@ window_function_name(expression)
 - Second, specify the OVER clause which has three possible elements
   - partition definition - 이해함
   - order definition - 이해함
-  - [ ] frame definition - 이해 못 함
+  - frame_definition :The frame unit specifies the type of relationship between the current row and frame rows. 
+    It can be ROWS or RANGE. The offsets of the current row and frame rows are the row numbers 
+    if the frame unit is ROWS and row values the frame unit is RANGE.
+    - 참고 자료 : https://hongsii.github.io/2017/12/12/window-function-range/
 
-
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/09/mysql-window-functions-frame-clause-bound.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/09/mysql-window-functions-frame-clause-bound.png)
 
 
 ## Window functions 종류
@@ -171,7 +173,9 @@ CUME_DIST() 는 어떤 원리로 계산이 될까?
 The result is 2. Then CUME_DIST() function divides 2 by the total number of rows which is 10: 2/10. 
 the result is 0.2 or 20%. The same logic is applied to the second row.
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-CUME_DIST-Function-First-Row.png)
+> 정리하면 동일한 값은 같은 분포를 가지도록 함
+
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-CUME_DIST-Function-First-Row.png)
 
 
 - 정리하면 같은 값을 가지는 개수를 구한 후, 전체 개수에서 그 비율을 구한다.
@@ -189,8 +193,8 @@ within a partition or result set with no gaps in ranking values.
 
 The rank of a row is increased by one from the number of distinct rank values which come before the row.
 
-- 말을 보면 무슨 말이지 생각할 수 있으나, 생각해보면 다음과 같다.
 - partition이나 result set의 각각의 row에 랭크를 할당하는 함수이다.
+- 할당하는 방식은 동일한 값이 있을 경우 동일한 순위를 부여하며, 그 다음 값의 순위는 이전 순위의 +1 이다.
 - 예제를 보면 좀 더 이해가 쉽다.
 
 
@@ -215,7 +219,7 @@ FROM
     sales;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-DENSE_RANK-Assign-Rank-to-sales-employees.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-DENSE_RANK-Assign-Rank-to-sales-employees.png)
 
 
 step by step
@@ -282,7 +286,7 @@ FROM
 ```
 
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Example.png)
 
 - 이해가 잘 된다... :)
 - hours로 정렬하였을 때 employee_name 이라는항목에서 가장 첫 번째 값을 least_over_time으로 할당한다.
@@ -303,7 +307,7 @@ FROM
     overtime;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Over-Partition-Example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-FIRST_VALUE-Function-Over-Partition-Example.png)
 
 - department 별로 partition을 나눈 후, hours를 기준으로 정렬한 뒤 각 department의 첫 번째 값을 할당하였다.
 
@@ -324,6 +328,7 @@ LAG(<expression>[,offset[, default_value]]) OVER (
 
 The LAG() function ...
 - returns the value of the expression from the row that precedes the current row by offset number of rows within its partition or result set.
+- 요약을 하면 구하고자 하는 범위 내에서 특정 행의 값을 지정된 숫자 만큼 아래 row 로 이동을 시킨다.  
 
 **offset**
 - The offset is the number of rows back from the current row from which to get the value. 
@@ -381,7 +386,7 @@ FROM
 21,Vintage Cars,2005,323846,854552
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAG-function-current-and-previous-year-example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAG-function-current-and-previous-year-example.png)
 
 example summary
 - First, we used a common table expression to get the order value of every product in every year.
@@ -507,7 +512,7 @@ FROM
 17,Larry Bott,100,Larry Bott
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-example.png)
 
 
 ```sql
@@ -548,7 +553,7 @@ FROM
 17,Larry Bott,SCM,100,Larry Bott
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-OVER-partitions-example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LAST_VALUE-OVER-partitions-example.png)
 
 
 ### LEAD()
@@ -585,7 +590,7 @@ FROM
 INNER JOIN customers USING (customerNumber);
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LEAD-Function-Example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-LEAD-Function-Example.png)
 
 
 
@@ -656,7 +661,7 @@ FROM
     basic_pays;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTH_VALUE-Function-Example-1.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTH_VALUE-Function-Example-1.png)
 
 위의 경우에는 range가 지정되지 않아서 current_row, 그러니까 NTH_VALUE 값이 지정된 위치 포함해서 아래만 구현 되는 것으로 보임  
 
@@ -675,7 +680,7 @@ FROM
     basic_pays;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTH_VALUE-Function-OVER-partition-example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTH_VALUE-Function-OVER-partition-example.png)
 
 
 ### NTILE
@@ -727,7 +732,7 @@ FROM
     ntiletest;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-groups-with-the-different-number-of-rows.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-groups-with-the-different-number-of-rows.png)
 
 ```sql
 SELECT
@@ -739,7 +744,7 @@ FROM
     ntiletest;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-groups-with-difference-in-rows.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-groups-with-difference-in-rows.png)
 
 
 - 다음 주어지는 쿼리를 실행하면 NTILE()과 함께 사용되는 PARTITION을 이해할 수 있다.
@@ -769,7 +774,7 @@ FROM
     productline_sales;
 ````
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-with-CTE-example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-NTILE-function-with-CTE-example.png)
 
 
 ### PERCENT_RANK
@@ -818,12 +823,13 @@ select
 FROM sample_table;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-PERCENT_RANK-function-over-partition-example-1.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-PERCENT_RANK-function-over-partition-example-1.png)
 
 ### RANK
 
 - Note that MySQL has been supporting the RANK() function and other window functions since version 8.0
 - 랭크 함수는 이전부터 지원 해왔당.
+- 동일한 값일 경우 동일 순위를 부여하고, 다음 순위는 동일 값의 개수 + 이전 순위이다.
 
 
 The RANK() function assigns a rank to each row within the partition of a result set. The rank of a row is specified by one plus the number of ranks that come before it.
@@ -858,7 +864,7 @@ FROM
     t;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-RANK-function-example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-RANK-function-example.png)
 
 
 
@@ -936,7 +942,7 @@ WHERE
     order_value_rank <=3;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-RANK-function-order-values-example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-RANK-function-order-values-example.png)
 
 - 실제로는 수 백등까지 rank가 형성되어 있다.
 
@@ -944,7 +950,7 @@ WHERE
 ### Row_number
 
 MySQL introduced the ROW_NUMBER() function since version 8.0. The ROW_NUMBER() is a window function or analytic function that assigns a sequential number to each row to which it applied beginning with one.
-
+- 정렬된 순서대로 순서를 부여하는 함수이다.
 
 **번외**
 
@@ -963,7 +969,7 @@ ORDER BY firstName, lastName
 LIMIT 5;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2019/08/mysql-row_number-emulation.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2019/08/mysql-row_number-emulation.png)
 
 - 더 많은 내용은 별도 정리 할 것
 
@@ -985,7 +991,7 @@ ORDER BY
     productName;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-assign-sequential-numbers.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-assign-sequential-numbers.png)
 
 
 **Finding top N rows of every group**
@@ -1012,7 +1018,7 @@ WHERE
    row_num <= 3;
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Top-N-rows-from-group.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Top-N-rows-from-group.png)
 
 
 위 쿼리를 살짝 뜯어 보면....
@@ -1094,7 +1100,7 @@ FROM duplicated_test;
 
 다음과 같은 결과가 나온다.
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Duplicate-Rows.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Duplicate-Rows.png)
 
 
 중복되는 걸 지워야 하니까...CTE를 써서 정리를 해보자.
@@ -1141,7 +1147,7 @@ FROM
 WHERE row_num BETWEEN 11 AND 20
 ```
 
-![alt text](https://sp.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Pagination-Example.png)
+![alt text](https://www.mysqltutorial.org/wp-content/uploads/2018/08/MySQL-ROW_NUMBER-function-Pagination-Example.png)
 
 
 
@@ -1171,3 +1177,27 @@ from (select distinct officeCode as officeCode from employees) as distinct_emplo
 
 가장 중요한 부분은 `sum(column_name) over (order by column_name asc)` 항목이다.
 - 합계를 구하는데 각 컬럼의 합계를 부분적으로 판단해서 구하는 것으로 보인다.
+
+## Rank 관련 함수 정리
+
+- DENSE_RANK() : 값이 같을 경우 중복 순위를 부여하며, 다음 순위는 이전 순위의 +1 이다.
+- Rank() : 값이 같을 경우 중복 순위를 부여 하며, 다음 순위는 이전 동순위의 개수 + 동순위의 값이다.
+- ROW_NUMBER() : 값 여부에 관계 없이 정렬한 순서대로 순위를 부여한다.
+
+## Cumulative sum that reset when 0 is encountered
+
+누적 합계를 구할 때 특정 값에 도달하거나, 넘을 경우 초기화 하면서 다시 누적 합계를 구하는 방법에 대해 기술
+- [참고 문서 1](https://github.com/timetobye/TIL/tree/master/Database%2C%20DataLake%2C%20DataWareHouse/MySQL/2_MySQL_apply/cumulative_sum_that_reset)
+- [참고 문서 2](https://stackoverflow.com/questions/50394155/sql-server-cumulative-sum-that-resets-when-0-is-encountered)
+
+```sql
+select
+    no, value, cumulative_group, # 생략해도 됨
+    sum(value) over (partition by cumulative_group order by no) as cumulative_sum
+from (
+    select
+        no, value,
+        sum(case when value = 0 then 1 else 0 end) over (order by no) as cumulative_group
+    from table
+) as result_table
+```
